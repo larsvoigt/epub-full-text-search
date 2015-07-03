@@ -11,7 +11,10 @@
     "mocha": "~2.2.5",
     "should": "~7.0.1",
     "rimraf": "~2.4.0",
-    "cheerio": "~0.19.0"
+    "cheerio": "~0.19.0",
+    "browserify": "~10.2.4",
+    "brfs": "~1.4.0",
+    "browserify-fs": "~1.0.0"
   },
   "dependencies": {
     "express": "~4.12.3",
@@ -20,5 +23,9 @@
     "xml2js": "~0.4.8",
     "async": "~0.9.0",
     "chokidar": "~1.0.1"
+  },
+  "scripts": {
+    "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
+    "express-service" : "node example/as-service/express/service.js"  
   }
 }

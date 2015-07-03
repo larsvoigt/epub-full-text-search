@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>in browser solution</title>
+    <style>
+        .user-form { padding:20px; }
+        .user-form .field { padding: 4px; margin:1px; background: #eee; }
+        .user-form .field label { display:inline-block; width:60px; margin-left:5px; }
+        .user-form .field input { display:inline-block; }
+        
+    </style>
+    <script src="bundle.js"></script>
+</head>
+<body>
+<form class="user-form">
+    <div class="field">
+        <label for="searchbox">Query:</label>
+        <input id="searchbox" name="searchbox" type="text" size="15" value="epub" autofocus/>
+        <button id="search" type="button">Search</button>
+    </div>
+</form>
+</body>
+</html>

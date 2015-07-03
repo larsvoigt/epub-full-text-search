@@ -6,7 +6,7 @@ var fs = require('fs');
 describe('indexing and search', function () {
 
     var epub = process.cwd() + '/test/epubs/accessible_epub_3/';
-    var hitsAsJson = process.cwd() + '/test/specs/hits.json';
+    var hitsAsJson = __dirname  + '/hits.json';
 
     describe('indexing ', function () {
         it('should index an epub', function (done) {

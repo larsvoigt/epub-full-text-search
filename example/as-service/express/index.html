@@ -1,0 +1,99 @@
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>express service</title>
+    <style>
+        .user-form {
+            padding: 20px;
+        }
+
+        .user-form .field {
+            padding: 4px;
+            margin: 1px;
+            background: #eee;
+        }
+
+        .user-form .field label {
+            display: inline-block;
+            width: 60px;
+            margin-left: 5px;
+        }
+
+        .user-form .field input {
+            display: inline-block;
+        }
+
+        ol {
+            margin-left:0;
+            padding-left:0;
+            counter-reset:item;
+            background-color: #ffffff;;
+        }
+
+        ol>li {
+            margin-left:0;
+            padding-left:50px;
+            padding-top:10px;
+            padding-button:10px;
+            counter-increment:item;
+            list-style:none inside;
+            border-radius: 25px;
+        }
+
+        ol>li:before {
+            content:counter(item) ".";
+            padding-right:0.5em;
+        }
+
+        li:nth-child(odd) {
+            background-color: #b3dcfd;
+        }
+        
+        
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        function search() {
+
+            $("#hits").empty();
+            var request = window.location.protocol + '//' + window.location.hostname + ':8081/' + 'search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
+
+            $.getJSON(request, '', {})
+                    .done(function (hits) {
+
+                        if (hits) {
+
+//                            console.log("found " + hits.length + ' hits');
+                            for (var index in hits) {
+                                
+//                                var textnode = document.createTextNode(index + " : " + JSON.stringify(hits[index]));
+                                $("#hits").append($("<li>").html("Spine Item: <pre>"  + JSON.stringify(hits[index], undefined, 2) + "</pre>"));
+                            }
+
+                        } else {
+                            console.debug("no search result");
+                        }
+                        console.debug("search request ready");
+                    })
+                    .fail(function () {
+                        console.error("error fulltext search request");
+                    });
+        }
+        function addClickListener() {
+            $("#search").click(search);
+        }
+        window.onload = addClickListener;
+
+    </script>
+</head>
+<body>
+<form class="user-form">
+    <div class="field">
+        <label for="searchbox">Query:</label>
+        <input id="searchbox" name="searchbox" type="text" size="15" value="epub" autofocus/>
+        <button id="search" type="button">Search</button>
+    </div>
+</form>
+<ol id="hits"></ol>
+</body>
+</html>
