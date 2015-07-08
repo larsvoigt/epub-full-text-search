@@ -7,14 +7,14 @@
     "url": "git://github.com/larsvoigt/epub-full-text-search.git"
   },
   "devDependencies": {
-    "xml2js": "^0.4.4",
-    "mocha": "~2.2.5",
-    "should": "~7.0.1",
-    "rimraf": "~2.4.0",
-    "cheerio": "~0.19.0",
-    "browserify": "~10.2.4",
     "brfs": "~1.4.0",
-    "browserify-fs": "~1.0.0"
+    "browserify": "~10.2.4",
+    "browserify-fs": "~1.0.0",
+    "cheerio": "~0.19.0",
+    "epub3-samples": "0.0.1",
+    "mocha": "~2.2.5",
+    "rimraf": "~2.4.0",
+    "should": "~7.0.1"
   },
   "dependencies": {
     "express": "~4.12.3",
@@ -26,6 +26,6 @@
   },
   "scripts": {
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
-    "express-service" : "node example/as-service/express/service.js"  
+    "express-service": "node example/as-service/express/service.js"
   }
 }

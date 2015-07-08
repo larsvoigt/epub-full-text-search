@@ -1,0 +1,59 @@
+.user-form {
+    padding: 20px;
+}
+
+.user-form .field {
+    padding: 4px;
+    margin: 1px;
+    background: #eee;
+}
+
+.user-form .field label {
+    display: inline-block;
+    width: 60px;
+    margin-left: 5px;
+}
+
+.user-form .field input {
+    display: inline-block;
+}
+
+ol {
+    margin-left: 0;
+    padding-left: 0;
+    counter-reset: item;
+    background-color: #ffffff;;
+}
+
+ol > li {
+    margin-left: 0;
+    padding-left: 50px;
+    padding-top: 10px;
+    padding-button: 10px;
+    counter-increment: item;
+    list-style: none inside;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+ol > li:before {
+    padding-right: 0.5em;
+}
+
+#hits li:nth-child(odd) {
+    background-color: #3d6169;
+    color: #dfdbd9;
+}
+
+#spinner {
+    position: relative;
+    background-color: #3d6169;
+    width: 100px;
+    height: 100px;
+    margin: 0 20px 20px 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    display:none;
+}

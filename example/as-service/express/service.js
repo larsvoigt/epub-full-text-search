@@ -1,28 +1,28 @@
-var epubContent = '../../../test/epubs/accessible_epub_3';
 var port = process.env.PORT || 8081; // set our port
 
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-var SearchEngine = require('../../../lib/SearchEngine.js');
+
+var epubs = 'node_modules/epub3-samples';
+var SearchEngine = require('../../../');
 var se = new SearchEngine();
 
-se.indexing(epubContent, function (info) {
+se.indexing(epubs, function (info) {
     console.log(info);
 });
 
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static('.'));
+app.use(express.static('example/as-service/express'));
 
 setFullTextSearchRoutes(app, se);
-//watchForUpdateIndex(service, index, epubContent);
+//watchForUpdateIndex(service, index, epubs);
 
 app.listen(port);
-console.log('Listen on port: ' + port);
-console.log('Service is running: ' + port);
+console.log('Service is running on port: ' + port);
 
 
 function setFullTextSearchRoutes(app, se) {

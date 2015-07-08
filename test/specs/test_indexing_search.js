@@ -1,12 +1,15 @@
+// ext libs
 var should = require('should');
 var rimraf = require('rimraf');
-var SearchEngine = require('../../lib/SearchEngine.js');
 var fs = require('fs');
+
+
+var SearchEngine = require('../../');
 
 describe('indexing and search', function () {
 
-    var epub = process.cwd() + '/test/epubs/accessible_epub_3/';
-    var hitsAsJson = __dirname  + '/hits.json';
+    var epub = 'node_modules/epub3-samples/accessible_epub_3';
+    var hitsAsJson = 'test/specs/hits.json';
 
     describe('indexing ', function () {
         it('should index an epub', function (done) {

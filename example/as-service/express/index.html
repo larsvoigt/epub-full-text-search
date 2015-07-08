@@ -2,76 +2,75 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>express service</title>
-    <style>
-        .user-form {
-            padding: 20px;
-        }
-
-        .user-form .field {
-            padding: 4px;
-            margin: 1px;
-            background: #eee;
-        }
-
-        .user-form .field label {
-            display: inline-block;
-            width: 60px;
-            margin-left: 5px;
-        }
-
-        .user-form .field input {
-            display: inline-block;
-        }
-
-        ol {
-            margin-left:0;
-            padding-left:0;
-            counter-reset:item;
-            background-color: #ffffff;;
-        }
-
-        ol>li {
-            margin-left:0;
-            padding-left:50px;
-            padding-top:10px;
-            padding-button:10px;
-            counter-increment:item;
-            list-style:none inside;
-            border-radius: 25px;
-        }
-
-        ol>li:before {
-            content:counter(item) ".";
-            padding-right:0.5em;
-        }
-
-        li:nth-child(odd) {
-            background-color: #b3dcfd;
-        }
-        
-        
-    </style>
+    <link href="main.css" type="text/css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
     <script>
+
+        $.fn.spin = function (opts) {
+            this.each(function () {
+                var $this = $(this), data = $this.data();
+
+                if (data.spinner) {
+                    data.spinner.stop();
+                    delete data.spinner
+                }
+                if (opts !== false) {
+                    window.s = data.spinner = new Spinner($.extend({color: $this.css('color')}, opts)).spin(this)
+                }
+            });
+            return this
+        };
+        
+        function getOpts() {
+            return {
+                lines: 13 // The number of lines to draw
+                , length: 17 // The length of each line
+                , width: 3 // The line thickness
+                , radius: 15 // The radius of the inner circle
+                , scale: 1 // Scales overall size of the spinner
+                , corners: 1 // Corner roundness (0..1)
+                , color: '#FFF' // #rgb or #rrggbb or array of colors
+                , opacity: 0.25 // Opacity of the lines
+                , rotate: 0 // The rotation offset
+                , direction: 1 // 1: clockwise, -1: counterclockwise
+                , speed: 1 // Rounds per second
+                , trail: 60 // Afterglow percentage
+                , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+                , zIndex: 2e9 // The z-index (defaults to 2000000000)
+                , className: 'spinner' // The CSS class to assign to the spinner
+                , top: '50%' // Top position relative to parent
+                , left: '50%' // Left position relative to parent
+                , shadow: false // Whether to render a shadow
+                , hwaccel: false // Whether to use hardware acceleration
+                , position: 'absolute' // Element positioning
+            }
+        }
+
         function search() {
 
             $("#hits").empty();
+
+            $('#spinner').show();
+            $('#spinner').spin(getOpts());
+
             var request = window.location.protocol + '//' + window.location.hostname + ':8081/' + 'search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
 
             $.getJSON(request, '', {})
                     .done(function (hits) {
-
-                        if (hits) {
+                        
+                        $('#spinner').data().spinner.stop();
+                        $('#spinner').hide();
+                        
+                        if (hits.length > 0) {
 
 //                            console.log("found " + hits.length + ' hits');
-                            for (var index in hits) {
-                                
-//                                var textnode = document.createTextNode(index + " : " + JSON.stringify(hits[index]));
-                                $("#hits").append($("<li>").html("Spine Item: <pre>"  + JSON.stringify(hits[index], undefined, 2) + "</pre>"));
-                            }
+                            for (var index in hits)
+                                $("#hits").append($("<li>").html("Spine Item: <pre>" + JSON.stringify(hits[index], undefined, 2) + "</pre>"));
 
                         } else {
-                            console.debug("no search result");
+
+                            $("#hits").append($("<li>").html("<h3>No Hits </h3>"));
                         }
                         console.debug("search request ready");
                     })
@@ -87,6 +86,8 @@
     </script>
 </head>
 <body>
+sample ebooks: 
+<ul><li>Accessible EPUB 3 </li> <li>A First Course in Linear Algebra</li></ul>
 <form class="user-form">
     <div class="field">
         <label for="searchbox">Query:</label>
@@ -94,6 +95,7 @@
         <button id="search" type="button">Search</button>
     </div>
 </form>
+<div id="spinner"></div>
 <ol id="hits"></ol>
 </body>
 </html>
