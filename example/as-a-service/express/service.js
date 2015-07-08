@@ -16,7 +16,7 @@ se.indexing(epubs, function (info) {
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static('example/as-service/express'));
+app.use(express.static('example/as-a-service/express'));
 
 setFullTextSearchRoutes(app, se);
 //watchForUpdateIndex(service, index, epubs);

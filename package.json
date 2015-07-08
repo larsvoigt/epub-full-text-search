@@ -26,6 +26,6 @@
   },
   "scripts": {
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
-    "express-service": "node example/as-service/express/service.js"
+    "express-service": "node example/as-a-service/express/service.js"
   }
 }
