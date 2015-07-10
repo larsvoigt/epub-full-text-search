@@ -23,15 +23,15 @@ run this function to index your **unzipped** EPUB3 content
 ```javascript
 se.indexing('your_epub(s)_directory', function (info) {
        console.log(info);
-   });
+});
 ```   
 
 ### Searching 
 
 ```javascript
- // search(query, epubTitle, result_callback)
-    se.search(["epub"], "Accessible EPUB 3", function (results) {
-   });
+// search(query, epubTitle, result_callback)
+se.search(["epub"], "Accessible EPUB 3", function (results) {
+});
 ```  
 
 ## Installation
