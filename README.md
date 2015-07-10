@@ -1,18 +1,47 @@
-# Full-Text Search for EPUB3 documents 
-...
-## Motivation
-...
-## Search engine 
-[search-index](https://github.com/fergiemcdowall/search-index)
+# EPUB-Search
+## Search engine for EPUB3 documents 
+
+This node module is a search engine for EPUB3 documents. It 
+provides full-text searching on EPUB3 content.
+It is built on top of  [search-index](https://github.com/fergiemcdowall/search-index).
+
+###Features include:
+
+* Full text search 
+* Instant search (provide suggestions)
+* Full javascript
+* Hits including [cfi](http://www.idpf.org/epub/linking/cfi/epub-cfi.html) references
+
 ## Usage
-...
+### Create a new search engine object 
+```javascript
+var se = new SearchEngine();
+``` 
+### Indexing 
+
+run this function to index your **unzipped** EPUB3 content
+```javascript
+se.indexing('your_epub(s)_directory', function (info) {
+       console.log(info);
+   });
+```   
+
+### Searching 
+
+```javascript
+ // search(query, epubTitle, result_callback)
+    se.search(["epub"], "Accessible EPUB 3", function (results) {
+   });
+```  
+
+## Installation
+
 ## Example 
-At first do you need install all dependencies: ``` npm install ```.
+Install all dependent modules: ``` npm install ```.
 
-Then, start up the example ```npm run express-service```.
+Start up the example ```npm run express-service```. It should run an express server on your local machine.
 
-Now it should running an express server on your local machine.
+When navigating to [http://localhost:8081/](http://localhost:8081/) then you can see a test page where you can enter a search query.
 
-And if you navigate to [http://localhost:8081/](http://localhost:8081/) you can see a test page running where you can enter a search query.
+Note: The indexing process starts automatically and it takes a few seconds until the search service is really available.    
 
-Note the indexing process starts automatically and it takes a few seconds until the search service really available.    
