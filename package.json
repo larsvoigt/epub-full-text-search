@@ -22,8 +22,9 @@
     "cheerio": "~0.19.0",
     "chokidar": "~1.0.1",
     "express": "~4.12.3",
-    "search-index": "~0.5.0",
-    "xml2js": "~0.4.8"
+    "search-index": "~0.6.0",
+    "xml2js": "~0.4.8",
+    "extfs" : "latest"
   },
   "scripts": {
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
