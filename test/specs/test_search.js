@@ -98,5 +98,40 @@ describe('search', function () {
             });
         });
     });
+
+    it('check hit properties are set', function (done) {
+
+        this.timeout(10000);
+
+        var se = new SearchEngine({'indexPath': 'test_search', logLevel: 'warn'});
+
+        se.indexing(epub, function () {
+
+            se.search(["epub"], "Accessible EPUB 3", function (hits) {
+
+                rimraf.sync('test_search');
+                se.close(function () {
+                                        
+                    for (i in hits) {
+
+                        Object.keys(hits[i]).should.have.length(5);
+                        hits[i].should.have.property('baseCfi');
+                        hits[i].should.have.property('cfis');
+                        hits[i].should.have.property('epubTitle');
+                        hits[i].should.have.property('id');
+                        hits[i].should.have.property('href');
+                        
+                        hits[i].should.not.have.enumerable('cfis', 0);
+                        hits[i].href.should.not.be.empty;
+                        hits[i].baseCfi.should.not.be.empty;
+                        hits[i].epubTitle.should.not.be.empty;
+                        hits[i].id.should.not.be.empty;
+                    }
+
+                    done();
+                });
+            });
+        });
+    });
 });
 
