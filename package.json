@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "homepage": "https://github.com/larsvoigt/epub-full-text-search",
   "repository": {
     "type": "git",
@@ -16,13 +16,12 @@
     "should": "~7.0.1"
   },
   "dependencies": {
-    "MathJax-node": "^0.3.0",
     "async": "~0.9.0",
     "body-parser": "~1.12.2",
     "cheerio": "~0.19.0",
     "chokidar": "~1.0.1",
     "express": "~4.12.3",
-    "search-index": "~0.6.0",
+    "search-index": "latest",
     "xml2js": "~0.4.8",
     "extfs" : "latest"
   },

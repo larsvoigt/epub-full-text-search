@@ -1,73 +1,142 @@
 var port = process.env.PORT || 8081; // set our port
 
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
-
-
-var epubs = 'node_modules/epub3-samples';
 var SearchEngine = require('../../../');
-var se = new SearchEngine();
 
-se.indexing(epubs, function (info) {
-    console.log(info);
-});
 
-// this will let us get the data from a POST
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(express.static('example/as-a-service/express'));
+var SampleService = function () {
+    
+    var self = this;
+    self.app = express();
+    
+    function setupVariables() {
 
-setFullTextSearchRoutes(app, se);
+        self.ipaddress = process.env.IP;
+        self.port = process.env.PORT || 8080;
+
+        if (typeof self.ipaddress === "undefined")
+            self.ipaddress = "127.0.0.1";
+    }
+
 //watchForUpdateIndex(service, index, epubs);
 
-app.listen(port);
-console.log('Service is running on port: ' + port);
+    function createRoutes() {
+        self.routes = {};
+
+        self.routes['/search'] = function (req, res) {
+
+            if (!req.query['q']) {
+                res.status(500).send('Can`t found query parameter q -> /search?q=word');
+                return;
+            }
+
+            var q = req.query['q'].toLowerCase().split(/\s+/);
+            var bookTitle = req.query['t'];
+            bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
+
+            self.se.search(q, bookTitle, function (result) {
+                res.send(result);
+            });
+        };
 
 
-function setFullTextSearchRoutes(app, se) {
+        self.routes['/matcher'] = function (req, res) {
 
-    app.get('/search', function (req, res) {
+            if (!req.query['beginsWith']) {
+                res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
+                return;
+            }
 
-        if(!req.query['q']) {
-            res.status(500).send('Can`t found query parameter q -> /search?q=word');
-            return;
+            self.se.match(req.query['beginsWith'], function (err, matches) {
+                res.send(matches);
+            });
+        };
+    }
+
+    function initServer() {
+
+        createRoutes();
+        self.app.use(bodyParser.urlencoded({extended: true}));
+        self.app.use(bodyParser.json());
+        self.app.use(express.static('example/as-a-service/express'));
+
+        //  Add handlers for the app (from the routes).
+        for (var r in self.routes) {
+            self.app.get(r, self.routes[r]);
         }
-        
-        var q = req.query['q'].toLowerCase().split(/\s+/);
-        var bookTitle = req.query['t'];
-        bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
+    }
 
-        se.search(q, bookTitle, function (result) {
-            res.send(result);
-        });
-    });
-
-    app.get('/matcher', function (req, res) {
-
-        if(!req.query['beginsWith']) {
-            res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
-            return;
+    function terminator(sig) {
+        if (typeof sig === "string") {
+            console.log('%s: Received %s - terminating service ...',
+                Date(Date.now()), sig);
+            process.exit(1);
         }
-        
-        se.match(req.query['beginsWith'], function (err, matches) {
-            res.send(matches);
+        console.log('%s: Node server stopped.', Date(Date.now()));
+    }
+
+
+    function setupTerminationHandlers() {
+        //  Process on exit and signals.
+        process.on('exit', function () {
+            terminator();
         });
-    });
-}
 
-function watchForUpdateIndex(se, index, epubContent) {
+        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
+            'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
+        ].forEach(function (element, index, array) {
+                process.on(element, function () {
+                    terminator(element);
+                });
+            });
+    }
 
-    var chokidar = require('chokidar'); // watch for changes in directory
+    self.startIndexing = function () {
+        var epubs = 'epub_content';
+        self.se = new SearchEngine();
 
-    chokidar.watch(epubContent, {
-        ignored: /[\/\\]\./,
-        persistent: true
-    }).on('all', function (event, path) {
-
-        se.indexing(epubContent, function (info) {
+        self.se.indexing(epubs, function (info) {
             console.log(info);
         });
 
-    });
-}
+    };
+    
+    self.init = function () {
+        setupVariables();
+        setupTerminationHandlers();
+        initServer();
+    };
+
+
+    self.start = function () {
+        //  Start the app on the specific interface (and port).
+        self.app.listen(self.port, self.ipaddress, function () {
+            console.log('%s: Node server started on %s:%d ...',
+                Date(Date.now()), self.ipaddress, self.port);
+        });
+    };
+
+};
+
+var sase = new SampleService();
+sase.startIndexing();
+sase.init();
+sase.start();
+
+
+//function watchForUpdateIndex(se, index, epubContent) {
+//
+//    var chokidar = require('chokidar'); // watch for changes in directory
+//
+//    chokidar.watch(epubContent, {
+//        ignored: /[\/\\]\./,
+//        persistent: true
+//    }).on('all', function (event, path) {
+//
+//        se.indexing(epubContent, function (info) {
+//            console.log(info);
+//        });
+//
+//    });
+//}
