@@ -8,7 +8,7 @@ var testDB = 'test_DB'; // TODO: process.env.testDB
 
 describe('suggestions', function () {
 
-    it('Should only ', function (done) {
+    it('suggestions should be only words', function (done) {
 
         var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
 
