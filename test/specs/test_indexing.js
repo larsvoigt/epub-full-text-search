@@ -6,10 +6,11 @@ var fs = require('fs');
 var SearchEngine = require('../../');
 
 var epub = 'node_modules/epub3-samples/accessible_epub_3';
+var testDB = 'test_DB'; // TODO: process.env.testDB
 
 describe('indexing ', function () {
 
-    rimraf.sync('test_search');
+    rimraf.sync(testDB);
     
     it('check directory is empty', function (done) {
 
@@ -35,11 +36,10 @@ describe('indexing ', function () {
 
         this.timeout(10000);
 
-        var se = new SearchEngine({'indexPath': 'test_search', logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
 
         se.indexing(epub, function () {
-
-            rimraf.sync('test_search');
+            
             se.close(function() {
                 done();
             });
