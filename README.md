@@ -1,3 +1,8 @@
+
+[travis-url]: https://travis-ci.org/larsvoigt/epub-full-text-search
+[travis-image]: https://travis-ci.org/larsvoigt/epub-full-text-search.svg?branch=master
+[![Build Status][travis-image]][travis-url]
+
 # EPUB-Search
 ## Search engine for EPUB3 documents 
 
