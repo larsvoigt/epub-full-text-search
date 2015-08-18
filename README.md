@@ -46,7 +46,7 @@ Install all dependent modules: ``` npm install ```.
 
 Start up the example ```npm run express-service```. It should run an express server on your local machine.
 
-When navigating to [http://localhost:8081/](http://localhost:8081/) then you can see a test page where you can enter a search query.
+When navigating to [http://localhost:8080/](http://localhost:8080/) then you can see a test page where you can enter a search query.
 
 Note: The indexing process starts automatically and it takes a few seconds until the search service is really available.    
 
