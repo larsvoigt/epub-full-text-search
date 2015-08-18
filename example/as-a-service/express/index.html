@@ -53,8 +53,8 @@
 
             $('#spinner').show();
             $('#spinner').spin(getOpts());
-
-            var request = window.location.protocol + '//' + window.location.hostname + ':8081/' + 'search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
+            var host = window.location.origin;
+            var request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
 
             $.getJSON(request, '', {})
                     .done(function (hits) {

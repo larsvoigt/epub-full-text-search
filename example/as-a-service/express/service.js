@@ -1,4 +1,3 @@
-var port = process.env.PORT || 8081; // set our port
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -93,7 +92,7 @@ var SampleService = function () {
     }
 
     self.startIndexing = function () {
-        var epubs = 'epub_content';
+        var epubs = 'node_modules/epub3-samples';
         self.se = new SearchEngine();
 
         self.se.indexing(epubs, function (info) {
