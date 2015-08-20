@@ -5,7 +5,7 @@ var SearchEngine = require('../../../');
 
 
 var SampleService = function () {
-    
+     
     var self = this;
     self.app = express();
     
@@ -92,7 +92,14 @@ var SampleService = function () {
     }
 
     self.startIndexing = function () {
+        
         var epubs = 'node_modules/epub3-samples';
+
+        if(process.env.DEBUG) {
+            console.log("debug mode");
+            epubs = '../../../node_modules/epub3-samples';
+        };
+        
         self.se = new SearchEngine();
 
         self.se.indexing(epubs, function (info) {
