@@ -1,7 +1,10 @@
 
 [travis-url]: https://travis-ci.org/larsvoigt/epub-full-text-search
 [travis-image]: https://travis-ci.org/larsvoigt/epub-full-text-search.svg?branch=master
-[![Build Status][travis-image]][travis-url]
+[npm-url]: https://npmjs.org/package/epub-full-text-search
+[npm-version-image]: http://img.shields.io/npm/v/epub-full-text-search.svg?style=flat
+
+[![Build Status][travis-image]][travis-url] [![NPM version][npm-version-image]][npm-url] 
 
 # EPUB-Search
 ## Search engine for EPUB3 documents 
