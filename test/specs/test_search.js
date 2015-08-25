@@ -6,7 +6,7 @@ var fs = require('fs');
 var SearchEngine = require('../../');
 
 var hitsAsJson = 'test/specs/hits.json';
-var testDB = 'test_DB'; // TODO: process.env.testDB
+var testDB = 'mocha_test_DB'; // TODO: process.env.testDB
 
 describe('search', function () {
 

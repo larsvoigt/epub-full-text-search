@@ -5,8 +5,8 @@ var fs = require('fs');
 
 var SearchEngine = require('../../');
 
-var epub = 'node_modules/epub3-samples/accessible_epub_3';
-var testDB = 'test_DB'; // TODO: process.env.testDB
+var epub = 'node_modules/epub3-samples';
+var testDB = 'mocha_test_DB'; // TODO: process.env.testDB
 
 describe('indexing ', function () {
 
@@ -34,7 +34,7 @@ describe('indexing ', function () {
 
     it('should index an epub', function (done) {
 
-        this.timeout(10000);
+        this.timeout(15000);
 
         var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
 

@@ -24,7 +24,8 @@
     "search-index": "latest",
     "xml2js": "~0.4.8",
     "extfs" : "latest",
-    "q" : "latest"  
+    "q" : "latest",
+    "lodash" : "latest"
   },
   "scripts": {
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
