@@ -41,6 +41,13 @@ se.indexing('your_epub(s)_directory', function (info) {
 se.search(["epub"], "Accessible EPUB 3", function (results) {
 });
 ```  
+### Search suggestions
+
+```javascript
+// match(beginsWith, epubTitle, result_callback)
+se.match('matrix', 'A First Course in Linear Algebra', function (results) {
+});
+```  
 
 ## Installation
 
