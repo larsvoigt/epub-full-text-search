@@ -5,8 +5,11 @@
     <link href="main.css" type="text/css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script>
-
+        var host = window.location.origin;
+        
+        
         $.fn.spin = function (opts) {
             this.each(function () {
                 var $this = $(this), data = $this.data();
@@ -53,7 +56,6 @@
 
             $('#spinner').show();
             $('#spinner').spin(getOpts());
-            var host = window.location.origin;
             var request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
 
             $.getJSON(request, '', {})
@@ -78,10 +80,49 @@
                         console.error("error fulltext search request");
                     });
         }
-        function addClickListener() {
-            $("#search").click(search);
+
+        // looking for suggestions 
+        function instantSearch() {
+
+            var q = $("#searchbox").val();
+            if (q === '')
+                return;
+
+            var matcher = "/matcher?beginsWith=" + q;
+            var request = host + matcher;
+
+            console.debug(request);
+
+            $.getJSON(request, '', {})
+                    .done(function (data) {
+
+                        $("#searchbox").autocomplete({
+                            source: data,
+                            select: function (event) {
+                                event.stopPropagation();
+                                $("#search").trigger("click");
+                            }
+                        });
+                    })
+                    .fail(function () {
+                        console.log("error fulltext search request");
+                    });
         }
-        window.onload = addClickListener;
+        
+        
+        function addEventHandler() {
+            
+            $("#search").click(search);
+            $("#searchbox").keyup(function (event) {
+
+                if (event.which === 13)
+                    return;
+
+                instantSearch();
+                event.stopPropagation();
+            });
+        }
+        window.onload = addEventHandler;
 
     </script>
 </head>
@@ -90,8 +131,8 @@ sample ebooks:
 <ul><li>Accessible EPUB 3 </li> <li>A First Course in Linear Algebra</li></ul>
 <form class="user-form">
     <div class="field">
-        <label for="searchbox">Query:</label>
-        <input id="searchbox" name="searchbox" type="text" size="15" value="epub" autofocus/>
+        <label for="searchbox">Query (e.g. math, epub):</label>
+        <input id="searchbox" name="searchbox" type="text" size="15" autofocus/>
         <button id="search" type="button">Search</button>
     </div>
 </form>
