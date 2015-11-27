@@ -28,7 +28,6 @@
     "brfs": "~1.4.0",
     "browserify": "~10.2.4",
     "browserify-fs": "~1.0.0",
-    "epub3-samples": "0.0.1",
     "mocha": "~2.2.5",
     "rimraf": "~2.4.0",
     "should": "~7.0.1"
@@ -43,7 +42,8 @@
     "xml2js": "~0.4.8",
     "extfs" : "~0.0.7",
     "q" : "~1.4.1",
-    "lodash" : "~3.10.1"
+    "lodash" : "~3.10.1",
+    "epub3-samples": "0.0.1"
   },
   "scripts": {
     "start": "npm run express-service",

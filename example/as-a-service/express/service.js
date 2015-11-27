@@ -14,8 +14,8 @@ var SampleService = function () {
         self.ipaddress = process.env.IP;
         self.port = process.env.PORT || 8080;
 
-        if (typeof self.ipaddress === "undefined")
-            self.ipaddress = "127.0.0.1";
+        //if (typeof self.ipaddress === "undefined")
+        //    self.ipaddress = "127.0.0.1";
     }
 
 //watchForUpdateIndex(service, index, epubs);
@@ -94,8 +94,10 @@ var SampleService = function () {
 
     self.startIndexing = function () {
         
+        //var node_modules_path = require.resolve('body-parser').split('body-parser')[0]; // absolute path 
+        //var epubs = node_modules_path + 'epub3-samples';
         var epubs = 'node_modules/epub3-samples';
-
+        
         if(process.env.DEBUG) {
             console.log("debug mode");
             epubs = '../../../node_modules/epub3-samples';

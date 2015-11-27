@@ -6,10 +6,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
         var host = window.location.origin;
-        
-        
+
+
         $.fn.spin = function (opts) {
             this.each(function () {
                 var $this = $(this), data = $this.data();
@@ -24,7 +28,7 @@
             });
             return this
         };
-        
+
         function getOpts() {
             return {
                 lines: 13 // The number of lines to draw
@@ -60,19 +64,19 @@
 
             $.getJSON(request, '', {})
                     .done(function (hits) {
-                        
+
                         $('#spinner').data().spinner.stop();
                         $('#spinner').hide();
-                        
+
                         if (hits.length > 0) {
 
 //                            console.log("found " + hits.length + ' hits');
                             for (var index in hits)
-                                $("#hits").append($("<li>").html("Spine Item: <pre>" + JSON.stringify(hits[index], undefined, 2) + "</pre>"));
+                                $("#hits").append($("<li class='list-group-item'>").html((++index) + ". <pre>" + syntaxHighlight(JSON.stringify(hits[index], undefined, 2)) + "</pre>"));
 
                         } else {
 
-                            $("#hits").append($("<li>").html("<h3>No Hits </h3>"));
+                            $("#hits").append($("<li>").html("<li class='list-group-item'>No Hits </li>"));
                         }
                         console.debug("search request ready");
                     })
@@ -108,10 +112,10 @@
                         console.log("error fulltext search request");
                     });
         }
-        
-        
+
+
         function addEventHandler() {
-            
+
             $("#search").click(search);
             $("#searchbox").keyup(function (event) {
 
@@ -124,19 +128,67 @@
         }
         window.onload = addEventHandler;
 
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
     </script>
 </head>
 <body>
-sample ebooks: 
-<ul><li>Accessible EPUB 3 </li> <li>A First Course in Linear Algebra</li></ul>
-<form class="user-form">
-    <div class="field">
-        <label for="searchbox">Query (e.g. math, epub):</label>
-        <input id="searchbox" name="searchbox" type="text" size="15" autofocus/>
-        <button id="search" type="button">Search</button>
+<div class="container theme-showcase" role="main">
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+
+        <h1>Epub Full Text Search Example</h1>
+
+        <h2>Sample ebooks:</h2>
+        <ul>
+            <li>Accessible EPUB 3</li>
+            <li>A First Course in Linear Algebra</li>
+        </ul>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Add a query (e.g. math, epub, ...)</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-search form-inline">
+                    <div class="input-group">
+                        <input type="text" id="searchbox" name="searchbox" class="form-control search-query"
+                               placeholder="Search..." data-provide="typeahead"/> 
+                            <span class="input-group-btn">
+                               <button id="search" type="button" class="btn btn-primary"> Search</button>
+                           </span>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Hits</h3>
+            </div>
+            <div id="hits" class="list-group">
+            </div>
+        </div>
     </div>
-</form>
+</div>
 <div id="spinner"></div>
-<ol id="hits"></ol>
 </body>
 </html>

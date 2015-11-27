@@ -1,49 +1,27 @@
-.user-form {
-    padding: 20px;
+pre {
+    outline: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
 }
 
-.user-form .field {
-    padding: 4px;
-    margin: 1px;
-    background: #eee;
+.string {
+    color: #005200;
 }
 
-.user-form .field label {
-    display: inline-block;
-    width: 180px;
-    margin-left: 5px;
+.number {
+    color: darkorange;
 }
 
-.user-form .field input {
-    display: inline-block;
+.boolean {
+    color: blue;
 }
 
-ol {
-    margin-left: 0;
-    padding-left: 0;
-    counter-reset: item;
-    background-color: #ffffff;;
+.null {
+    color: magenta;
 }
 
-ol > li {
-    margin-left: 0;
-    padding-left: 50px;
-    padding-top: 10px;
-    padding-button: 10px;
-    counter-increment: item;
-    list-style: none inside;
-    border-radius: 25px;
-    border-style: solid;
-    border-width: 1px;
-}
-
-ol > li:before {
-    padding-right: 0.5em;
-}
-
-#hits li:nth-child(odd) {
-    background-color: #3d6169;
-    color: #dfdbd9;
+.key {
+    color: #8e1aff;
 }
 
 #spinner {
@@ -55,11 +33,10 @@ ol > li:before {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-    display:none;
+    display: none;
 }
 
-ul.ui-autocomplete
-{
+ul.ui-autocomplete {
     position: absolute;
     top: 100%;
     left: 0;
@@ -76,10 +53,10 @@ ul.ui-autocomplete
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     /*border: 1px solid #ccc;*/
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
-    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
 
 li.ui-menu-item {
@@ -92,6 +69,7 @@ li.ui-menu-item {
     white-space: nowrap;
 
 }
+
 li.ui-menu-item.ui-state-focus {
     color: #fff;
     text-decoration: none;
