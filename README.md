@@ -51,7 +51,13 @@ se.match('matrix', 'A First Course in Linear Algebra', function (results) {
 
 ## Installation
 
-## Example 
+## Example
+
+### Online Demo
+[Demo](http://protected-dusk-3051.herokuapp.com/)
+
+### Local testing 
+
 Install all dependent modules: ``` npm install ```.
 
 Start up the example ```npm run express-service```. It should run an express server on your local machine.
