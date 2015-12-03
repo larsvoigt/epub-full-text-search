@@ -15,7 +15,7 @@ It is built on top of  [search-index](https://github.com/fergiemcdowall/search-i
 
 ###Features include:
 
-* Full text search 
+* Full text search (get a hit-set for a specific epub file or for your whole epub collection)  
 * Instant search (provide suggestions)
 * Full javascript
 * Hits including [cfi](http://www.idpf.org/epub/linking/cfi/epub-cfi.html) references
