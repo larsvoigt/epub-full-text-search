@@ -32,7 +32,7 @@ describe('indexing ', function () {
         });
     });
 
-    it('should index an epub', function (done) {
+    it('should index all epubs in passed path', function (done) {
 
         this.timeout(15000);
 
