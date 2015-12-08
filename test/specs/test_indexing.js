@@ -19,7 +19,7 @@ describe('indexing ', function () {
         var emptyDir = 'emptyDir';
         fs.mkdirSync(emptyDir);
 
-        var se = new SearchEngine({'indexPath': 'test_search', logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': 'test_search'});
 
         se.indexing(emptyDir, function (info) {
 
@@ -36,7 +36,7 @@ describe('indexing ', function () {
 
         this.timeout(15000);
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.indexing(epub, function () {
             

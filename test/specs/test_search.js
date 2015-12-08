@@ -12,7 +12,7 @@ describe('search', function () {
 
     it('count hits of keyword', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.search(["epub"], "Accessible EPUB 3", function (hits) {
 
@@ -25,7 +25,7 @@ describe('search', function () {
 
     it('should find no hits if keyword is not included', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.search(["Accessi"], "Accessible EPUB 3", function (hits) {
 
@@ -39,7 +39,7 @@ describe('search', function () {
 
     it('should return the right hits', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.search(["epub"], "Accessible EPUB 3", function (hits) {
             
@@ -54,7 +54,7 @@ describe('search', function () {
 
     it('should return always the same hits', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.search(["epub"], "Accessible EPUB 3", function (hits) {
 
@@ -73,7 +73,7 @@ describe('search', function () {
 
     it('check hit properties are set', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.search(["epub"], "Accessible EPUB 3", function (hits) {
             

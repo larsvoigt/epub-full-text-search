@@ -10,7 +10,7 @@ describe('suggestions', function () {
     
     it('should return all suggestions for string epub', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.match('epub', '', function (err, matches) {
 
@@ -29,7 +29,7 @@ describe('suggestions', function () {
 
     it('should return all suggestions for string matrix', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.match('matrix', '', function (err, matches) {
 
@@ -46,7 +46,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return nothing', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.match('matrix', 'Accessible EPUB 3' , function (err, matches) {
 
@@ -61,7 +61,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return matches for A First Course in Linear Algebra', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.match('matrix', 'A First Course in Linear Algebra' , function (err, matches) {
 
@@ -78,7 +78,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return matches for Accessible EPUB 3', function (done) {
 
-        var se = new SearchEngine({'indexPath': testDB, logLevel: 'warn'});
+        var se = new SearchEngine({'indexPath': testDB});
 
         se.match('epub', 'Accessible EPUB 3', function (err, matches) {
 
