@@ -1,12 +1,11 @@
-var should = require('should');
-var rimraf = require('rimraf');
-var fs = require('fs');
+const should = require('should');
+const rimraf = require('rimraf');
+const fs = require('fs');
 
+const searchEngine = require('../../');
 
-var SearchEngine = require('../../');
-
-var epub = 'node_modules/epub3-samples';
-var testDB = 'mocha_test_DB'; // TODO: process.env.testDB
+const epub = 'node_modules/epub3-samples';
+const testDB = 'mocha_test_DB'; // TODO: process.env.testDB
 
 describe('indexing ', function () {
 
@@ -19,30 +18,41 @@ describe('indexing ', function () {
         var emptyDir = 'emptyDir';
         fs.mkdirSync(emptyDir);
 
-        var se = new SearchEngine({'indexPath': 'test_search'});
+        searchEngine({'indexPath': testDB}, function (err, se) {
 
-        se.indexing(emptyDir, function (info) {
+            if (err) {
+                console.log(err);
+            } else {
+                se.indexing(emptyDir, function (info) {
 
-            fs.rmdirSync(emptyDir);
-            se.close(function() {
-                //console.log(info);
-                (info instanceof Error).should.be.true();
-                done();
-            });
+                    fs.rmdirSync(emptyDir);
+                    se.close(function () {
+                        //console.log(info);
+                        (info instanceof Error).should.be.true();
+                        done();
+                    });
+                });
+            }
         });
     });
 
     it('should index all epubs from passed argument path', function (done) {
 
-        this.timeout(15000);
+        this.timeout(20000);
 
-        var se = new SearchEngine({'indexPath': testDB});
+        searchEngine({'indexPath': testDB}, function (err, se) {
 
-        se.indexing(epub, function () {
-            
-            se.close(function() {
-                done();
-            });
+            if (err) {
+                console.log(err);
+            } else {
+
+                se.indexing(epub, function () {
+
+                    se.close(function () {
+                        done();
+                    });
+                });
+            }
         });
     });
 });

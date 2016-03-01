@@ -1,14 +1,12 @@
-
-var express = require('express');
-var bodyParser = require('body-parser');
-var SearchEngine = require('../../../');
-
+const express = require('express');
+const bodyParser = require('body-parser');
+const searchEngine = require('../../../');
 
 var SampleService = function () {
-     
+
     var self = this;
     self.app = express();
-    
+
     function setupVariables() {
 
         self.ipaddress = process.env.IP;
@@ -34,8 +32,21 @@ var SampleService = function () {
             var bookTitle = req.query['t'];
             bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
 
-            self.se.search(q, bookTitle, function (result) {
-                res.send(result);
+            searchEngine({}, function (err, se) {
+
+                if (err) {
+                    console.log(err);
+                } else {
+
+                    se.search(q, bookTitle, function (result) {
+
+                        res.send(result);
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    });
+                }
             });
         };
 
@@ -48,11 +59,24 @@ var SampleService = function () {
             }
 
             var bookTitle = req.query['t'];
-            self.se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
-                res.send(matches);
+            searchEngine({}, function (err, se) {
+
+                if (err) {
+                    console.log(err);
+                } else {
+
+                    se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
+                        res.send(matches);
+
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    });
+                }
             });
         };
-    }
+    };
 
     function initServer() {
 
@@ -93,24 +117,35 @@ var SampleService = function () {
     }
 
     self.startIndexing = function () {
-        
+
         //var node_modules_path = require.resolve('body-parser').split('body-parser')[0]; // absolute path 
         //var epubs = node_modules_path + 'epub3-samples';
         var epubs = 'node_modules/epub3-samples';
-        
-        if(process.env.DEBUG) {
+
+        if (process.env.DEBUG) {
             console.log("debug mode");
             epubs = '../../../node_modules/epub3-samples';
-        };
-        
-        self.se = new SearchEngine();
+        }
+        ;
 
-        self.se.indexing(epubs, function (info) {
-            console.log(info);
+        searchEngine({}, function (err, se) {
+
+            if (err) {
+                console.log(err);
+            } else {
+
+                se.indexing(epubs, function (info) {
+                    console.log(info);
+
+                    se.close(function (err) {
+                        if (err)
+                            console.log(err);
+                    });
+                });
+            }
         });
-
     };
-    
+
     self.init = function () {
         setupVariables();
         setupTerminationHandlers();
