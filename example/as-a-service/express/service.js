@@ -34,19 +34,17 @@ var SampleService = function () {
 
             searchEngine({}, function (err, se) {
 
-                if (err) {
-                    console.log(err);
-                } else {
+                if (err)
+                    return console.log(err);
 
-                    se.search(q, bookTitle, function (result) {
+                se.search(q, bookTitle, function (result) {
 
-                        res.send(result);
-                        se.close(function (err) {
-                            if (err)
-                                console.log(err);
-                        });
+                    res.send(result);
+                    se.close(function (err) {
+                        if (err)
+                            console.log(err);
                     });
-                }
+                });
             });
         };
 
@@ -61,19 +59,17 @@ var SampleService = function () {
             var bookTitle = req.query['t'];
             searchEngine({}, function (err, se) {
 
-                if (err) {
-                    console.log(err);
-                } else {
+                if (err)
+                    return console.log(err);
 
-                    se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
-                        res.send(matches);
+                se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
+                    res.send(matches);
 
-                        se.close(function (err) {
-                            if (err)
-                                console.log(err);
-                        });
+                    se.close(function (err) {
+                        if (err)
+                            console.log(err);
                     });
-                }
+                });
             });
         };
     };
