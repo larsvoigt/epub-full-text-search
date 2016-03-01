@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -14,13 +14,14 @@
     "name": "Lars Voigt",
     "email": "lars.voigt@dzb.de"
   },
+  "license": "MIT",
   "homepage": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/larsvoigt/epub-full-text-search"
   },
   "engines": {
-    "node": ">= 0.12.7",
+    "node": ">=3",
     "npm": ">= 2.11.3"
   },
   "devDependencies": {
