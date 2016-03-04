@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+const program = require('commander'),
+    searchEngine = require('../src/SearchEngine');
+
+program
+    .version('0.1.8')
+    .usage('[options] <file ...>')
+    .option('-a, --addToIndex <path>', 'Indexing epub content in path ' + '(Hint: the epub cotent have to be unzipped)')
+    .parse(process.argv);
+
+
+if (program.addToIndex) {
+    
+    searchEngine({}, function (err, se) {
+
+        if (err) {
+            console.log(err);
+        } else {
+
+            se.indexing(program.addToIndex, function (info) {
+                console.log(info);
+
+                se.close(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        }
+    });
+}

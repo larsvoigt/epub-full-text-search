@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -39,10 +39,13 @@
     "cheerio": "~0.19.0",
     "chokidar": "^1.0.6",
     "cors": "^2.7.1",
+    "daemon": "^1.1.0",
     "epub3-samples": "0.0.1",
     "express": "~4.12.3",
     "extfs": "~0.0.7",
     "lodash": "~3.10.1",
+    "logrotate-stream": "^0.2.5",
+    "minimist": "^1.2.0",
     "q": "~1.4.1",
     "readdirp": "^2.0.0",
     "search-index": "~0.7.6",
