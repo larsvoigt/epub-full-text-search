@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -38,6 +38,7 @@
     "brfs": "^1.4.3",
     "cheerio": "~0.19.0",
     "chokidar": "^1.0.6",
+    "cors": "^2.7.1",
     "epub3-samples": "0.0.1",
     "express": "~4.12.3",
     "extfs": "~0.0.7",

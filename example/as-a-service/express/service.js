@@ -1,11 +1,15 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const searchEngine = require('../../../');
+const express = require('express'),
+      bodyParser = require('body-parser'),
+      cors = require('cors'),
+      searchEngine = require('../../../');
 
 var SampleService = function () {
 
     var self = this;
     self.app = express();
+    // it possible to config cors for indivudal routes
+    // https://www.npmjs.com/package/cors
+    self.app.use(cors());
 
     function setupVariables() {
 
@@ -72,7 +76,7 @@ var SampleService = function () {
                 });
             });
         };
-    };
+    }
 
     function initServer() {
 
@@ -122,7 +126,6 @@ var SampleService = function () {
             console.log("debug mode");
             epubs = '../../../node_modules/epub3-samples';
         }
-        ;
 
         searchEngine({}, function (err, se) {
 
