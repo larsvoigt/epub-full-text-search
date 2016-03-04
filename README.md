@@ -13,7 +13,7 @@ This node module is a search engine for EPUB3 documents. It
 provides full-text searching on EPUB3 content.
 It is built on top of  [search-index](https://github.com/fergiemcdowall/search-index).
 
-###Features include:
+###Features included:
 
 * Full text search (get a hit-set for a specific epub file or for your whole epub collection)  
 * Instant search (provide suggestions)
