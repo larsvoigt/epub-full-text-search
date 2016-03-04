@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const searchEngine = require('../../');
 
-const HITS_AS_JSON = 'test/specs/hits.json';
+const HITS_AS_JSON = 'tests/specs/hits.json';
 const TEST_DB = 'mocha_test_DB'; // TODO: process.env.TEST_DB
 
 describe('search', function () {

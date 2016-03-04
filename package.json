@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -52,6 +52,6 @@
     "start": "npm run express-service",
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
     "express-service": "node example/as-a-service/express/service.js",
-    "test": "date && mocha --recursive"
+    "test": "date && mocha tests --recursive"
   }
 }
