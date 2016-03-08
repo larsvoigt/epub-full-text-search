@@ -1,6 +1,6 @@
 const fs = require('fs'),
     cheerio = require('cheerio'),
-    parser = require('./Parser.js');
+    parser = require('./EpubMetaDataParser.js');
 
 exports.normalize = function (pathToEpubs, callBack) {
 
