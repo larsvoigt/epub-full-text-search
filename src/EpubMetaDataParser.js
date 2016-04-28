@@ -7,8 +7,6 @@ var fs = require('fs');
 exports.getMetaDatas = function (pathToEpubs, callBack) {
 
     var rootFiles = getRootFiles(pathToEpubs);
-    
-    
     //console.log('found ' + docs.length + ' docs that can be indexed');
 
     async.concat(rootFiles, function (file, callback) {
