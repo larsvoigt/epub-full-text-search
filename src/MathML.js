@@ -11,7 +11,7 @@
 // svg data to display the beautiful math. 
 // Unfortunately the engine will not run. Ideas?
 // 
-// Now the following hack is to be fill the cap.
+// Now the following hack will temporally fill this gap.
 exports.process = function ($, callback) {
 
     var mathNodes = $('mml\\:math, math').get();
