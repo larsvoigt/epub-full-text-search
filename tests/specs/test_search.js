@@ -2,17 +2,14 @@
 const should = require('should');
 const fs = require('fs');
 
-
+const constants = require("../../src/Constants");
 const searchEngine = require('../../');
-
-const HITS_AS_JSON = 'tests/specs/hits.json';
-const TEST_DB = 'mocha_test_DB'; // TODO: process.env.TEST_DB
 
 describe('search', function () {
 
     it('count hits of keyword', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -29,7 +26,7 @@ describe('search', function () {
 
     it('should find no hits if keyword is not included', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -47,7 +44,7 @@ describe('search', function () {
 
     it('should return the right hits', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -55,7 +52,7 @@ describe('search', function () {
             se.search(["epub"], "Accessible EPUB 3", function (hits) {
 
                 se.close(function () {
-                    var data = JSON.parse(fs.readFileSync(HITS_AS_JSON));
+                    var data = JSON.parse(fs.readFileSync(constants.HITS_AS_JSON));
                     (hits).should.eql(data);
 
                     done();
@@ -66,7 +63,7 @@ describe('search', function () {
 
     it('should return always the same hits', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -89,7 +86,7 @@ describe('search', function () {
 
     it('check hit properties are set', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);

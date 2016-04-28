@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// parts of this code founded here https://github.com/NodeBB/NodeBB
+// parts of this code located here https://github.com/NodeBB/NodeBB
 
 var colors = require('colors'),
     cproc = require('child_process'),
@@ -37,7 +37,7 @@ switch (process.argv[2]) {
                 process.stdout.write('\t"' + './epub-search restart'.yellow + '" \tto restart epub search service\n\n');
             } else {
                 process.stdout.write('\Epub search service is not running\n'.bold);
-                process.stdout.write('\t"' + './nodebb start'.yellow + '" \tto launch the Epub search service\n\n');
+                process.stdout.write('\t"' + './epub-search start'.yellow + '" \tto launch the Epub search service\n\n');
             }
         })
         break;
@@ -112,6 +112,6 @@ switch (process.argv[2]) {
         process.stdout.write('Usage: ./epub-search {start|stop|log|status|addToIndex}\n\n');
         process.stdout.write('\t' + 'start'.yellow + '\t\tStart the epub-full-text-search service\n');
         process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the epub-full-text-search service\n');
-        process.stdout.write('\t' + 'addToIndex'.yellow + '\tIndexing epub content in path '+ '(Hint: the epub cotent have to be unzipped)\n'.red);
+        process.stdout.write('\t' + 'addToIndex'.yellow + '\tPath to epub folder (Hint: the epub content have to be unzipped)\n'.red);
         break;
 }

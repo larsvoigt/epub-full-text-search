@@ -6,13 +6,12 @@ module.exports = function (options, callback) {
     var SearchEngine = {};
 
     const searchIndex = require('search-index');
-    const path = require('path');
-    const fs = require('extfs');
-    const Q = require('q');
-    const _ = require('lodash');
-
-    const preparer = require('./Preparer.js');
-    const cfi = require('./CFI.js');
+    path = require('path'),
+    fs = require('extfs'),
+    _ = require('lodash'),
+        
+    preparer = require('./Preparer.js'),
+    cfi = require('./CFI.js');
 
     const INDEX_DB = 'full-text-search-DB'; // path to index-db 
     var defaultOption = {'indexPath': INDEX_DB};
@@ -23,12 +22,12 @@ module.exports = function (options, callback) {
 
     searchIndex(options, function (err, si) {
 
-        if (err) 
+        if (err)
             return callback(err, null)
 
         SearchEngine.si = si;
         return callback(null, SearchEngine)
-        
+
     });
 
     SearchEngine.indexing = function (pathToEpubs, callback) {
@@ -44,12 +43,16 @@ module.exports = function (options, callback) {
 
         preparer.normalize(pathToEpubs, function (dataSet) {
 
-            console.log("ready normalize epub content");
             console.log("******************************************************");
+            console.log("ready normalize epub content");
             console.log("Step 2");
             console.log("start indexing");
+
+            //console.log(dataSet);
+            //fs.writeFileSync('./data1.json', JSON.stringify(dataSet) , 'utf-8');
+
             SearchEngine.add(dataSet, function (err) {
-                //console.log(dataSet);
+
                 if (callback) {
                     if (err)
                         callback(err);
@@ -57,7 +60,6 @@ module.exports = function (options, callback) {
                         callback('all is indexed');
                 }
             });
-            //callback('all is indexed');
         });
     };
 
@@ -66,21 +68,9 @@ module.exports = function (options, callback) {
         var ids = jsonDoc.FirstSpineItemsId;
         delete jsonDoc.FirstSpineItemsId;
 
-        shouldRebuildIndexes(ids, function (rebuild) {
-            // check is rebuild indexes necessary -> speed up the auto start
-            // Reasons to rebuild the index can be:
-            // * new epub content should be index
-            // * index will be generating first time  
+        var opt = getIndexOptions();
+        SearchEngine.si.add(jsonDoc, opt, callback);
 
-            if (rebuild) {
-                //    var s = fs.createWriteStream('add.json');
-                //    s.write(JSON.stringify(jsonDoc));
-                //    s.end();
-                var opt = getIndexOptions();
-                SearchEngine.si.add(jsonDoc, opt, callback);
-            } else
-                return callback();
-        });
     };
 
     SearchEngine.search = function (q, epubTitle, callback) {
@@ -103,8 +93,7 @@ module.exports = function (options, callback) {
 
                 var hits = [];
                 for (var i in result.hits) {
-
-                    // id = spineitemId:epubTitle 
+                    
                     var title = result.hits[i].document.id.split(':')[1];
                     result.hits[i].document.id = result.hits[i].document.id.split(':')[0];
 
@@ -171,37 +160,6 @@ module.exports = function (options, callback) {
             {fieldName: 'id', searchable: false}
         ];
         return options;
-    }
-
-    function shouldRebuildIndexes(ids, callback) {
-
-        getIndexes(ids, function (results) {
-
-            for (var i in results) {
-                if (results[i].state === 'fulfilled' && results[i].value === null) {
-                    console.log("It is necessary to (re)build indexes!");
-                    return callback(true);
-                }
-            }
-            console.log("It is not necessary to rebuild indexes.");
-            return callback(false);
-        });
-    }
-
-    function getIndexes(ids, callback) {
-
-        var promises = [];
-
-        ids.forEach(function (id) {
-            var deferred = Q.defer();
-            SearchEngine.si.get(id, function (err, result) {
-                //console.log(result);
-                deferred.resolve(result);
-            });
-            promises.push(deferred.promise);
-        });
-
-        return Q.allSettled(promises).then(callback);
     }
 
     function filterMatches(matches, epubTitle) {

@@ -1,14 +1,13 @@
 const should = require('should');
 
 const searchEngine = require('../../');
-
-const TEST_DB = 'mocha_test_DB'; // TODO: process.env.TEST_DB
+const constants = require("../../src/Constants");
 
 describe('suggestions', function () {
 
     it('should return all suggestions for string epub', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -31,7 +30,7 @@ describe('suggestions', function () {
 
     it('should return all suggestions for string matrix', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -52,7 +51,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return nothing', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -71,7 +70,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return matches for A First Course in Linear Algebra', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -92,7 +91,7 @@ describe('suggestions', function () {
 
     it('suggestions should be return matches for Accessible EPUB 3', function (done) {
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);

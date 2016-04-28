@@ -9,6 +9,7 @@ var content = '../node_modules/epub3-samples';
 //var content = '/home/alan/Sprachpraxis_UT';
 
 console.log(process.cwd());
+//rimraf.sync('IndexControllerDB.json');
 
 function indexing(callback) {
 

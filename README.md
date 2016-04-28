@@ -20,10 +20,35 @@ It is built on top of  [search-index](https://github.com/fergiemcdowall/search-i
 * Full javascript
 * Hits including [cfi](http://www.idpf.org/epub/linking/cfi/epub-cfi.html) references
 
-## Usage epub-full-text-search module
+## Installation
+
 ```
 $ npm install epub-full-text-search
 ```
+
+## Running as a Service 
+
+### Start Service
+
+```
+$ cd epub-full-text-search/bin/ && node epub-search start
+```
+
+### Indexing
+
+```
+$ node search-engine-CLI  -a <path> Path to epub folder (Hint: the epub content have to be unzipped)
+```
+
+#### epub samples:
+
+```
+$ node search-engine-CLI  -a ../node_modules/epub3-samples
+```
+
+### Search 
+
+## Usage epub-full-text-search module
 
 ```javascript
 const epubfts = require('epub-full-text-search');
@@ -60,7 +85,6 @@ se.match('matrix', 'A First Course in Linear Algebra', function (results) {
 });
 ``` 
    
-## Installation
 
 ## Example
 

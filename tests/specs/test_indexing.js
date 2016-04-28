@@ -3,13 +3,12 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 
 const searchEngine = require('../../');
-
-const EPUB = 'node_modules/epub3-samples';
-const TEST_DB = 'mocha_test_DB'; // TODO: process.env.TEST_DB
+const constants = require("../../src/Constants");
 
 describe('indexing ', function () {
 
-    rimraf.sync(TEST_DB);
+    rimraf.sync(constants.TEST_DB);
+    rimraf.sync(constants.INDEXING_CONTROLLER_DB);
 
     it('check directory is empty', function (done) {
 
@@ -18,7 +17,7 @@ describe('indexing ', function () {
         var emptyDir = 'emptyDir';
         fs.mkdirSync(emptyDir);
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
@@ -39,12 +38,12 @@ describe('indexing ', function () {
 
         this.timeout(20000);
 
-        searchEngine({'indexPath': TEST_DB}, function (err, se) {
+        searchEngine({'indexPath': constants.TEST_DB}, function (err, se) {
 
             if (err)
                 return console.log(err);
 
-            se.indexing(EPUB, function () {
+            se.indexing(constants.EPUB, function () {
 
                 se.close(function () {
                     done();
