@@ -5,13 +5,14 @@ module.exports = function (options, callback) {
 
     var SearchEngine = {};
 
-    const searchIndex = require('search-index');
-    path = require('path'),
-    fs = require('extfs'),
-    _ = require('lodash'),
-        
-    preparer = require('./Preparer.js'),
-    cfi = require('./CFI.js');
+    const searchIndex = require('search-index'),
+        colors = require('colors'),
+        path = require('path'),
+        fs = require('extfs'),
+        _ = require('lodash'),
+
+        preparer = require('./Preparer.js'),
+        cfi = require('./CFI.js');
 
     const INDEX_DB = 'full-text-search-DB'; // path to index-db 
     var defaultOption = {'indexPath': INDEX_DB};
@@ -35,19 +36,22 @@ module.exports = function (options, callback) {
         if (fs.isEmptySync(pathToEpubs)) {
             return callback(new Error('Can`t index empty folder: ' + pathToEpubs));
         }
-        console.log("******************************************************");
-        console.log("Step 1");
-        console.log("start normalize epub content");
+        console.log("\n\n\n******************************************************\n");
+        console.log("Start Normalize epub content\n\n".yellow);
 
         path.normalize(pathToEpubs);
 
         preparer.normalize(pathToEpubs, function (dataSet) {
 
-            console.log("******************************************************");
-            console.log("ready normalize epub content");
-            console.log("Step 2");
-            console.log("start indexing");
+            console.log("\n******************************************************\n");
+            console.log("Ready Normalize epub content\n\n".yellow);
 
+            if (dataSet.length > 0)
+                console.log("Start writing epub-data to index.");
+            else {
+                console.log("DONE! Nothing to do, epubs already indexed.\n\n");
+                return;
+            }
             //console.log(dataSet);
             //fs.writeFileSync('./data1.json', JSON.stringify(dataSet) , 'utf-8');
 
@@ -57,7 +61,7 @@ module.exports = function (options, callback) {
                     if (err)
                         callback(err);
                     else
-                        callback('all is indexed');
+                        callback('\nDONE! All is indexed.\n\n'.yellow);
                 }
             });
         });
@@ -93,7 +97,7 @@ module.exports = function (options, callback) {
 
                 var hits = [];
                 for (var i in result.hits) {
-                    
+
                     var title = result.hits[i].document.id.split(':')[1];
                     result.hits[i].document.id = result.hits[i].document.id.split(':')[0];
 

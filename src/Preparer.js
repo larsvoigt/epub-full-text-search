@@ -6,12 +6,11 @@ const fs = require('fs'),
 
 exports.normalize = function (pathToEpubs, callBack) {
 
-    process.stdout.write('epub data folder: '.red + pathToEpubs.green + '\n');
+    process.stdout.write('epub data folder: '.red + pathToEpubs.green + '\n\n');
 
     parser.getMetaDatas(pathToEpubs, function (metaDataList) {
 
         //console.log(metaDataList);
-        console.log("------------------------------------------------------");
 
         process.stdout.write('Analyse folder:'.yellow + '\n');
 
@@ -21,10 +20,10 @@ exports.normalize = function (pathToEpubs, callBack) {
 
         for (metaData in metaDataList) {
 
-            //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].AddToIndex);
+            //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
             var title = metaDataList[metaData].title;
 
-            if (metaDataList[metaData].addToIndex == true) {
+            if (metaDataList[metaData].writeToIndex == true) {
                 process.stdout.write("\t--> epub title " + title.bold.blue + ' will be added to index \n');
 
                 prepareEpubDataForIndexing(metaDataList[metaData], dataSet);

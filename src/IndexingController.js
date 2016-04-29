@@ -19,10 +19,10 @@ module.exports = function () {
             if (!exists) {
                 
                 db('epubs').push({title: title})
-                metaDataList[metaData].addToIndex = true;
+                metaDataList[metaData].writeToIndex = true;
             }
             else
-                metaDataList[metaData].addToIndex = false;
+                metaDataList[metaData].writeToIndex = false;
         };
         
         return metaDataList;
