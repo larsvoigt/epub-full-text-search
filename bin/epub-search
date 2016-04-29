@@ -112,6 +112,7 @@ switch (process.argv[2]) {
         process.stdout.write('Usage: ./epub-search {start|stop|log|status|addToIndex}\n\n');
         process.stdout.write('\t' + 'start'.yellow + '\t\tStart the epub-full-text-search service\n');
         process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the epub-full-text-search service\n');
-        process.stdout.write('\t' + 'addToIndex'.yellow + '\tPath to epub folder (Hint: the epub content have to be unzipped)\n'.red);
+        process.stdout.write('\t' + 'addToIndex'.yellow + '\tPath to epub folder which contains epub-documents ' +
+            'that should be written to index(Hint: the epub content have to be unzipped)\n'.red);
         break;
 }

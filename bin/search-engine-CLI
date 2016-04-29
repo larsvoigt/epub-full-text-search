@@ -6,7 +6,8 @@ const program = require('commander'),
 program
     .version('0.1.8')
     .usage('[options] <file ...>')
-    .option('-a, --addToIndex <path>', 'Path to epub folder (Hint: the epub content have to be unzipped)')
+    .option('-a, --addToIndex <path>', 'Path to epub folder which contains epub-documents that should be written to index' +
+    ' (Hint: the epub content have to be unzipped)')
     .parse(process.argv);
 
 
