@@ -52,6 +52,9 @@
     "search-index": "~0.7.6",
     "xml2js": "~0.4.8"
   },
+  "bin": {
+    "epub-search": "./bin/epub-search"
+  },
   "scripts": {
     "start": "npm run express-service",
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",

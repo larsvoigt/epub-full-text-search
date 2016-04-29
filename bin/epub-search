@@ -2,12 +2,14 @@
 
 // parts of this code located here https://github.com/NodeBB/NodeBB
 
-var colors = require('colors'),
-    cproc = require('child_process'),
-    fs = require('fs'),
-    async = require('async');
+const colors = require('colors'),
+       cproc = require('child_process'),
+          fs = require('fs'),
+       async = require('async');
 
 var pidFilePath = __dirname + '/pidfile'; // todo: path available for Webservice.js 
+
+//console.log(__dirname);
 
 var getRunningPid = function (callback) {
     fs.readFile(pidFilePath, {
@@ -28,15 +30,16 @@ var getRunningPid = function (callback) {
 
 
 switch (process.argv[2]) {
+
+    case 'writeToIndex':
+        cproc.fork(__dirname + '/search-engine-CLI', process.argv);
+        break;
     case 'status':
         getRunningPid(function (err, pid) {
             if (!err) {
-                process.stdout.write('\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
-                process.stdout.write('\t"' + './epub-search stop'.yellow + '" \tto stop the epub search service\n');
-                process.stdout.write('\t"' + './epub-search log'.yellow + '" \tto view server output\n');
-                process.stdout.write('\t"' + './epub-search restart'.yellow + '" \tto restart epub search service\n\n');
+                process.stdout.write('\n\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n\n'.cyan);
             } else {
-                process.stdout.write('\Epub search service is not running\n'.bold);
+                process.stdout.write('\nEpub search service is not running\n'.bold);
                 process.stdout.write('\t"' + './epub-search start'.yellow + '" \tto launch the Epub search service\n\n');
             }
         })
@@ -44,13 +47,16 @@ switch (process.argv[2]) {
 
     case 'start':
         process.stdout.write('\nStarting Epub search service\n'.bold);
-        process.stdout.write('  "' + './epub-search stop'.yellow + '" \tto stop the Epub search service\n');
-        process.stdout.write('  "' + './epub-search log'.yellow + '" \tto view server output\n');
-        process.stdout.write('  "' + './epub-search restart'.yellow + '" \tto restart Epub search service\n\n');
 
         // Spawn a new Epub search service process
         cproc.fork(__dirname + '/../src/WebService.js', {
             env: process.env
+        });
+
+        getRunningPid(function (err, pid) {
+            if (!err) {
+                process.stdout.write('\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
+            }
         });
         break;
 
@@ -108,11 +114,12 @@ switch (process.argv[2]) {
         break;
 
     default:
-        process.stdout.write('\nWelcome to Epub search service\n\n'.bold);
-        process.stdout.write('Usage: ./epub-search {start|stop|log|status|addToIndex}\n\n');
-        process.stdout.write('\t' + 'start'.yellow + '\t\tStart the epub-full-text-search service\n');
-        process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the epub-full-text-search service\n');
-        process.stdout.write('\t' + 'addToIndex'.yellow + '\tPath to epub folder which contains epub-documents ' +
-            'that should be written to index(Hint: the epub content have to be unzipped)\n'.red);
+        process.stdout.write('\n\nWelcome to Epub search service\n\n'.bold);
+        process.stdout.write('Usage: epub-search {start|stop|status|writeToIndex}\n\n');
+        process.stdout.write('\t' + 'start'.yellow + '\t\tStart the service\n');
+        process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the service\n');
+        process.stdout.write('\t' + 'status'.yellow + '\t\tGet the state of the service\n');
+        process.stdout.write('\t' + 'writeToIndex'.yellow + '\tPath to epub folder which contains epub-documents ' +
+            'that should be written to index.' + ' (Hint: the epub content have to be unzipped)\n'.red + '\n\n');
         break;
 }
