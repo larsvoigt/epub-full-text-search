@@ -70,8 +70,7 @@ $ [sudo] epub-search start
 Let´s start to index some epub-documents: 
 
 ```
-$ search-engine-CLI  -p <path> Path to epub folder which contains epub-documents that should be written to index
-(Hint: the epub content have to be unzipped)
+$ epub-search writeToIndex -p  <path>
 ```
 
 ### Search 
