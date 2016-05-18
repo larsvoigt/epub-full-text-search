@@ -6,23 +6,34 @@ var mathML = require('./MathML.js');
 //var jsdom = require('jsdom').jsdom;
 
 
-exports.generate = function (data) {
+exports.generate = function (hits, epubTitle, query) {
+    
+    var hitSet = {};
+    hitSet.hits = [];
+    
+    for (var i in hits) {
 
-    var html = fs.readFileSync(data.spineItemPath);
-    var $ = cheerio.load(html);
-    //var cfis = [];
-    var needMathMlOffset = false;
+        var title = hits[i].document.id.split(':')[1];
+        //hits[i].document.id = result.hits[i].document.id.split(':')[0];
+        //console.log(result.hits[i].document);
 
+        if (title === epubTitle || epubTitle === '*') {
 
-//var document = jsdom(html,{features:{FetchExternalResources: false}});
-    mathML.process($, function (needOffset) {
-        needMathMlOffset = needOffset
-    });
+            var html = fs.readFileSync(hits[i].document.spineItemPath);
+            var $ = cheerio.load(html);
 
-    var elements = getElementsThatContainsQuery(data.query, $);
+            var needMathMlOffset = false;
+            mathML.process($, function (needOffset) {
+                needMathMlOffset = needOffset
+            });
 
-    return generateCFIs(data.baseCfi, elements, needMathMlOffset);
-    //return generateCFIs(html, data.query);
+            var elements = getElementsThatContainsQuery(query, $);
+
+            hitSet.hits.push.apply(hitSet.hits, generateCFIs(hits[i].document.baseCfi, elements, needMathMlOffset));
+        }
+    }
+    return hitSet;
+    //return generateCFIs(html, data.query); 
 };
 
 
@@ -76,8 +87,8 @@ function generateCFIs(cfiBase, elements, needOffset) {
 
         //console.log('-----------------------------------------------------');
         //console.log('cfi: ' + cfi + ' \ntext: ' + elements[i].element.text());
-
-        cfiList.push(cfi);
+        
+        cfiList.push({'cfi': cfi, 'teaser' : "Test"});
     }
     return cfiList;
 }

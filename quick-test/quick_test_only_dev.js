@@ -37,25 +37,25 @@ function testSearch() {
         // search(query, epubTitle, result_callback)
         se.search(["epub"], "Accessible EPUB 3", function (results) {
 
-            //var s = fs.createWriteStream('hits.json');
-            //s.write(JSON.stringify(results));
-            //s.end();
+            var s = fs.createWriteStream('hits.json');
+            s.write(JSON.stringify(results));
+            s.end();
 
             se.close(function () {
             });
-
-            console.log('total hits: ' + results.length + " (expected 15)");
-
-            console.log("--------------------------------------------------------------------------");
-            console.log("--------------------------------------------------------------------------");
-            console.log('*** epubTitle: ' + results[0].epubTitle + ' ***');
-
-            for (i in results) {
-                console.log("--------------------------------------------------------------------------");
-                console.log('*** baseCfi: ' + results[i].baseCfi + ' ***');
-                console.log('*** href: ' + results[i].href + ' ***');
-                console.log('*** cfis: ' + results[i].cfis.length + ' hits\n------> ' + results[i].cfis.join('\n------> ') + '\n***');
-            }
+            
+            //console.log('total hits: ' + results.length + " (expected 15)");
+            //
+            //console.log("--------------------------------------------------------------------------");
+            //console.log("--------------------------------------------------------------------------");
+            //console.log('*** epubTitle: ' + results[0].epubTitle + ' ***');
+            //
+            //for (i in results) {
+            //    console.log("--------------------------------------------------------------------------");
+            //    console.log('*** baseCfi: ' + results[i].baseCfi + ' ***');
+            //    console.log('*** href: ' + results[i].href + ' ***');
+            //    console.log('*** cfis: ' + results[i].cfis.length + ' hits\n------> ' + results[i].cfis.join('\n------> ') + '\n***');
+            //}
         });
     });
 

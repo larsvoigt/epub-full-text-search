@@ -48,10 +48,8 @@ module.exports = function (options, callback) {
 
             if (dataSet.length > 0)
                 console.log("Start writing epub-data to index.");
-            else {
-                console.log("DONE! Nothing to do, epubs already indexed.\n\n");
-                return;
-            }
+            else 
+                return callback("DONE! Nothing to do, epubs already indexed.\n\n");
             //console.log(dataSet);
             //fs.writeFileSync('./data1.json', JSON.stringify(dataSet) , 'utf-8');
 
@@ -95,33 +93,7 @@ module.exports = function (options, callback) {
 
             if (result.hits) {
 
-                var hits = [];
-                for (var i in result.hits) {
-
-                    var title = result.hits[i].document.id.split(':')[1];
-                    result.hits[i].document.id = result.hits[i].document.id.split(':')[0];
-
-                    //console.log(result.hits[i].document);
-
-                    if (title === epubTitle || epubTitle === '*') {
-
-                        var data = {
-                            "query": q,
-                            "spineItemPath": result.hits[i].document.spineItemPath,
-                            "baseCfi": result.hits[i].document.baseCfi
-                        };
-
-                        var cfiList = cfi.generate(data);
-
-                        if (cfiList.length > 0) {
-                            result.hits[i].document.cfis = cfiList;
-                            delete result.hits[i].document['*'];
-                            delete result.hits[i].document.spineItemPath;
-
-                            hits.push(result.hits[i].document);
-                        }
-                    }
-                }
+                var hits = cfi.generate(result.hits, epubTitle, q);
                 callback(hits);
             }
         })
