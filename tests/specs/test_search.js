@@ -18,6 +18,7 @@ describe('search', function () {
 
                 se.close(function () {
                     (result.hits.length).should.be.exactly(132);
+                    (result.spineItemIds.length).should.be.exactly(15);
                     done();
                 })
             });
@@ -35,6 +36,7 @@ describe('search', function () {
 
                 se.close(function () {
                     (result.hits.length).should.be.exactly(0);
+                    (result.spineItemIds.length).should.be.exactly(0);
 
                     done();
                 });
@@ -96,6 +98,7 @@ describe('search', function () {
                 se.close(function () {
 
                     result.should.not.have.enumerable('hits', 0);
+                    result.should.not.have.enumerable('spineItemIds', 0);
                     
                     var hits = result.hits;
                     for (i in hits) {

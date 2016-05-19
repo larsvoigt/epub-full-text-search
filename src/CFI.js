@@ -9,12 +9,13 @@ var mathML = require('./MathML.js');
 exports.generate = function (hits, epubTitle, query) {
     
     var hitSet = {};
+    hitSet.spineItemIds = [];
     hitSet.hits = [];
     
     for (var i in hits) {
 
         var title = hits[i].document.id.split(':')[1];
-        //hits[i].document.id = result.hits[i].document.id.split(':')[0];
+        hitSet.spineItemIds.push(hits[i].document.id.split(':')[0]);
         //console.log(result.hits[i].document);
 
         if (title === epubTitle || epubTitle === '*') {
