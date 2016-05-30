@@ -2,6 +2,7 @@ var fs = require('fs');
 var cheerio = require('cheerio');
 var async = require('async');
 var mathML = require('./MathML.js');
+var teaser = require('./Teaser.js');
 //var cfiLib = require('epub-cfi');
 //var jsdom = require('jsdom').jsdom;
 
@@ -89,7 +90,7 @@ function generateCFIs(cfiBase, elements, needOffset) {
         //console.log('-----------------------------------------------------');
         //console.log('cfi: ' + cfi + ' \ntext: ' + elements[i].element.text());
         
-        cfiList.push({'cfi': cfi, 'teaser' : "Test"});
+        cfiList.push({'cfi': cfi, 'teaser' : teaser.get(elements[i])});
     }
     return cfiList;
 }
