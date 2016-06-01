@@ -10,6 +10,7 @@ var teaser = require('./Teaser.js');
 exports.generate = function (hits, epubTitle, query) {
     
     var hitSet = {};
+    hitSet.version = 0.2;
     hitSet.spineItemIds = [];
     hitSet.hits = [];
     
