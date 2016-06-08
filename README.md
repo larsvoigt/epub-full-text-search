@@ -78,14 +78,14 @@ $ epub-search writeToIndex -p  <path>
 Search at index for some query:
 
 ```
-http://localhost:8080/search?q=...
+http://localhost:8085/search?q=...
 ```
 ### Suggestions
 
 Offering search suggestions 
 
 ```
-$  http://localhost:8080/matcher?beginsWith=...
+$  http://localhost:8085/matcher?beginsWith=...
 ```
 
 #### Expample:
@@ -111,13 +111,13 @@ epub-search writeToIndex -p {prefix}/node_modules/epub-full-text-search/node_mod
 After that we can get some hits for the query ``epub``:
 
 ```
-$ curl -XGET http://localhost:8080/search?q=epub
+$ curl -XGET "http://localhost:8085/search?q=epub"
 ```
 
 Or we can get some suggestions for autocomplete feature:
 
 ```
-$  curl -XGET http://localhost:8080/matcher?beginsWith=epu
+$  curl -XGET "http://localhost:8085/matcher?beginsWith=epu"
 ```
 
 ## For library use
@@ -129,19 +129,19 @@ epubfts(options || {}, function (err, se) {
     if (err)
         return console.log(err);
         
-// INDEXING (write your **unzipped** EPUB3-Document to index)
+    // INDEXING (write your **unzipped** EPUB3-Document to index)
     se.indexing('your_epub(s)_directory', function (info) {
            console.log(info);
     });
    
-// SEARCHING
+    // SEARCHING
     // search(query, epubTitle, result_callback)
     se.search(["epub"], "Accessible EPUB 3", function (results) {
     });
  
-// SEARCH SUGGESTIONS
+    // SEARCH SUGGESTIONS
     // match(beginsWith, epubTitle, result_callback)
-    se.match('matrix', 'A First Course in Linear Algebra', function (results) {
+    se.match('matrix', 'A First Course in Linear Algebra', function (err, results) {
     
     });
 });
