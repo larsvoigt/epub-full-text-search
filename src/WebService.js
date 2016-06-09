@@ -89,11 +89,8 @@ function terminator(sig) {
 
 WebService.setup = function (callback) {
 
-    WebService.ipaddress = process.env.IP;
+    WebService.ipaddress = process.env.IP || '127.0.0.1';
     WebService.port = process.env.PORT || 8085;
-
-    //if (typeof self.ipaddress === "undefined")
-    //    self.ipaddress = "127.0.0.1";
 
     process.on('exit', function () {
         terminator();
@@ -103,8 +100,6 @@ WebService.setup = function (callback) {
         terminator();
     });
 
-    //process.on('SIGHUP', WebService.restart);
-    //process.on('SIGTERM', WebService.stop);
     callback();
 };
 
@@ -139,7 +134,7 @@ WebService.start = function (callback) {
     WebService.app.listen(WebService.port, WebService.ipaddress, function () {
         //TODO: loging
         console.log('%s: Epub search service started on %s:%d ...',
-            Date(Date.now()), WebService.ipaddress, WebService.port);
+            new Date(), WebService.ipaddress, WebService.port);
     });
 
     callback();
@@ -157,7 +152,6 @@ try {
     }
 } catch (err) {
 }
-
 
 
 require('daemon')({
@@ -178,20 +172,3 @@ async.series([
         console.log('[WebService] Error during startup: ' + err.message);
     }
 });
-
-
-//function watchForUpdateIndex(se, index, epubContent) {
-//
-//    var chokidar = require('chokidar'); // watch for changes in directory
-//
-//    chokidar.watch(epubContent, {
-//        ignored: /[\/\\]\./,
-//        persistent: true
-//    }).on('all', function (event, path) {
-//
-//        se.indexing(epubContent, function (info) {
-//            console.log(info);
-//        });
-//
-//    });
-//}

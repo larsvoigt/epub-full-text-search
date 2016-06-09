@@ -10,15 +10,13 @@ exports.normalize = function (pathToEpubs, callBack) {
 
     parser.getMetaDatas(pathToEpubs, function (metaDataList) {
 
-        //console.log(metaDataList);
-
         process.stdout.write('Analyse folder:'.yellow + '\n');
 
         metaDataList = indexingController.doWork(metaDataList);
 
         var dataSet = new Array();
 
-        for (metaData in metaDataList) {
+        for (var metaData in metaDataList) {
 
             //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
             var title = metaDataList[metaData].title;

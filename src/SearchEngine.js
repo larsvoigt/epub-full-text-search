@@ -93,37 +93,40 @@ module.exports = function (options, callback) {
             if (err)
                 console.error(err);
 
-            if (result.hits) {
+            var hits = [];
 
-                var hits = [];
-                for (var i in result.hits) {
+            console.log(result.hits);
+            if (!result.hits) {
+                callback(hits);
+                return;
+            }
 
-                    var title = result.hits[i].document.id.split(':')[1];
-                    result.hits[i].document.id = result.hits[i].document.id.split(':')[0];
+            result.hits.forEach(function(hit) {
+                var document = hit.document,
+                    idData = document.id.split(':'),
+                    title = idData[1];
 
-                    //console.log(result.hits[i].document);
+                document.id = idData[0];
 
-                    if (title === epubTitle || epubTitle === '*') {
+                if (title === epubTitle || epubTitle === '*') {
 
-                        var data = {
-                            "query": q,
-                            "spineItemPath": result.hits[i].document.spineItemPath,
-                            "baseCfi": result.hits[i].document.baseCfi
-                        };
+                    var cfiList = cfi.generate({
+                        "query": q,
+                        "spineItemPath": document.spineItemPath,
+                        "baseCfi": document.baseCfi
+                    });
 
-                        var cfiList = cfi.generate(data);
+                    if (cfiList.length > 0) {
+                        document.cfis = cfiList;
+                        delete document['*'];
+                        delete document.spineItemPath;
 
-                        if (cfiList.length > 0) {
-                            result.hits[i].document.cfis = cfiList;
-                            delete result.hits[i].document['*'];
-                            delete result.hits[i].document.spineItemPath;
-
-                            hits.push(result.hits[i].document);
-                        }
+                        hits.push(document);
                     }
                 }
-                callback(hits);
-            }
+
+            });
+            callback(hits);
         })
     };
 
@@ -149,7 +152,6 @@ module.exports = function (options, callback) {
         SearchEngine.si.close(callback);
     };
 
-
     // private 
     function getIndexOptions() {
 
@@ -168,7 +170,7 @@ module.exports = function (options, callback) {
 
     function filterMatches(matches, epubTitle) {
 
-        var result = matches
+        return matches
             .map(function (match) {
 
                 if (epubTitle === '*') {
@@ -183,6 +185,5 @@ module.exports = function (options, callback) {
                 }
             })
             .filter(Boolean); // filter ["", "", ""] -> []
-        return result;
     }
 };
