@@ -1,104 +1,114 @@
-var async = require('async');
-var xml2js = require('xml2js');
-var parser = new xml2js.Parser();
-var path = require('path');
-var fs = require('fs');
+const async = require('async'),
+    xml2js = require('xml2js'),
+    parser = new xml2js.Parser(),
+    path = require('path'),
+    fs = require('fs'),
+    Q = require('q'),
+    readdir = Q.denodeify(fs.readdir),
+    readFile = Q.denodeify(fs.readFile),
+    parseString = Q.denodeify(parser.parseString),
+    stat = Q.denodeify(fs.stat);
 
-exports.getMetaDatas = function (pathToEpubs, callBack) {
-
-    var rootFiles = getRootFiles(pathToEpubs);
-    //console.log('found ' + docs.length + ' docs that can be indexed');
-
-    async.concat(rootFiles, function (file, callback) {
-
-        // Is it possible to use async.waterfall() in getBookMetaData() for her callback chain???
-        getBookMetaData(file, function (meta) {
-            callback(null, meta);
+exports.getMetaDatas = function (pathToEpubs) {
+    return getRootFiles(pathToEpubs)
+        .then(function(containerFiles) {
+            return Q.all(containerFiles.map(function(file) {
+                return getBookMetaData(file);
+            }));
         })
-    }, function (err, dataSets) {
-        //if (err)
-        //    console.log(err);
-        callBack(dataSets);
-
-    });
+        .fail(function(err) {
+            console.error(err);
+        });
 };
 
-function getRootFiles(dir) {
+function getRootFiles(dir, results) {
+    results = results || [];
 
     var container = 'container.xml';
-    var results = [];
 
-    fs.readdirSync(dir).forEach(function (file) {
-
-        file = dir + '/' + file;
-        var stat = fs.statSync(file);
-
-        if (stat && stat.isDirectory()) {
-            results = results.concat(getRootFiles(file))
-        } else {
-            if (path.basename(file) === container)
-                results.push(file);
-        }
-
-    });
-    return results;
+    return readdir(dir)
+        .then(function(files) {
+            return Q.all(files.map(function(file) {
+                file = dir + '/' + file;
+                return stat(file)
+                    .then(function(fileStat) {
+                        if (fileStat && fileStat.isDirectory()) {
+                            return getRootFiles(file, results);
+                        } else if (path.basename(file) === container) {
+                            results.push(file);
+                        }
+                    });
+            }));
+        })
+        .then(function() {
+            return results;
+        })
+        .fail(function(err) {
+            console.error(err)
+        });
 };
 
 var getBookMetaData = function (containerFile, callback) {
 
-    var meta = {};
-    var root = path.dirname(path.dirname(containerFile));
+    var root = path.dirname(path.dirname(containerFile)),
+        manifestPath;
 
-    getManifest(containerFile, function (result) {
+    return getManifest(containerFile)
+        .then(function(result) {
+            var opfFile = root + '/' + result;
+            manifestPath = path.dirname(root + '/' + result);
 
-        var opfFile = root + '/' + result;
-        meta.manifestPath = path.dirname(opfFile);
-
-        getBookTitle(opfFile, function (result) {
-            meta.title = result;
-
-            getSpineItems(opfFile, function (result) {
-                meta.spineItems = result;
-                //console.log(meta);
-                callback(meta);
-            });
+            return readFile(opfFile);
+        })
+        .then(function(opfContent) {
+            return Q.all([
+                getBookTitle(opfContent),
+                getSpineItems(opfContent)
+            ]);
+        })
+        .then(function(results) {
+            return {
+                manifestPath: manifestPath,
+                title: results[0],
+                spineItems: results[1]
+            };
+        })
+        .fail(function(err) {
+            console.error(err);
         });
-    });
 }
 
-function getManifest(containerFile, callback) {
+function getManifest(containerFile) {
 
-    fs.readFile(containerFile, function (err, data) {
-
-        if (err && err.code === 'ENOENT') {
-            throw new Error('File ' + containerFile + 'doesn\'t exist');
-        }
-
-        parser.parseString(data, function (err, result) {
-
-            callback(result.container.rootfiles[0].rootfile[0].$['full-path']);
-
+    return readFile(containerFile)
+        .then(function (data) {
+            return parseString(data);
+        })
+        .then(function (result) {
+            return result.container.rootfiles[0].rootfile[0].$['full-path'];
+        })
+        .fail(function(err) {
+            if (err && err.code === 'ENOENT') {
+                throw new Error('File ' + containerFile + 'doesn\'t exist');
+            }
         });
-    });
 }
 
 
-function getBookTitle(opf, callback) {
-
-    fs.readFile(opf, function (err, data) {
-        parser.parseString(data, function (err, result) {
-
+function getBookTitle(data) {
+    return parseString(data)
+        .then(function (result) {
             var metadata = result.package.metadata[0];
-            callback(metadata['dc:title'][0]._ || metadata['dc:title'][0]);
+            return metadata['dc:title'][0]._ || metadata['dc:title'][0];
+        })
+        .fail(function(err) {
+            console.error(err);
         });
-    });
 }
 
-function getSpineItems(opf, callback) {
-
-    fs.readFile(opf, function (err, data) {
-        parser.parseString(data, function (err, result) {
-
+function getSpineItems(data) {
+    return parseString(data)
+        .then(function (result) {
             var manifest = result.package.manifest[0];
             var spine = result.package.spine[0];
 
@@ -122,7 +132,9 @@ function getSpineItems(opf, callback) {
                 result.push(spineitem);
             }
 
-            callback(result);
-        });
-    });
+            return result;
+        })
+        .fail(function(err) {
+            console.error(err);
+        })
 }

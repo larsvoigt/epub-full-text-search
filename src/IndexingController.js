@@ -2,7 +2,14 @@ const low = require('lowdb'),
       storage = require('lowdb/file-sync'),
       constants = require("./Constants");
 
-const db = low(constants.INDEXING_CONTROLLER_DB, {storage: storage})
+var _db;
+
+function db() {
+    if(!_db) {
+        _db = low(constants.INDEXING_CONTROLLER_DB, {storage: storage})('epubs');
+    }
+    return _db;
+}
 
 module.exports = function () {
     
@@ -10,20 +17,17 @@ module.exports = function () {
 
     IndexingController.doWork = function (metaDataList) {
 
-        for (metaData in metaDataList) {
+        metaDataList.forEach(function(metaData) {
 
-            var title = metaDataList[metaData].title;
+            var title = metaData.title;
 
-            const exists = db('epubs').find({title: title});
+            const exists = db().find({title: title});
 
             if (!exists) {
-                
-                db('epubs').push({title: title})
-                metaDataList[metaData].writeToIndex = true;
+                db().push({title: title})
             }
-            else
-                metaDataList[metaData].writeToIndex = false;
-        };
+            metaData.writeToIndex = !exists;
+        });
         
         return metaDataList;
     };

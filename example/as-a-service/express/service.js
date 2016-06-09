@@ -133,14 +133,15 @@ var SampleService = function () {
                 console.log(err);
             } else {
 
-                se.indexing(epubs, function (info) {
-                    console.log(info);
-
-                    se.close(function (err) {
-                        if (err)
-                            console.log(err);
+                se.indexing(epubs)
+                    .then(function (info) {
+                        console.log(info);
+    
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
                     });
-                });
             }
         });
     };

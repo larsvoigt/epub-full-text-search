@@ -4,66 +4,59 @@ const fs = require('fs'),
     indexingController = require('./IndexingController')();
 
 
-exports.normalize = function (pathToEpubs, callBack) {
+exports.normalize = function (pathToEpubs) {
 
-    process.stdout.write('epub data folder: '.red + pathToEpubs.green + '\n\n');
+    console.log('epub data folder: '.red + pathToEpubs.green + '\n\n');
 
-    parser.getMetaDatas(pathToEpubs, function (metaDataList) {
+    return parser.getMetaDatas(pathToEpubs)
+        .then(function (metaDataList) {
 
-        process.stdout.write('Analyse folder:'.yellow + '\n');
+            console.log('Analyse folder:'.yellow + '\n');
 
-        metaDataList = indexingController.doWork(metaDataList);
+            metaDataList = indexingController.doWork(metaDataList);
 
-        var dataSet = new Array();
+            var dataSet = [];
 
-        for (var metaData in metaDataList) {
+            for (var metaData in metaDataList) {
+                //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
+                var title = metaDataList[metaData].title;
 
-            //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
-            var title = metaDataList[metaData].title;
+                if (metaDataList[metaData].writeToIndex == true) {
+                    console.log("\t--> epub title " + title.bold.blue + ' will be added to index \n');
 
-            if (metaDataList[metaData].writeToIndex == true) {
-                process.stdout.write("\t--> epub title " + title.bold.blue + ' will be added to index \n');
-
-                prepareEpubDataForIndexing(metaDataList[metaData], dataSet);
+                    prepareEpubDataForIndexing(metaDataList[metaData], dataSet);
+                } else {
+                    console.log("\t--> epub title " + title.green + ' already indexed \n');
+                }
             }
-            else
-                process.stdout.write("\t--> epub title " + title.green + ' already indexed \n');
-        }
-        callBack(dataSet);
-    })
+            return dataSet;
+        });
 };
 
 
 function prepareEpubDataForIndexing(metaData, data) {
-    
-    for (var i = 0; i < metaData.spineItems.length; i++) {
-
-        if (i === 0) {
-
-            if (!data.FirstSpineItemsId)
-                data.FirstSpineItemsId = new Array();
-
-            data.FirstSpineItemsId.push(
-                metaData.spineItems[i].id + ':' + metaData.title
-            );
-        }
-        
-        var spineItem = metaData.manifestPath + '/' + metaData.spineItems[i].href;
-        //console.log('transform file ' + file + ' to index format **** basecfi: ' +
-        //  metaDataList[metaData].spineItems[i].baseCfi);
-
-        var json = htmlToJSON(spineItem);
-
-        setMetaData(json, metaData, metaData.spineItems[i]);
-
-        data.push(json);
-        //console.log(json);
+    if(!metaData.spineItems.length) {
+        return;
     }
+
+    if (!data.FirstSpineItemsId) {
+        data.FirstSpineItemsId = [];
+    }
+
+    data.FirstSpineItemsId.push(
+        metaData.spineItems[0].id + ':' + metaData.title
+    );
+
+    metaData.spineItems.forEach(function(spineItem) {
+        var spineItemPath = metaData.manifestPath + '/' + spineItem.href;
+        var json = htmlToJSON(spineItemPath);
+        setMetaData(json, metaData, spineItem);
+        data.push(json);
+    });
 }
 
 
 function setMetaData(jsonDoc, meta, spineItemMeta) {
-
     jsonDoc.epubTitle = meta.title;
     jsonDoc.spineItemPath = meta.manifestPath + '/' + spineItemMeta.href;
     jsonDoc.href = spineItemMeta.href;
@@ -99,9 +92,4 @@ function htmlToJSON(file) {
 
 function trim(str) {
     return str.replace(/\W/g, ' ').replace(/\s+/g, ' ');
-}
-
-
-function writeAsJSONFile(doc, docdir, fileName) {
-    fs.writeFileSync(docdir + fileName + ".json", JSON.stringify(doc), 'utf8');
 }
