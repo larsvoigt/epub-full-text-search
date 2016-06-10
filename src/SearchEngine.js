@@ -91,11 +91,10 @@ module.exports = function (options, callback) {
             if (err)
                 console.error(err);
 
-            if (result.hits) {
+            var hits = [];
 
                 var hits = cfi.generate(result.hits, epubTitle, q);
                 callback(hits);
-            }
         })
     };
 
@@ -121,7 +120,6 @@ module.exports = function (options, callback) {
         SearchEngine.si.close(callback);
     };
 
-
     // private 
     function getIndexOptions() {
 
@@ -140,7 +138,7 @@ module.exports = function (options, callback) {
 
     function filterMatches(matches, epubTitle) {
 
-        var result = matches
+        return matches
             .map(function (match) {
 
                 if (epubTitle === '*') {
@@ -155,6 +153,5 @@ module.exports = function (options, callback) {
                 }
             })
             .filter(Boolean); // filter ["", "", ""] -> []
-        return result;
     }
 };

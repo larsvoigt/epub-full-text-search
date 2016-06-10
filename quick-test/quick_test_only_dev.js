@@ -35,7 +35,7 @@ function testSearch() {
             return console.log(err);
 
         // search(query, epubTitle, result_callback)
-        se.search(["epub"], "Accessible EPUB 3", function (results) {
+        se.search(["read"], "", function (results) {
 
             var s = fs.createWriteStream('hits.json');
             s.write(JSON.stringify(results));
