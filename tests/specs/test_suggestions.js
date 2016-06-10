@@ -8,6 +8,7 @@ describe('suggestions', function () {
     var se;
 
     beforeEach(function(done) {
+        this.timeout(10000);
         init()
             .then(function() {
                 return searchEngine({'indexPath': constants.TEST_DB});

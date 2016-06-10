@@ -48,7 +48,7 @@ function getRootFiles(dir, results) {
         });
 };
 
-var getBookMetaData = function (containerFile, callback) {
+var getBookMetaData = function (containerFile) {
 
     var root = path.dirname(path.dirname(containerFile)),
         manifestPath;
@@ -68,6 +68,7 @@ var getBookMetaData = function (containerFile, callback) {
         })
         .then(function(results) {
             return {
+                filename: path.basename(root),
                 manifestPath: manifestPath,
                 title: results[0],
                 spineItems: results[1]

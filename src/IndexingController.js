@@ -19,12 +19,15 @@ module.exports = function () {
 
         metaDataList.forEach(function(metaData) {
 
-            var title = metaData.title;
+            var query = {
+                title: metaData.title,
+                filename: metaData.filename
+            };
 
-            const exists = db().find({title: title});
+            const exists = db().find(query);
 
             if (!exists) {
-                db().push({title: title})
+                db().push(query);
             }
             metaData.writeToIndex = !exists;
         });

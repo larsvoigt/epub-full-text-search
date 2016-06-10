@@ -49,7 +49,7 @@
     "minimist": "^1.2.0",
     "q": "^1.4.1",
     "readdirp": "^2.0.0",
-    "search-index": "~0.7.6",
+    "search-index": "~0.8.10",
     "xml2js": "~0.4.8"
   },
   "bin": {

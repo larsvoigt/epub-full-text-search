@@ -10,6 +10,7 @@ describe('indexing ', function () {
     var se;
 
     beforeEach(function(done) {
+        this.timeout(10000);
         init()
             .then(function() {
                 return searchEngine({'indexPath': constants.TEST_DB});
@@ -49,7 +50,7 @@ describe('indexing ', function () {
 
     it('should index all epubs from passed argument path', function (done) {
 
-        this.timeout(20000);
+        this.timeout(100000);
         se.indexing(constants.EPUB)
             .then(function () {
                 done();

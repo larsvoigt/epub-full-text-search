@@ -53,21 +53,28 @@ module.exports = function (options) {
         var ids = jsonDoc.FirstSpineItemsId;
         delete jsonDoc.FirstSpineItemsId;
 
-        var opt = getIndexOptions();
-        return SearchEngine._add(jsonDoc, opt);
+        return SearchEngine._add(jsonDoc, getIndexOptions());
     };
 
     SearchEngine.search = function (q, epubTitle) {
-
-        var epubTitle = epubTitle || DEFAULT_EPUB_TITLE; // if epubTitle undefined return all hits
-
+        epubTitle = epubTitle || DEFAULT_EPUB_TITLE; // if epubTitle undefined return all hits
         // q is an array !!!
         var query = {
-            "query": {"*": q},
-            "offset": 0,
-            "pageSize": 100
+            query: [{
+                AND: {body: [q]}
+            }],
+            offset: 0,
+            pageSize: 100
         };
 
+        if(epubTitle) {
+            query.query.push({AND: {epubTitle: [epubTitle]}});
+        }
+
+        return SearchEngine.query(query, q);
+    };
+
+    SearchEngine.query = function(query, search) {
         return SearchEngine._search(query)
             .then(function (result) {
                 var hits = [];
@@ -83,21 +90,18 @@ module.exports = function (options) {
 
                     document.id = idData[0];
 
-                    if (title === epubTitle || epubTitle === '*') {
+                    var cfiList = cfi.generate({
+                        "query": [search],
+                        "spineItemPath": document.spineItemPath,
+                        "baseCfi": document.baseCfi
+                    });
 
-                        var cfiList = cfi.generate({
-                            "query": q,
-                            "spineItemPath": document.spineItemPath,
-                            "baseCfi": document.baseCfi
-                        });
+                    if (cfiList.length > 0) {
+                        document.cfis = cfiList;
+                        delete document['*'];
+                        delete document.spineItemPath;
 
-                        if (cfiList.length > 0) {
-                            document.cfis = cfiList;
-                            delete document['*'];
-                            delete document.spineItemPath;
-
-                            hits.push(document);
-                        }
+                        hits.push(document);
                     }
 
                 });
@@ -128,18 +132,18 @@ module.exports = function (options) {
 
     // private 
     function getIndexOptions() {
-
-        var options = {};
-        options.filters = [];
-        options.fieldsToStore = ['id', 'spineItemPath', 'href', 'baseCfi', 'epubTitle'];
-        options.fieldOptions = [
-            {fieldName: 'epubTitle', searchable: false},
-            {fieldName: 'spineItemPath', searchable: false},
-            {fieldName: 'href', searchable: false},
-            {fieldName: 'baseCfi', searchable: false},
-            {fieldName: 'id', searchable: false}
-        ];
-        return options;
+        return {
+            fieldOptions: [
+                {fieldName: 'epubTitle', searchable: false, store: true},
+                {fieldName: 'spineItemPath', searchable: false, store: true},
+                {fieldName: 'href', searchable: false, store: true},
+                {fieldName: 'baseCfi', searchable: false, store: true},
+                {fieldName: 'id', searchable: false, store: true},
+                {fieldName: 'filename', searchable: true, store: true},
+                {fieldName: 'title', searchable: true, store: false},
+                {fieldName: 'body', searchable: true, store: false}
+            ]
+        };
     }
 
     function filterMatches(matches, epubTitle) {

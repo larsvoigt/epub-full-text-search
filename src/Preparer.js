@@ -17,18 +17,18 @@ exports.normalize = function (pathToEpubs) {
 
             var dataSet = [];
 
-            for (var metaData in metaDataList) {
+            metaDataList.forEach(function(metaData) {
                 //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
-                var title = metaDataList[metaData].title;
+                var title = metaData.title;
 
-                if (metaDataList[metaData].writeToIndex == true) {
+                if (metaData.writeToIndex) {
                     console.log("\t--> epub title " + title.bold.blue + ' will be added to index \n');
 
-                    prepareEpubDataForIndexing(metaDataList[metaData], dataSet);
+                    prepareEpubDataForIndexing(metaData, dataSet);
                 } else {
                     console.log("\t--> epub title " + title.green + ' already indexed \n');
                 }
-            }
+            });
             return dataSet;
         });
 };
@@ -57,6 +57,7 @@ function prepareEpubDataForIndexing(metaData, data) {
 
 
 function setMetaData(jsonDoc, meta, spineItemMeta) {
+    jsonDoc.filename = meta.filename;
     jsonDoc.epubTitle = meta.title;
     jsonDoc.spineItemPath = meta.manifestPath + '/' + spineItemMeta.href;
     jsonDoc.href = spineItemMeta.href;
