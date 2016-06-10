@@ -30,20 +30,38 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('filter by filename', function(done) {
-    
+    it('without filename query', function(done) {
+        var search = 'test';
         se.query({
             query: [
                 {
                     AND: [
-                        {'*': ['epub']},
+                        {'*': [search]}
+                    ]
+                }
+            ]
+        }, search)
+            .then(function(hits) {
+                hits.length.should.be.exactly(11);
+                done();
+            })
+            .fail(done);
+    });
+
+    it('filter by filename', function(done) {
+        var search = 'test';
+        se.query({
+            query: [
+                {
+                    AND: [
+                        {'*': [search]},
                         {filename: ['accessible_epub_3']}
                     ]
                 }
             ]
-        }, ['epub'])
+        }, search)
             .then(function(hits) {
-                hits.length.should.be.exactly(15);
+                hits.length.should.be.exactly(3);
                 done();
             })
             .fail(done);
