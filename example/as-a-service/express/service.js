@@ -36,20 +36,20 @@ var SampleService = function () {
             var bookTitle = req.query['t'];
             bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
 
-            searchEngine({}, function (err, se) {
+            var se;
+            searchEngine({})
+                .then(function (_se) {
+                    se = _se;
+                    return se.search(q, bookTitle);
 
-                if (err)
-                    return console.log(err);
-
-                se.search(q, bookTitle, function (result) {
-
+                })
+                .then(function (result) {
                     res.send(result);
-                    se.close(function (err) {
-                        if (err)
-                            console.log(err);
-                    });
+                    return se.close();
+                })
+                .fail(function(err) {
+                    console.error(err);
                 });
-            });
         };
 
 
@@ -60,21 +60,21 @@ var SampleService = function () {
                 return;
             }
 
-            var bookTitle = req.query['t'];
-            searchEngine({}, function (err, se) {
-
-                if (err)
-                    return console.log(err);
-
-                se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
+            var bookTitle = req.query['t'],
+                se;
+            searchEngine({})
+                .then(function (_se) {
+                    se = _se;
+                    return se.match(req.query['beginsWith'], bookTitle);
+                })
+                .then(function (matches) {
                     res.send(matches);
 
-                    se.close(function (err) {
-                        if (err)
-                            console.log(err);
-                    });
+                    return se.close();
+                })
+                .fail(function(err) {
+                    console.error(err);
                 });
-            });
         };
     }
 
@@ -127,23 +127,20 @@ var SampleService = function () {
             epubs = '../../../node_modules/epub3-samples';
         }
 
-        searchEngine({}, function (err, se) {
+        var se;
+        searchEngine({})
+            .then(function (_se) {
+                se = _se;
+                return se.indexing(epubs);
+            })
+            .then(function (info) {
+                console.log(info);
 
-            if (err) {
+                return se.close();
+            })
+            .fail(function(err) {
                 console.log(err);
-            } else {
-
-                se.indexing(epubs)
-                    .then(function (info) {
-                        console.log(info);
-    
-                        se.close(function (err) {
-                            if (err)
-                                console.log(err);
-                        });
-                    });
-            }
-        });
+            });
     };
 
     self.init = function () {
@@ -157,7 +154,7 @@ var SampleService = function () {
         //  Start the app on the specific interface (and port).
         self.app.listen(self.port, self.ipaddress, function () {
             console.log('%s: Node server started on %s:%d ...',
-                Date(Date.now()), self.ipaddress, self.port);
+                new Date(), self.ipaddress, self.port);
         });
     };
 
