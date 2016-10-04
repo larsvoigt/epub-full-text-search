@@ -1,2 +1,7 @@
 node_modules
+/bin/IndexControllerDB.json
+/full-text-search-DB
+/mocha_test_DB
+/bin/full-text-search-DB
+/IndexControllerDB.json
 .idea
