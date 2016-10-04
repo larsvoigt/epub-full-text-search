@@ -3,20 +3,18 @@ var rimraf = require('rimraf');
 const searchEngine = require('../');
 var INDEX_DB = 'quick_test';
 //
-var content = '../node_modules/epub3-samples';
-//var content = 'epub_content';
-//var content = '/home/albert/workspace/test-content'
-//var content = '/home/alan/Sprachpraxis_UT';
+//var content = '../node_modules/epub3-samples';
+const CONTENT = '/home/alan/workspace/epub-full-text-search/quick-test/test_content';
 
 console.log(process.cwd());
-//rimraf.sync('IndexControllerDB.json');
+rimraf.sync('IndexControllerDB.json');
 
 function indexing(callback) {
 
     searchEngine({'indexPath': INDEX_DB})
         .then(function (se) {
 
-            se.indexing(content)
+            se.indexing(CONTENT)
                 .then(function () {
 
                     console.log('\nDONE! All is indexed.\n\n'.yellow);
@@ -33,15 +31,20 @@ function indexing(callback) {
         });
 }
 
-function testSearch() {
+function testSearch(q, booktitle) {
 
     searchEngine({'indexPath': INDEX_DB})
         .then(function (se) {
 
             // search(query, epubTitle, result_callback)
-            se.search(["epub"], "")
+            se.search([q], booktitle)
                 .then(function (results) {
 
+                    if(results.length === 0) {
+                        console.log('Find nothing!');
+                        return;
+                    }
+                    
                     //var s = fs.createWriteStream('hits.json');
                     //s.write(JSON.stringify(results));
                     //s.end();
@@ -117,7 +120,8 @@ function testMatcher() {
 
 indexing(function () {
 
-    testSearch();
+    // testSearch("epub", "Accessible EPUB 3");
+    testSearch("그가 장난기", "");
     //testMatcher();
 
 });
