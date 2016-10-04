@@ -110,8 +110,16 @@ epub-search writeToIndex -p {prefix}/node_modules/epub-full-text-search/node_mod
 
 After that we can get some hits for the query ``epub``:
 
+Search in the whole indexed ebook-collection:
+
 ```
-$ curl -XGET "http://localhost:8085/search?q=epub"
+$ curl -XGET "http://localhost:8085/search?q=math"
+```
+
+Set query filter book title ```t="..."``` to search only within a specific ebook:
+
+```
+$ curl -XGET "http://localhost:8085/search?q=epub&t=Accessible+EPUB+3"
 ```
 
 Or we can get some suggestions for autocomplete feature:
