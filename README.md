@@ -123,28 +123,63 @@ $  curl -XGET "http://localhost:8085/matcher?beginsWith=epu"
 ## For library use
 
 ```javascript
-const epubfts = require('epub-full-text-search');
+const epubSearch = require('epub-full-text-search');
 var options = {'indexPath': 'path_to_index-DB'}; // an own path can be set optional
-epubfts(options || {}, function (err, se) {
-    if (err)
-        return console.log(err);
+epubSearch(options || {})
+    .then(function (searchInstance) {
         
-    // INDEXING (write your **unzipped** EPUB3-Document to index)
-    se.indexing('your_epub(s)_directory', function (info) {
-           console.log(info);
+        // INDEXING (write your **unzipped** EPUB3-Document to index)
+        searchInstance.indexing('your_epub(s)_directory')
+            .then(function (info) {
+               console.log(info);
+            })
+            .fail(function(err) {
+                console.error(err);
+            });
+       
+        // SEARCHING
+        // search(query, epubTitle)
+        searchInstance.search('epub', "Accessible EPUB 3")
+            .then(function (results) {
+                console.log(results);
+            })
+            .fail(function(err) {
+                console.error(err);
+            });
+            
+        // COMPLEX SEARCHING
+        // query(query, epubTitle)
+        var search = 'epub';
+        searchInstance.query({
+            query: [
+                {
+                    AND: [
+                        {'*': [search]},
+                        {filename: ['accessible_epub_3']}
+                    ]
+                }
+            ]
+        }, search)
+            .then(function (results) {
+                console.log(results);
+            })
+            .fail(function(err) {
+                console.error(err);
+            });
+     
+        // SEARCH SUGGESTIONS
+        // match(beginsWith, epubTitle)
+        searchInstance.match('matrix', 'A First Course in Linear Algebra')
+            .then(function (results) {
+                console.log(results);
+            })
+            .fail(function(err) {
+                console.error(err);
+            });
+    })
+    .fail(function(err) {
+        console.error(err);
     });
-   
-    // SEARCHING
-    // search(query, epubTitle, result_callback)
-    se.search(["epub"], "Accessible EPUB 3", function (results) {
-    });
- 
-    // SEARCH SUGGESTIONS
-    // match(beginsWith, epubTitle, result_callback)
-    se.match('matrix', 'A First Course in Linear Algebra', function (err, results) {
-    
-    });
-});
 
 ``` 
    

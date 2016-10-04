@@ -18,12 +18,13 @@ function indexing(callback) {
         if (err) 
             return console.log(err);
 
-        se.indexing(content, function (info) {
-            console.log(info);
-            se.close(function () {
+        se.indexing(content)
+            .then(function (info) {
+                console.log(info);
+                se.close(function () {
+                });
+                return callback();
             });
-            return callback();
-        });
     });
 }
 
