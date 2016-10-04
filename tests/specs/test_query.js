@@ -31,6 +31,7 @@ describe('search', function () {
     });
 
     it('without filename query', function(done) {
+        this.timeout(10000);
         var search = 'test';
         se.query({
             query: [

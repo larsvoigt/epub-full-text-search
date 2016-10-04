@@ -13,52 +13,59 @@ console.log(process.cwd());
 
 function indexing(callback) {
 
-    searchEngine({'indexPath': INDEX_DB}, function (err, se) {
+    searchEngine({'indexPath': INDEX_DB})
+        .then(function (se) {
 
-        if (err) 
-            return console.log(err);
+            se.indexing(content)
+                .then(function () {
 
-        se.indexing(content)
-            .then(function (info) {
-                console.log(info);
-                se.close(function () {
+                    console.log('\nDONE! All is indexed.\n\n'.yellow);
+                    se.close(function () {
+                    });
+                    return callback();
+
+                }).fail(function (err) {
+                    console.log(err);
                 });
-                return callback();
-            });
-    });
+        })
+        .fail(function (err) {
+            console.log(err);
+        });
 }
 
 function testSearch() {
 
-    searchEngine({'indexPath': INDEX_DB}, function (err, se) {
+    searchEngine({'indexPath': INDEX_DB})
+        .then(function (se) {
 
-        if (err) 
-            return console.log(err);
+            // search(query, epubTitle, result_callback)
+            se.search(["epub"], "")
+                .then(function (results) {
 
-        // search(query, epubTitle, result_callback)
-        se.search(["epub"], "Accessible EPUB 3", function (results) {
+                    //var s = fs.createWriteStream('hits.json');
+                    //s.write(JSON.stringify(results));
+                    //s.end();
 
-            //var s = fs.createWriteStream('hits.json');
-            //s.write(JSON.stringify(results));
-            //s.end();
+                    se.close(function () {
+                    });
 
-            se.close(function () {
-            });
+                    console.log('total hits: ' + results.length + " (expected 15)");
 
-            console.log('total hits: ' + results.length + " (expected 15)");
+                    console.log("--------------------------------------------------------------------------");
+                    console.log("--------------------------------------------------------------------------");
+                    console.log('*** epubTitle: ' + results[0].epubTitle + ' ***');
 
-            console.log("--------------------------------------------------------------------------");
-            console.log("--------------------------------------------------------------------------");
-            console.log('*** epubTitle: ' + results[0].epubTitle + ' ***');
-
-            for (i in results) {
-                console.log("--------------------------------------------------------------------------");
-                console.log('*** baseCfi: ' + results[i].baseCfi + ' ***');
-                console.log('*** href: ' + results[i].href + ' ***');
-                console.log('*** cfis: ' + results[i].cfis.length + ' hits\n------> ' + results[i].cfis.join('\n------> ') + '\n***');
-            }
+                    for (i in results) {
+                        console.log("--------------------------------------------------------------------------");
+                        console.log('*** baseCfi: ' + results[i].baseCfi + ' ***');
+                        console.log('*** href: ' + results[i].href + ' ***');
+                        console.log('*** cfis: ' + results[i].cfis.length + ' hits\n------> ' + results[i].cfis.join('\n------> ') + '\n***');
+                    }
+                })
+                .fail(function (err) {
+                    console.log(err);
+                });
         });
-    });
 
     //se.search(["epub"], "Accessi", function (results) {
 //
@@ -92,7 +99,7 @@ function testMatcher() {
 
     searchEngine({'indexPath': INDEX_DB}, function (err, se) {
 
-        if (err) 
+        if (err)
             return console.log(err);
 
         se.match("epu", "", function (err, results) {

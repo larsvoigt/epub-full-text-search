@@ -4,7 +4,7 @@ const program = require('commander'),
     searchEngine = require('../src/SearchEngine');
 
 program
-    .version('0.1.8')
+    .version('0.2.1')
     .usage('[options] <file ...>')
     .option('-p, --writeToIndex <path>', 'Path to epub folder which contains epub-documents that should be written to index' +
     ' (Hint: the epub content have to be unzipped)')
@@ -15,8 +15,9 @@ if (program.writeToIndex) {
     
     searchEngine({})
         .then(function (se) {
-            se.indexing(program.writeToIndex, function (info) {
-                console.log(info);
+            se.indexing(program.writeToIndex, function () {
+                
+                console.log('\nDONE! All is indexed.\n\n'.yellow);
 
                 se.close(function (err) {
                     if (err)

@@ -10,7 +10,7 @@ const express = require('express'),
 
 
 var pidFilePath = __dirname + '/../bin/pidfile',
-    //output = logrotate({file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true}),
+//output = logrotate({file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true}),
     WebService = {};
 
 
@@ -26,6 +26,8 @@ function createRoutes() {
 
     WebService.routes['/search'] = function (req, res) {
 
+        console.log('client request');
+        
         if (!req.query['q']) {
             res.status(500).send('Can`t found query parameter q -> /search?q=word');
             return;
@@ -34,21 +36,32 @@ function createRoutes() {
         var q = req.query['q'].toLowerCase().split(/\s+/);
         var bookTitle = req.query['t'];
         bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
+        console.log('bookTitle: ' + bookTitle);
+        
+        searchEngine({})
+            .then(function (se) {
 
-        searchEngine({}, function (err, se) {
+                se.search(q, bookTitle)
+                    .then(function (result) {
 
-            if (err)
-                return console.log(err);
-
-            se.search(q, bookTitle, function (result) {
-
-                res.send(result);
-                se.close(function (err) {
-                    if (err)
-                        console.log(err);
-                });
+                        res.send(result);
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    })
+                    .fail(function (err) {
+                        res.send(err);
+                        
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    });
+            })
+            .fail(function (err) {
+                console.log("error: " +  err);
             });
-        });
     };
 
 
@@ -60,20 +73,31 @@ function createRoutes() {
         }
 
         var bookTitle = req.query['t'];
-        searchEngine({}, function (err, se) {
+        searchEngine({})
+            .then(function (se) {
 
-            if (err)
-                return console.log(err);
+                se.match(req.query['beginsWith'], bookTitle)
+                    .then(function (matches) {
 
-            se.match(req.query['beginsWith'], bookTitle, function (err, matches) {
-                res.send(matches);
+                        res.send(matches);
 
-                se.close(function (err) {
-                    if (err)
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    })
+                    .fail(function (err) {
+
+                        se.close(function (err) {
+                            if (err)
+                                console.log(err);
+                        });
                         console.log(err);
-                });
+                    });
+            })
+            .fail(function (err) {
+                console.log(err);
             });
-        });
     };
 }
 

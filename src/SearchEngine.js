@@ -27,7 +27,7 @@ module.exports = function (options) {
             return Q.reject(new Error('Can`t index empty folder: ' + pathToEpubs));
         }
         console.log("\n\n\n******************************************************\n");
-        console.log("Start Normalize epub content\n\n".yellow);
+        console.log("Start normalize epub content\n\n".yellow);
 
         // normalize the directory path
         pathToEpubs = path.normalize(pathToEpubs);
@@ -35,7 +35,7 @@ module.exports = function (options) {
         return preparer.normalize(pathToEpubs)
             .then(function (dataSet) {
                 console.log("\n******************************************************\n");
-                console.log("Ready Normalize epub content\n\n".yellow);
+                console.log("Ready with normalize epub content\n\n".yellow);
 
                 if (dataSet.length > 0)
                     console.log("Start writing epub-data to index.");
@@ -74,7 +74,7 @@ module.exports = function (options) {
         return SearchEngine.query(query, q);
     };
 
-    SearchEngine.query = function(query, search) {
+    SearchEngine.query = function (query, search) {
         return SearchEngine._search(query)
             .then(function (result) {
                 var hits = [];
@@ -83,10 +83,9 @@ module.exports = function (options) {
                     return hits;
                 }
 
-                result.hits.forEach(function(hit) {
-                    var document = hit.document,
-                        idData = document.id.split(':'),
-                        title = idData[1];
+                result.hits.forEach(function (hit) {
+                    const document = hit.document,
+                        idData = document.id.split(':');
 
                     document.id = idData[0];
 
@@ -117,7 +116,7 @@ module.exports = function (options) {
         var epubTitle = epubTitle || DEFAULT_EPUB_TITLE;
 
         return SearchEngine._match({beginsWith: beginsWith, type: 'ID'})
-            .then(function(matches) {
+            .then(function (matches) {
                 return filterMatches(matches, epubTitle);
             });
     };

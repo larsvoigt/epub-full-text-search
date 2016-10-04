@@ -4,4 +4,6 @@ node_modules
 /mocha_test_DB
 /bin/full-text-search-DB
 /IndexControllerDB.json
+/bin/pidfile
+/src/IndexControllerDB.json
 .idea

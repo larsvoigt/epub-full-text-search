@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-// parts of this code located here https://github.com/NodeBB/NodeBB
-
 const colors = require('colors'),
        cproc = require('child_process'),
           fs = require('fs'),
@@ -46,13 +44,14 @@ switch (process.argv[2]) {
         break;
 
     case 'start':
-        process.stdout.write('\nStarting Epub search service\n'.bold);
 
         // Spawn a new Epub search service process
         cproc.fork(__dirname + '/../src/WebService.js', {
             env: process.env
         });
 
+        process.stdout.write('\nStarting Epub search service\n'.bold);
+        
         getRunningPid(function (err, pid) {
             if (!err) {
                 process.stdout.write('\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
