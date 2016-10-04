@@ -16,6 +16,9 @@ You can make your whole cloud based epub3-book-collection content based searchab
 EPUB-Search uses [search-index](https://github.com/fergiemcdowall/search-index) 
 to indexing the base content.
 
+### Online Demo
+[Demo](http://protected-dusk-3051.herokuapp.com/)
+
 ###Features included:
 
 * Full text search (get all query matches for one epub-document or for a whole epub collection)  
@@ -194,8 +197,6 @@ epubSearch(options || {})
 
 ## Example
 
-### Online Demo
-[Demo](http://protected-dusk-3051.herokuapp.com/)
 
 ### Local testing 
 
