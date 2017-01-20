@@ -4,7 +4,12 @@ const fs = require('fs'),
     indexingController = require('./IndexingController')();
 
 
-exports.normalize = function (pathToEpubs) {
+const Preparer = {};
+
+/**************
+ * public
+ *************/
+Preparer.normalize = function (pathToEpubs) {
 
     console.log('epub data folder: '.red + pathToEpubs.green + '\n\n');
 
@@ -33,7 +38,13 @@ exports.normalize = function (pathToEpubs) {
         });
 };
 
+Preparer.normalizeEpupTitle = function (str) {
+    return str.replace(/\s/g,'').toLowerCase();
+};
 
+/**************
+ * private
+ *************/
 function prepareEpubDataForIndexing(metaData, data) {
     if(!metaData.spineItems.length) {
         return;
@@ -58,7 +69,7 @@ function prepareEpubDataForIndexing(metaData, data) {
 
 function setMetaData(jsonDoc, meta, spineItemMeta) {
     jsonDoc.filename = meta.filename;
-    jsonDoc.epubTitle = meta.title;
+    jsonDoc.epubTitle = Preparer.normalizeEpupTitle(meta.title);
     jsonDoc.spineItemPath = meta.manifestPath + '/' + spineItemMeta.href;
     jsonDoc.href = spineItemMeta.href;
     jsonDoc.baseCfi = spineItemMeta.baseCfi;
@@ -94,3 +105,6 @@ function htmlToJSON(file) {
 function trim(str) {
     return str.replace(/\W/g, ' ').replace(/\s+/g, ' ');
 }
+
+
+module.exports = Preparer;

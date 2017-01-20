@@ -56,28 +56,27 @@ module.exports = function (options) {
         return SearchEngine._add(jsonDoc, getIndexOptions());
     };
 
-    SearchEngine.search = function (q, epubTitle) {
-        epubTitle = epubTitle || DEFAULT_EPUB_TITLE; // if epubTitle undefined return all hits
-        // q is an array !!!
-        var query = {
-            query: [{
-                AND: {body: [q]}
-            }],
-            offset: 0,
-            pageSize: 100
-        };
+    SearchEngine.search = function (searchFor, bookTitle) {
 
-        if(epubTitle) {
-            query.query.push({AND: {epubTitle: [epubTitle]}});
-        }
+        bookTitle = bookTitle || DEFAULT_EPUB_TITLE; // * if bookTitle undefined return all hits
+        
+        var q = {};
+        q.query =
+            {
+                AND: {
+                    'epubTitle': [preparer.normalizeEpupTitle(bookTitle)], 
+                    'body': [searchFor]
+                }
+            };
 
-        return SearchEngine.query(query, q);
+        return SearchEngine.query(q, searchFor);
     };
 
-    SearchEngine.query = function (query, search) {
+    SearchEngine.query = function (query, searchFor) {
+
         return SearchEngine._search(query)
             .then(function (result) {
-                var hits = [];
+                const hits = [];
 
                 if (!result.hits) {
                     return hits;
@@ -89,8 +88,8 @@ module.exports = function (options) {
 
                     document.id = idData[0];
 
-                    var cfiList = cfi.generate({
-                        "query": [search],
+                    const cfiList = cfi.generate({
+                        "searchFor": searchFor,
                         "spineItemPath": document.spineItemPath,
                         "baseCfi": document.baseCfi
                     });
@@ -129,7 +128,7 @@ module.exports = function (options) {
         return SearchEngine._close();
     };
 
-    // private 
+// private 
     function getIndexOptions() {
         return {
             fieldOptions: [
@@ -175,3 +174,26 @@ module.exports = function (options) {
             return SearchEngine;
         });
 };
+
+/* require('search-index')({
+ nGramLength: [1, 2, 3],   // allow phrase search on phrases of length 1, 2 and 3 words
+ stopwords: []             // dont strip out stopwords
+ }, function(err, si) {
+ si.add([
+ {date: 1464122926, text: 'some text'},
+ {date: 1464122916, text: 'some another text'}
+ ], function (err) {
+ if (! err) {
+ var q = {};
+ q.query = { AND: [{'*': ['text']}] };
+ si.search(q, function (err, results) {
+ console.log(results);
+ })
+ }
+ })
+ })
+ 1. Use nGramLength to activate phrase search
+
+ 2. Set stopwords to []. By default, search-index will remove common english words like 'some' and 'another', 
+ so you need to empty your stopword list to allow them to
+  be searchable (you could also remove them from the stopword list individually) */

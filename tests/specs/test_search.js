@@ -99,5 +99,31 @@ describe('search', function () {
             })
             .fail(done);
     });
+
+    it('test multiple match within one text node', function (done) {
+
+        se.search("someone", "Accessible EPUB 3")
+            .then(function(hits) {
+                
+                hits[0].cfis.length.should.be.exactly(5);
+                hits[1].cfis.length.should.be.exactly(5);
+                hits[2].cfis.length.should.be.exactly(1);
+                hits[3].cfis.length.should.be.exactly(4);
+                hits[4].cfis.length.should.be.exactly(2);
+                done();
+            })
+            .fail(done);
+    });
+
+    it('Test query string match within two books,' +
+        ' should return only hits form Accessible EPUB 3', function (done) {
+
+        se.search("someone", "Accessible EPUB 3")
+            .then(function(hits) {
+                hits.length.should.be.exactly(5);
+                done();
+            })
+            .fail(done);
+    });
 });
 
