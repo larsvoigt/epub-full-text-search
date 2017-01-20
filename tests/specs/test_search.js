@@ -106,21 +106,46 @@ describe('search', function () {
             .then(function(hits) {
                 
                 hits[0].cfis.length.should.be.exactly(5);
-                hits[1].cfis.length.should.be.exactly(5);
-                hits[2].cfis.length.should.be.exactly(1);
-                hits[3].cfis.length.should.be.exactly(4);
-                hits[4].cfis.length.should.be.exactly(2);
+                hits[1].cfis.length.should.be.exactly(4);
+                hits[2].cfis.length.should.be.exactly(2);
+                hits[3].cfis.length.should.be.exactly(5);
+                hits[4].cfis.length.should.be.exactly(1);
                 done();
             })
             .fail(done);
     });
 
-    it('Test query string match within two books,' +
-        ' should return only hits form Accessible EPUB 3', function (done) {
+    it('Test query string match within multiple books,' +
+        ' should return only 5 hits form Accessible EPUB 3', function (done) {
 
         se.search("someone", "Accessible EPUB 3")
             .then(function(hits) {
                 hits.length.should.be.exactly(5);
+                done();
+            })
+            .fail(done);
+    });
+
+    it('Test query string match within multiple books,' +
+        ' should return only 1 hits form A First Course in Linear Algebra', function (done) {
+
+        se.search("someone", "A First Course in Linear Algebra")
+            .then(function(hits) {
+                hits.length.should.be.exactly(1);
+                done();
+            })
+            .fail(done);
+    });
+
+    // this test case need to fitted  if more than the books  
+    // A First Course in Linear Algebra and from Accessible EPUB 3 indexed
+    it('Test query string match within multiple books,' +
+        ' should return only 6 hits form A First Course in Linear Algebra and ' +
+        'from Accessible EPUB 3 ', function (done) {
+
+        se.search("someone", "*")
+            .then(function(hits) {
+                hits.length.should.be.exactly(6);
                 done();
             })
             .fail(done);
