@@ -41,7 +41,7 @@ function createRoutes() {
         searchEngine({})
             .then(function (se) {
 
-                se.search(q, bookTitle)
+                se.search(q[0], bookTitle)
                     .then(function (result) {
 
                         res.send(result);

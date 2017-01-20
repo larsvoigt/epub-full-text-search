@@ -3,11 +3,11 @@ var rimraf = require('rimraf');
 const searchEngine = require('../');
 var INDEX_DB = 'quick_test';
 //
-//var content = '../node_modules/epub3-samples';
-const CONTENT = '/home/alan/workspace/epub-full-text-search/quick-test/test_content';
+const CONTENT = '../node_modules/epub3-samples';
+// const CONTENT = '/home/alan/workspace/epub-full-text-search/quick-test/test_content';
 
-console.log(process.cwd());
-rimraf.sync('IndexControllerDB.json');
+console.log(process.cwd()); 
+ rimraf.sync('IndexControllerDB.json');
 
 function indexing(callback) {
 
@@ -37,7 +37,7 @@ function testSearch(q, booktitle) {
         .then(function (se) {
 
             // search(query, epubTitle, result_callback)
-            se.search([q], booktitle)
+            se.search(q, booktitle)
                 .then(function (results) {
 
                     if(results.length === 0) {
@@ -54,11 +54,9 @@ function testSearch(q, booktitle) {
 
                     console.log('total hits: ' + results.length + " (expected 15)");
 
-                    console.log("--------------------------------------------------------------------------");
-                    console.log("--------------------------------------------------------------------------");
-                    console.log('*** epubTitle: ' + results[0].epubTitle + ' ***');
-
                     for (i in results) {
+                        console.log("--------------------------------------------------------------------------");
+                        console.log('*** epubTitle: ' + results[i].epubTitle + ' ***');
                         console.log("--------------------------------------------------------------------------");
                         console.log('*** baseCfi: ' + results[i].baseCfi + ' ***');
                         console.log('*** href: ' + results[i].href + ' ***');
@@ -120,8 +118,9 @@ function testMatcher() {
 
 indexing(function () {
 
+    testSearch("someone", "Accessible EPUB 3");
     // testSearch("epub", "Accessible EPUB 3");
-    testSearch("그가 장난기", "");
+    //testSearch("그가 장난기", "");
     //testMatcher();
 
 });
