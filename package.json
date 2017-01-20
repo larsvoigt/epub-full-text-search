@@ -21,7 +21,7 @@
     "url": "https://github.com/larsvoigt/epub-full-text-search"
   },
   "engines": {
-    "node": ">=5",
+    "node": ">=6",
     "npm": ">= 2.11.3"
   },
   "devDependencies": {
