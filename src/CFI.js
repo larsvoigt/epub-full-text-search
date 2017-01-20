@@ -6,25 +6,30 @@ var mathML = require('./MathML.js');
 //var jsdom = require('jsdom').jsdom;
 
 
+/**************
+ * public
+ *************/
 exports.generate = function (data) {
 
     var html = fs.readFileSync(data.spineItemPath);
-    var $ = cheerio.load(html);
+    var $dom = cheerio.load(html);
     //var cfis = [];
     var needMathMlOffset = false;
 
 
 //var document = jsdom(html,{features:{FetchExternalResources: false}});
-    mathML.process($, function (needOffset) {
+    mathML.process($dom, function (needOffset) {
         needMathMlOffset = needOffset
     });
 
-    var elements = getElementsThatContainsQuery(data.query, $);
+    var elements = getAllTextNodesContainsQuery(data.searchFor, $dom);
 
     return generateCFIs(data.baseCfi, elements, needMathMlOffset);
 };
 
-
+/**************
+ * private
+ *************/
 function generateCFIs(cfiBase, elements, needOffset) {
 
     var cfiList = [];
@@ -70,23 +75,44 @@ function generateCFIs(cfiBase, elements, needOffset) {
     return cfiList;
 }
 
-function getElementsThatContainsQuery(query, $) {
+function getAllTextNodesContainsQuery(q, $) {
 
     var matches = [];
 
     $('body').find("*").contents().filter(function () {
-        return (this.nodeType === 3 && $(this).text().toLowerCase().indexOf(query[0]) > -1);
-    }).each(function () {
-        var startOffset = $(this).text().toLowerCase().indexOf(query[0]),
-            endOffset = startOffset + query[0].length;
 
-        matches.push({
-            textNode: $(this),
-            range: {
-                startOffset: startOffset,
-                endOffset: endOffset
-            }
-        });
+        return (this.nodeType === 3 && $(this).text().toLowerCase().indexOf(q) > -1);
+
+    }).each(function () {
+
+        var text = $(this).text();
+
+        // the query can match several times in the same text element
+        // so it necessary to get all indices 
+        const indices = allIndexOf(text, q);
+
+        for (var i in indices) {
+            var startOffset = indices[i],
+                endOffset = startOffset + q.length;
+
+            matches.push({
+                textNode: $(this),
+                range: {
+                    startOffset: startOffset,
+                    endOffset: endOffset
+                }
+            });
+        }
     });
     return matches;
+}
+
+function allIndexOf(str, q, matchCase = false) {
+
+    var indices = [];
+    if (!matchCase)
+        str = str.toLowerCase();
+    for (var pos = str.indexOf(q); pos !== -1; pos = str.indexOf(q, pos + 1))
+        indices.push(pos);
+    return indices;
 }
