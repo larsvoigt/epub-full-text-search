@@ -32,7 +32,7 @@ module.exports = function (options) {
         // normalize the directory path
         pathToEpubs = path.normalize(pathToEpubs);
 
-        return preparer.normalize(pathToEpubs)
+        return preparer.normalize(pathToEpubs, options)
             .then(function (dataSet) {
                 console.log("\n******************************************************\n");
                 console.log("Ready with normalize epub content\n\n".yellow);

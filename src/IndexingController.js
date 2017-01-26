@@ -1,37 +1,40 @@
 const low = require('lowdb'),
-      storage = require('lowdb/file-sync'),
-      constants = require("./Constants");
+    storage = require('lowdb/file-sync'),
+    path = require('path'),
+    constants = require("./Constants");
 
 var _db;
 
-function db() {
-    if(!_db) {
-        _db = low(constants.INDEXING_CONTROLLER_DB, {storage: storage})('epubs');
+function getDB(basePath) {
+    if (!_db) {
+        _db = low(path.join(basePath, constants.INDEXING_CONTROLLER_DB), {storage: storage})('epubs');
     }
     return _db;
 }
 
 module.exports = function () {
-    
+
     var IndexingController = {};
 
-    IndexingController.doWork = function (metaDataList) {
+    IndexingController.doWork = function (metaDataList, options) {
 
-        metaDataList.forEach(function(metaData) {
+        const db = getDB(options.indexPath);
+
+        metaDataList.forEach(function (metaData) {
 
             var query = {
                 title: metaData.title,
                 filename: metaData.filename
             };
 
-            const exists = db().find(query);
+            const exists = db.find(query);
 
             if (!exists) {
-                db().push(query);
+                db.push(query);
             }
             metaData.writeToIndex = !exists;
         });
-        
+
         return metaDataList;
     };
     return IndexingController;

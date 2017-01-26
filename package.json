@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -49,6 +49,7 @@
     "logrotate-stream": "^0.2.5",
     "lowdb": "^0.12.5",
     "minimist": "^1.2.0",
+    "os-homedir": "^1.0.2",
     "q": "^1.4.1",
     "readdirp": "^2.0.0",
     "search-index": "~0.8.10",

@@ -9,7 +9,7 @@ const Preparer = {};
 /**************
  * public
  *************/
-Preparer.normalize = function (pathToEpubs) {
+Preparer.normalize = function (pathToEpubs, options) {
 
     console.log('epub data folder: '.red + pathToEpubs.green + '\n\n');
 
@@ -17,9 +17,9 @@ Preparer.normalize = function (pathToEpubs) {
         .then(function (metaDataList) {
 
             console.log('Analyse folder:'.yellow + '\n');
-
-            metaDataList = indexingController.doWork(metaDataList);
-
+           
+            metaDataList = indexingController.doWork(metaDataList, options);
+            
             var dataSet = [];
 
             metaDataList.forEach(function(metaData) {
