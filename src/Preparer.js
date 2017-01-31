@@ -27,11 +27,11 @@ Preparer.normalize = function (pathToEpubs, options) {
                 var title = metaData.title;
 
                 if (metaData.writeToIndex) {
-                    console.log("\t--> epub title " + title.bold.blue + ' will be added to index \n');
+                    console.log("\t--> epub title " + title.bold.blue + ' will be added to index');
 
                     prepareEpubDataForIndexing(metaData, dataSet);
                 } else {
-                    console.log("\t--> epub title " + title.green + ' already indexed \n');
+                    console.log("\t--> epub title " + title.green + ' already indexed');
                 }
             });
             return dataSet;

@@ -137,8 +137,8 @@ describe('search', function () {
             .fail(done);
     });
 
-    // this test case need to fitted  if more than the books  
-    // A First Course in Linear Algebra and from Accessible EPUB 3 indexed
+    // Note: this test case need to be fitted if more than the books  
+    // A First Course in Linear Algebra and from Accessible EPUB 3 will be indexed
     it('Test query string match within multiple books,' +
         ' should return only 6 hits form A First Course in Linear Algebra and ' +
         'from Accessible EPUB 3 ', function (done) {
@@ -146,6 +146,16 @@ describe('search', function () {
         se.search("someone", "*")
             .then(function(hits) {
                 hits.length.should.be.exactly(6);
+                done();
+            })
+            .fail(done);
+    });
+
+    it('Test with empty paramters', function (done) {
+
+        se.search("", "")
+            .then(function(hits) {
+                hits.length.should.be.exactly(0);
                 done();
             })
             .fail(done);

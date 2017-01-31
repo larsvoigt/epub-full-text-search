@@ -27,7 +27,7 @@ function createRoutes() {
     WebService.routes['/search'] = function (req, res) {
 
         console.log('client request');
-        
+
         if (!req.query['q']) {
             res.status(500).send('Can`t found query parameter q -> /search?q=word');
             return;
@@ -37,7 +37,7 @@ function createRoutes() {
         var bookTitle = req.query['t'];
         bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
         console.log('bookTitle: ' + bookTitle);
-        
+
         searchEngine({})
             .then(function (se) {
 
@@ -52,7 +52,7 @@ function createRoutes() {
                     })
                     .fail(function (err) {
                         res.send(err);
-                        
+
                         se.close(function (err) {
                             if (err)
                                 console.log(err);
@@ -60,7 +60,7 @@ function createRoutes() {
                     });
             })
             .fail(function (err) {
-                console.log("error: " +  err);
+                console.log("error: " + err);
             });
     };
 
@@ -168,8 +168,10 @@ try {
     if (fs.statSync(pidFilePath)) {
         try {
             var pid = fs.readFileSync(pidFilePath, {encoding: 'utf-8'});
-            process.kill(pid, 0);
-            process.exit();
+            if (pid.length > 0) {
+                process.kill(pid, 0);
+                process.exit();
+            }
         } catch (e) {
             fs.unlinkSync(pidFilePath);
         }
@@ -177,11 +179,11 @@ try {
 } catch (err) {
 }
 
-
 require('daemon')({
     stdout: process.stdout,
     stderr: process.stderr
 });
+
 
 fs.writeFile(pidFilePath, process.pid);
 

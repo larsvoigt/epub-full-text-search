@@ -2,10 +2,7 @@
 
 const program = require('commander'),
     searchEngine = require('../src/SearchEngine'),
-    path = require('path'),
-    osHomedir = require('os-homedir');
-
-const INDEX_DB = path.join(osHomedir(), '.epubFullTextSearch');
+    path = require('path');
 
 program
     .version('0.2.1')
@@ -17,7 +14,7 @@ program
 
 if (program.writeToIndex) {
 
-    searchEngine({'indexPath': INDEX_DB})
+    searchEngine({})
         .then(function (se) {
             se.indexing(program.writeToIndex)
                 .then(function () {
