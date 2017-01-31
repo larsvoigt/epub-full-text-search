@@ -113,7 +113,7 @@ function terminator(sig) {
 
 WebService.setup = function (callback) {
 
-    WebService.ipaddress = process.env.IP || '127.0.0.1';
+    // WebService.ipaddress = process.env.IP;
     WebService.port = process.env.PORT || 8085;
 
     process.on('exit', function () {
