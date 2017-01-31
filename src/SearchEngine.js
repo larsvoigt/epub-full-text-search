@@ -10,14 +10,16 @@ const searchIndexSource = require('search-index'),
     fs = require('extfs'),
     _ = require('lodash'),
     preparer = require('./Preparer.js'),
-    cfi = require('./CFI.js');
+    cfi = require('./CFI.js'), 
+    osHomedir = require('os-homedir');
+
 
 
 module.exports = function (options) {
 
     var SearchEngine = {};
 
-    const INDEX_DB = 'full-text-search-DB'; // path to index-db 
+    const INDEX_DB = path.join(osHomedir(), '.epub-full-text-search');
     var defaultOption = {'indexPath': INDEX_DB};
     var options = _.isEmpty(options) ? defaultOption : options;
 
@@ -38,7 +40,7 @@ module.exports = function (options) {
                 console.log("Ready with normalize epub content\n\n".yellow);
 
                 if (dataSet.length > 0)
-                    console.log("Start writing epub-data to index.");
+                    console.log("Start indexing epub-data.");
                 else {
                     console.log("DONE! Nothing to do, epubs already indexed.\n\n");
                     return;
