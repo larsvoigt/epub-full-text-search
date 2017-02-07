@@ -6,12 +6,12 @@ const express = require('express'),
     async = require('async'),
     logrotate = require('logrotate-stream'),
     fs = require('fs'),
-    searchEngine = require('./SearchEngine');
+    searchEngine = require('./SearchEngine'),
+    constants = require("./Constants");
 
 
-var pidFilePath = __dirname + '/../bin/pidfile',
 //output = logrotate({file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true}),
-    WebService = {};
+const WebService = {};
 
 
 WebService.app = express();
@@ -156,7 +156,7 @@ WebService.startupMessages = function (callback) {
 WebService.start = function (callback) {
     //  Start the app on the specific interface (and port).
     WebService.app.listen(WebService.port, WebService.ipaddress, function () {
-        //TODO: loging
+        //TODO: logging
         console.log('%s: Epub search service started on %s:%d ...',
             new Date(), WebService.ipaddress, WebService.port);
     });
@@ -165,15 +165,15 @@ WebService.start = function (callback) {
 };
 
 try {
-    if (fs.statSync(pidFilePath)) {
+    if (fs.statSync(constants.PID_FILE)) {
         try {
-            var pid = fs.readFileSync(pidFilePath, {encoding: 'utf-8'});
+            var pid = fs.readFileSync(constants.PID_FILE, {encoding: 'utf-8'});
             if (pid.length > 0) {
                 process.kill(pid, 0);
                 process.exit();
             }
         } catch (e) {
-            fs.unlinkSync(pidFilePath);
+            fs.unlinkSync(constants.PID_FILE);
         }
     }
 } catch (err) {
@@ -185,7 +185,7 @@ require('daemon')({
 });
 
 
-fs.writeFile(pidFilePath, process.pid);
+fs.writeFile(constants.PID_FILE, process.pid);
 
 
 async.series([

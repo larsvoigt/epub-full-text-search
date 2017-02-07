@@ -6,21 +6,18 @@ const searchIndexSource = require('search-index'),
     Q = require('q'),
     searchIndex = Q.denodeify(searchIndexSource),
     colors = require('colors'),
-    path = require('path'),
     fs = require('extfs'),
     _ = require('lodash'),
     preparer = require('./Preparer.js'),
-    cfi = require('./CFI.js'), 
-    osHomedir = require('os-homedir');
-
+    cfi = require('./CFI.js'),
+    constants = require("./Constants");
 
 
 module.exports = function (options) {
 
     var SearchEngine = {};
-
-    const INDEX_DB = path.join(osHomedir(), '.epub-full-text-search');
-    var defaultOption = {'indexPath': INDEX_DB};
+    
+    var defaultOption = {'indexPath': constants.DATA_FOLDER};
     var options = _.isEmpty(options) ? defaultOption : options;
 
     SearchEngine.indexing = function (pathToEpubs) {
@@ -61,12 +58,12 @@ module.exports = function (options) {
     SearchEngine.search = function (searchFor, bookTitle) {
 
         bookTitle = bookTitle || DEFAULT_EPUB_TITLE; // * if bookTitle undefined return all hits
-        
+
         var q = {};
         q.query =
             {
                 AND: {
-                    'epubTitle': [preparer.normalizeEpupTitle(bookTitle)], 
+                    'epubTitle': [preparer.normalizeEpupTitle(bookTitle)],
                     'body': [searchFor]
                 }
             };
@@ -198,4 +195,4 @@ module.exports = function (options) {
 
  2. Set stopwords to []. By default, search-index will remove common english words like 'some' and 'another', 
  so you need to empty your stopword list to allow them to
-  be searchable (you could also remove them from the stopword list individually) */
+ be searchable (you could also remove them from the stopword list individually) */

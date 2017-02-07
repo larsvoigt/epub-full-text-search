@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
 const colors = require('colors'),
-       cproc = require('child_process'),
-          fs = require('fs'),
-       async = require('async');
+    cproc = require('child_process'),
+    fs = require('fs'),
+    async = require('async'),
+    constants = require("../src/Constants");
 
-var pidFilePath = __dirname + '/pidfile'; // todo: path available for Webservice.js 
 
 //console.log(__dirname);
 
 var getRunningPid = function (callback) {
-    fs.readFile(pidFilePath, {
+    fs.readFile(constants.PID_FILE, {
         encoding: 'utf-8'
     }, function (err, pid) {
         if (err) {
@@ -51,7 +51,7 @@ switch (process.argv[2]) {
         });
 
         process.stdout.write('\nStarting Epub search service\n'.bold);
-        
+
         getRunningPid(function (err, pid) {
             if (!err) {
                 process.stdout.write('\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
