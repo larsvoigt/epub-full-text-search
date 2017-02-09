@@ -45,6 +45,7 @@
     "epub3-samples": "0.0.1",
     "express": "~4.12.3",
     "extfs": "~0.0.7",
+    "forever": "^0.15.3",
     "lodash": "~3.10.1",
     "logrotate-stream": "^0.2.5",
     "lowdb": "^0.12.5",

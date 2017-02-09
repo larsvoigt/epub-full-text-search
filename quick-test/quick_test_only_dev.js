@@ -20,8 +20,8 @@ function indexing(callback) {
                     console.log('\nDONE! All is indexed.\n\n'.yellow);
                     se.close(function () {
                     });
-                    return callback();
-
+                        return callback();
+                    
                 }).fail(function (err) {
                     console.log(err);
                 });

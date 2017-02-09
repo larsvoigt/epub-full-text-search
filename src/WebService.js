@@ -6,11 +6,9 @@ const express = require('express'),
     async = require('async'),
     logrotate = require('logrotate-stream'),
     fs = require('fs'),
-    searchEngine = require('./SearchEngine'),
-    constants = require("./Constants");
+    searchEngine = require('./SearchEngine');
 
 
-//output = logrotate({file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true}),
 const WebService = {};
 
 
@@ -145,10 +143,10 @@ WebService.init = function (callback) {
 
 WebService.startupMessages = function (callback) {
     console.log('');
-    console.log('Epub-full-text-search Copyright (c) 2015-2016 Lars Voigt');
-    console.log('This program comes with ABSOLUTELY NO WARRANTY.');
-    console.log('This is free software, and you are welcome to redistribute it under certain conditions.');
-    console.log('For the full license, please visit: https://opensource.org/licenses/MIT');
+    console.log('[INFO] Epub-full-text-search Copyright (c) 2015-2017 Lars Voigt');
+    console.log('[INFO] This program comes with ABSOLUTELY NO WARRANTY.');
+    console.log('[INFO] This is free software, and you are welcome to redistribute it under certain conditions.');
+    console.log('[INFO] For the full license, please visit: https://opensource.org/licenses/MIT');
     console.log('');
     callback();
 };
@@ -157,35 +155,18 @@ WebService.start = function (callback) {
     //  Start the app on the specific interface (and port).
     WebService.app.listen(WebService.port, WebService.ipaddress, function () {
         //TODO: logging
-        console.log('%s: Epub search service started on %s:%d ...',
+        console.log('%s: Epub search started on %s:%d ...',
             new Date(), WebService.ipaddress, WebService.port);
+    }).on('error', function (e) {
+
+        if (e.code == 'EADDRINUSE') {
+            return callback('Cant start this Service -> IP address is in use!!!');
+        }
+            
     });
 
     callback();
 };
-
-try {
-    if (fs.statSync(constants.PID_FILE)) {
-        try {
-            var pid = fs.readFileSync(constants.PID_FILE, {encoding: 'utf-8'});
-            if (pid.length > 0) {
-                process.kill(pid, 0);
-                process.exit();
-            }
-        } catch (e) {
-            fs.unlinkSync(constants.PID_FILE);
-        }
-    }
-} catch (err) {
-}
-
-require('daemon')({
-    stdout: process.stdout,
-    stderr: process.stderr
-});
-
-
-fs.writeFile(constants.PID_FILE, process.pid);
 
 
 async.series([
@@ -195,6 +176,6 @@ async.series([
     WebService.start
 ], function (err) {
     if (err) {
-        console.log('[WebService] Error during startup: ' + err.message);
+        console.error('[WebService] Error during startup:' + err);
     }
 });

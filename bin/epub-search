@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const colors = require('colors'),
-    cproc = require('child_process'),
+    exec = require('child_process').exec,
     fs = require('fs'),
     async = require('async'),
     constants = require("../src/Constants");
@@ -9,107 +9,64 @@ const colors = require('colors'),
 
 //console.log(__dirname);
 
-var getRunningPid = function (callback) {
-    fs.readFile(constants.PID_FILE, {
-        encoding: 'utf-8'
-    }, function (err, pid) {
-        if (err) {
-            return callback(err);
-        }
-
-        try {
-            process.kill(parseInt(pid, 10), 0);
-            callback(null, parseInt(pid, 10));
-        } catch (e) {
-            callback(e);
-        }
-    });
-};
-
+var node;
 
 switch (process.argv[2]) {
+
 
     case 'writeToIndex':
         cproc.fork(__dirname + '/search-engine-CLI', process.argv);
         break;
     case 'status':
-        getRunningPid(function (err, pid) {
-            if (!err) {
-                process.stdout.write('\n\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n\n'.cyan);
-            } else {
-                process.stdout.write('\nEpub search service is not running\n'.bold);
-                process.stdout.write('\t"' + './epub-search start'.yellow + '" \tto launch the Epub search service\n\n');
-            }
-        })
+        node = exec('./node_modules/.bin/forever list');
         break;
 
     case 'start':
-
-        // Spawn a new Epub search service process
-        cproc.fork(__dirname + '/../src/WebService.js', {
-            env: process.env
-        });
-
         process.stdout.write('\nStarting Epub search service\n'.bold);
-
-        getRunningPid(function (err, pid) {
-            if (!err) {
-                process.stdout.write('\tEpub search service is running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
-            }
+        const logging = '-o ' + constants.DATA_FOLDER + '/out.log -e ' + constants.DATA_FOLDER + '/err.log ';
+        node = exec('./node_modules/.bin/forever start ' + logging + __dirname + '/../src/WebService.js', {
+            env: process.env
         });
         break;
 
     case 'stop':
-        getRunningPid(function (err, pid) {
-            if (!err) {
-                process.kill(pid, 'SIGTERM');
-                process.stdout.write('Stopping Epub search service. 42!\n')
-            } else {
-                process.stdout.write('Epub search service is already stopped.\n');
-            }
-        });
+        node = exec('./node_modules/.bin/forever stopall');
         break;
 
     case 'restart':
-        getRunningPid(function (err, pid) {
-            if (!err) {
-                process.kill(pid, 'SIGHUP');
-                process.stdout.write('\nRestarting Epub search service\n'.bold);
-            } else {
-                process.stdout.write('Epub search service could not be restarted, as a running instance could not be found.\n');
-            }
-        });
+        node = exec('./node_modules/.bin/forever restartall');
         break;
-
-
+    
     case 'log':
-        process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit'.red);
-        process.stdout.write('\n\n'.reset);
-        //cproc.spawn('tail', ['-F', './logs/output.log'], {
-        //    cwd: __dirname,
-        //    stdio: 'inherit'
-        //});
+
+        process.stdout.write('\nFind Epub search log-files here ' +  constants.DATA_FOLDER.bold + '\n\n');
+        // process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit'.red);
+        // process.stdout.write('\n\n'.reset);
+        // //cproc.spawn('tail', ['-F', './logs/output.log'], {
+        // //    cwd: __dirname,
+        // //    stdio: 'inherit'
+        // //});
         break;
 
     case 'upgrade':
-        async.series([
-            function (next) {
-                process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
-                require('child_process').execFile('/usr/bin/env', ['npm', 'i'], next);
-            }
-        ], function (err) {
-            if (err) {
-                process.stdout.write('\nError'.red + ': ' + err.message + '\n');
-            } else {
-                var message = 'Epub search service Upgrade Complete!';
-
-                var columns = process.stdout.columns;
-                var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
-
-                process.stdout.write('OK\n'.green);
-                process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
-            }
-        });
+        // async.series([
+        //     function (next) {
+        //         process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
+        //         require('child_process').execFile('/usr/bin/env', ['npm', 'i'], next);
+        //     }
+        // ], function (err) {
+        //     if (err) {
+        //         process.stdout.write('\nError'.red + ': ' + err.message + '\n');
+        //     } else {
+        //         var message = 'Epub search service Upgrade Complete!';
+        //
+        //         var columns = process.stdout.columns;
+        //         var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
+        //
+        //         process.stdout.write('OK\n'.green);
+        //         process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
+        //     }
+        // });
         break;
 
     default:
@@ -124,4 +81,19 @@ switch (process.argv[2]) {
         process.stdout.write('Options:\n');
         process.stdout.write('\t' + '-p'.yellow + '\tPath to epub folder which contains epub-book(s).\n\n');
         break;
+}
+
+
+if (node) {
+    node.stdout.on('data', (data) => {
+        console.log(`${data}`);
+    });
+
+    node.stderr.on('data', (data) => {
+        console.log(`${data}`.red);
+    });
+
+    node.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
 }
