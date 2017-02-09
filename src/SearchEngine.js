@@ -10,6 +10,7 @@ const searchIndexSource = require('search-index'),
     _ = require('lodash'),
     preparer = require('./Preparer.js'),
     cfi = require('./CFI.js'),
+    path = require('path'),
     constants = require("./Constants");
 
 
