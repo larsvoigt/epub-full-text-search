@@ -44,6 +44,15 @@ describe('suggestions', function () {
             .fail(done);
     });
 
+    it('should return empty list because match string must be longer than threshold (3)', function (done) {
+        se.match('ep', '')
+            .then(function (matches) {
+                matches.length.should.be.exactly(0);
+                done();
+            })
+            .fail(done);
+    });
+    
     it('should return all suggestions for string matrix', function (done) {
 
         se.match('matrix', '')

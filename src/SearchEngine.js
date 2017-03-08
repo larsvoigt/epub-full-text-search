@@ -112,6 +112,13 @@ module.exports = function (options) {
         if (!_.isString(epubTitle) && !_.isNull(epubTitle))
             console.error('epubTitle should be null or type string');
 
+        if(beginsWith.length < 3) {//match string must be longer than threshold (3)
+
+            var deferred = Q.defer();
+            deferred.resolve([]);
+            return deferred.promise;
+        }
+            
         var epubTitle = epubTitle || DEFAULT_EPUB_TITLE;
 
         return SearchEngine._match({beginsWith: beginsWith, type: 'ID'})
