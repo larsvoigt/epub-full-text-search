@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const colors = require('colors'),
-    exec = require('child_process').exec,
+    cproc = require('child_process'),
+    exec = cproc.exec,
     fs = require('fs'),
     async = require('async'),
     constants = require("../src/Constants");
