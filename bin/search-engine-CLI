@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const program = require('commander'),
-    searchEngine = require('../src/SearchEngine'),
-    path = require('path');
+import program from 'commander';
+import searchEngine from '../src/SearchEngine';
+import path from 'path';
 
 program
     .version('0.2.1')
@@ -15,19 +15,19 @@ program
 if (program.writeToIndex) {
 
     searchEngine({})
-        .then(function (se) {
+        .then((se) => {
             se.indexing(program.writeToIndex)
-                .then(function () {
+                .then(() => {
 
                     console.log('\nDONE! All is indexed.\n\n'.yellow);
-                    se.close(function () {
+                    se.close(() => {
                     });
 
-                }).fail(function (err) {
+                }).fail((err) => {
                 console.log(err);
             });
         })
-        .fail(function (err) {
+        .fail((err) => {
             console.log(err);
         });
 } else {

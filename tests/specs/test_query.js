@@ -1,11 +1,10 @@
 // ext libs
-const should = require('should'),
-    fs = require('fs'),
-    constants = require("../../src/Constants"),
-    searchEngine = require('../../'),
-    init = require('../init');
+import should from 'should';
+import constants from "../../src/Constants";
+import searchEngine from '../../';
+import init from '../init';
 
-describe('search', function () {
+describe('search', () => {
 
     var se;
 
@@ -32,7 +31,7 @@ describe('search', function () {
 
     it('without filename query', function(done) {
         this.timeout(10000);
-        var search = 'test';
+        const search = 'test';
         se.query({
             query: [
                 {
@@ -50,7 +49,7 @@ describe('search', function () {
     });
 
     it('filter by filename', function(done) {
-        var search = 'test';
+        const search = 'test';
         se.query({
             query: [
                 {

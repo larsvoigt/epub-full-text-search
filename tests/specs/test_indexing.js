@@ -1,9 +1,8 @@
-const should = require('should'),
-    rimraf = require('rimraf'),
-    fs = require('fs'),
-    searchEngine = require('../../'),
-    constants = require("../../src/Constants"),
-    init = require('../init');
+import should from 'should';
+import fs from 'fs';
+import searchEngine from '../../';
+import constants from "../../src/Constants";
+import init from '../init';
 
 describe('indexing ', function () {
 
@@ -34,11 +33,11 @@ describe('indexing ', function () {
 
         this.timeout(10000);
 
-        var emptyDir = 'emptyDir';
+        const emptyDir = 'emptyDir';
         fs.mkdirSync(emptyDir);
 
         se.indexing(emptyDir)
-            .then(function (info) {
+            .then((info) => {
                 done('Indexing was not rejected');
             })
             .fail(function(err) {
@@ -52,7 +51,7 @@ describe('indexing ', function () {
 
         this.timeout(100000);
         se.indexing(constants.EPUB)
-            .then(function () {
+            .then(() => {
                 done();
             });
     });

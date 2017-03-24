@@ -1,17 +1,17 @@
-const express = require('express'),
-      bodyParser = require('body-parser'),
-      cors = require('cors'),
-      searchEngine = require('../../../');
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import searchEngine from '../../../';
 
-var SampleService = function () {
+const SampleService = function ()  {
 
-    var self = this;
+    const self = this;
     self.app = express();
     // it possible to config cors for indivudal routes
     // https://www.npmjs.com/package/cors
     self.app.use(cors());
 
-    function setupVariables() {
+    function setupconstiables() {
 
         self.ipaddress = process.env.IP;
         self.port = process.env.PORT || 8080;
@@ -25,25 +25,25 @@ var SampleService = function () {
     function createRoutes() {
         self.routes = {};
 
-        self.routes['/search'] = function (req, res) {
+        self.routes['/search'] = function (req, res)  {
 
             if (!req.query['q']) {
                 res.status(500).send('Can`t found query parameter q -> /search?q=word');
                 return;
             }
 
-            var q = req.query['q'].toLowerCase().split(/\s+/);
+            const q = req.query['q'].toLowerCase().split(/\s+/);
             var bookTitle = req.query['t'];
             bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
 
             var se;
             searchEngine({})
-                .then(function (_se) {
+                .then((_se) => {
                     se = _se;
                     return se.search(q, bookTitle);
 
                 })
-                .then(function (result) {
+                .then((result) => {
                     res.send(result);
                     return se.close();
                 })
@@ -53,7 +53,7 @@ var SampleService = function () {
         };
 
 
-        self.routes['/matcher'] = function (req, res) {
+        self.routes['/matcher'] = function (req, res)  {
 
             if (!req.query['beginsWith']) {
                 res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
@@ -63,11 +63,11 @@ var SampleService = function () {
             var bookTitle = req.query['t'],
                 se;
             searchEngine({})
-                .then(function (_se) {
+                .then((_se) => {
                     se = _se;
                     return se.match(req.query['beginsWith'], bookTitle);
                 })
-                .then(function (matches) {
+                .then((matches) => {
                     res.send(matches);
 
                     return se.close();
@@ -103,20 +103,20 @@ var SampleService = function () {
 
     function setupTerminationHandlers() {
         //  Process on exit and signals.
-        process.on('exit', function () {
+        process.on('exit', () => {
             terminator();
         });
 
         ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
             'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function (element, index, array) {
-                process.on(element, function () {
+        ].forEach((element, index, array) => {
+                process.on(element, () => {
                     terminator(element);
                 });
             });
     }
 
-    self.startIndexing = function () {
+    self.startIndexing = function ()  {
 
         //var node_modules_path = require.resolve('body-parser').split('body-parser')[0]; // absolute path 
         //var epubs = node_modules_path + 'epub3-samples';
@@ -129,11 +129,11 @@ var SampleService = function () {
 
         var se;
         searchEngine({})
-            .then(function (_se) {
+            .then((_se) => {
                 se = _se;
                 return se.indexing(epubs);
             })
-            .then(function (info) {
+            .then((info) => {
                 console.log(info);
 
                 return se.close();
@@ -143,16 +143,16 @@ var SampleService = function () {
             });
     };
 
-    self.init = function () {
-        setupVariables();
+    self.init = function ()  {
+        setupconstiables();
         setupTerminationHandlers();
         initServer();
     };
 
 
-    self.start = function () {
+    self.start = function ()  {
         //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function () {
+        self.app.listen(self.port, self.ipaddress, () => {
             console.log('%s: Node server started on %s:%d ...',
                 new Date(), self.ipaddress, self.port);
         });
@@ -160,7 +160,7 @@ var SampleService = function () {
 
 };
 
-var sase = new SampleService();
+const sase = new SampleService();
 sase.startIndexing();
 sase.init();
 sase.start();
@@ -168,14 +168,14 @@ sase.start();
 
 //function watchForUpdateIndex(se, index, epubContent) {
 //
-//    var chokidar = require('chokidar'); // watch for changes in directory
+//    const chokidar from 'chokidar'); // watch for changes in directory
 //
 //    chokidar.watch(epubContent, {
 //        ignored: /[\/\\]\./,
 //        persistent: true
-//    }).on('all', function (event, path) {
+//    }).on('all', (event, path) => {
 //
-//        se.indexing(epubContent, function (info) {
+//        se.indexing(epubContent, (info) => {
 //            console.log(info);
 //        });
 //

@@ -1,37 +1,40 @@
-const async = require('async'),
-    xml2js = require('xml2js'),
-    parser = new xml2js.Parser(),
-    path = require('path'),
-    fs = require('fs'),
-    Q = require('q'),
+import xml2js from 'xml2js';
+import path from 'path';
+import fs from 'fs';
+import Q from 'q';
+
+
+const
     readdir = Q.denodeify(fs.readdir),
     readFile = Q.denodeify(fs.readFile),
-    parseString = Q.denodeify(parser.parseString),
-    stat = Q.denodeify(fs.stat);
+    stat = Q.denodeify(fs.stat),
+    parser = new xml2js.Parser(),
+    parseString = Q.denodeify(parser.parseString);
 
 exports.getMetaDatas = function (pathToEpubs) {
     return getRootFiles(pathToEpubs)
-        .then(function(containerFiles) {
-            return Q.all(containerFiles.map(function(file) {
+        .then((containerFiles) => {
+            return Q.all(containerFiles.map((file) => {
                 return getBookMetaData(file);
             }));
         })
-        .fail(function(err) {
+        .fail((err) => {
             console.error(err);
         });
 };
 
 function getRootFiles(dir, results) {
+
     results = results || [];
 
-    var container = 'container.xml';
+    const container = 'container.xml';
 
     return readdir(dir)
-        .then(function(files) {
-            return Q.all(files.map(function(file) {
+        .then((files) => {
+            return Q.all(files.map((file) => {
                 file = dir + '/' + file;
                 return stat(file)
-                    .then(function(fileStat) {
+                    .then((fileStat) => {
                         if (fileStat && fileStat.isDirectory()) {
                             return getRootFiles(file, results);
                         } else if (path.basename(file) === container) {
@@ -40,33 +43,33 @@ function getRootFiles(dir, results) {
                     });
             }));
         })
-        .then(function() {
+        .then(() => {
             return results;
         })
-        .fail(function(err) {
+        .fail((err) => {
             console.error(err)
         });
-};
+}
 
-var getBookMetaData = function (containerFile) {
+const getBookMetaData = function (containerFile) {
 
-    var root = path.dirname(path.dirname(containerFile)),
-        manifestPath;
+    const root = path.dirname(path.dirname(containerFile));
+    var manifestPath;
 
     return getManifest(containerFile)
-        .then(function(result) {
-            var opfFile = root + '/' + result;
+        .then((result) => {
+            const opfFile = root + '/' + result;
             manifestPath = path.dirname(root + '/' + result);
 
             return readFile(opfFile);
         })
-        .then(function(opfContent) {
+        .then((opfContent) => {
             return Q.all([
                 getBookTitle(opfContent),
                 getSpineItems(opfContent)
             ]);
         })
-        .then(function(results) {
+        .then((results) => {
             return {
                 filename: path.basename(root),
                 manifestPath: manifestPath,
@@ -74,21 +77,21 @@ var getBookMetaData = function (containerFile) {
                 spineItems: results[1]
             };
         })
-        .fail(function(err) {
+        .fail((err) => {
             console.error(err);
         });
-}
+};
 
 function getManifest(containerFile) {
 
     return readFile(containerFile)
-        .then(function (data) {
+        .then((data) => {
             return parseString(data);
         })
-        .then(function (result) {
+        .then((result) => {
             return result.container.rootfiles[0].rootfile[0].$['full-path'];
         })
-        .fail(function(err) {
+        .fail((err) => {
             if (err && err.code === 'ENOENT') {
                 throw new Error('File ' + containerFile + 'doesn\'t exist');
             }
@@ -98,44 +101,44 @@ function getManifest(containerFile) {
 
 function getBookTitle(data) {
     return parseString(data)
-        .then(function (result) {
-            var metadata = result.package.metadata[0];
+        .then((result) => {
+            const metadata = result.package.metadata[0];
             return metadata['dc:title'][0]._ || metadata['dc:title'][0];
         })
-        .fail(function(err) {
+        .fail((err) => {
             console.error(err);
         });
 }
 
 function getSpineItems(data) {
-    return parseString(data)
-        .then(function (result) {
-            var manifest = result.package.manifest[0];
-            var spine = result.package.spine[0];
+    
+    return parseString(data).then((r) => {
+        
+        const manifest = r.package.manifest[0];
+        const spine = r.package.spine[0];
 
-            var result = [];
+        const result = [];
 
-            for (var i = 0; i < spine.itemref.length; i++) {
+        for (var i = 0; i < spine.itemref.length; i++) {
 
-                var spineItem = manifest.item.filter(
-                    function (value) {
+            const spineItem = manifest.item.filter((value) => {
 
-                        if (value.$.id === spine.itemref[i].$.idref)
-                            return value;
-                    });
+                if (value.$.id === spine.itemref[i].$.idref)
+                    return value;
+            });
 
 
-                var spineitem = {};
-                spineitem.id = spineItem[0].$.id;
-                spineitem.href = spineItem[0].$.href;
-                spineitem.baseCfi = "/" + '6' + "/" + (i+1)*2 + '[' + spineitem.id +']!';
+            const spineitem = {};
+            spineitem.id = spineItem[0].$.id;
+            spineitem.href = spineItem[0].$.href;
+            spineitem.baseCfi = "/" + '6' + "/" + (i + 1) * 2 + '[' + spineitem.id + ']!';
 
-                result.push(spineitem);
-            }
+            result.push(spineitem);
+        }
 
-            return result;
-        })
-        .fail(function(err) {
+        return result;
+    })
+        .fail((err) => {
             console.error(err);
         })
 }

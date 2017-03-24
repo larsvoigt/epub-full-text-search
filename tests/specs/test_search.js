@@ -1,11 +1,10 @@
 // ext libs
-const should = require('should'),
-    fs = require('fs'),
-    constants = require("../../src/Constants"),
-    searchEngine = require('../../'),
-    init = require('../init');
+import should from 'should';
+import constants from "../../src/Constants";
+import searchEngine from '../../';
+import init from '../init';
 
-describe('search', function () {
+describe('search', () => {
 
     var se;
 
@@ -30,7 +29,7 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('count hits of keyword', function (done) {
+    it('count hits of keyword', (done) => {
         se.search("epub", "Accessible EPUB 3")
             .then(function(hits) {
                 hits.length.should.be.exactly(15);
@@ -39,7 +38,7 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('should find no hits if keyword is not included', function (done) {
+    it('should find no hits if keyword is not included', (done) => {
 
         se.search("Accessi", "Accessible EPUB 3")
             .then(function(hits) {
@@ -49,18 +48,18 @@ describe('search', function () {
             .fail(done);
     });
 
-    // it('should return the right hits', function (done) {
+    // it('should return the right hits', (done) => {
     //
     //     se.search("epub", "Accessible EPUB 3")
     //         .then(function(hits) {
-    //             var data = JSON.parse(fs.readFileSync(constants.HITS_AS_JSON));
+    //             const data = JSON.parse(fs.readFileSync(constants.HITS_AS_JSON));
     //             hits.should.eql(data);
     //             done();
     //         })
     //         .fail(done);
     // });
 
-    it('should return always the same hits', function (done) {
+    it('should return always the same hits', (done) => {
 
         var first;
 
@@ -76,7 +75,7 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('check hit properties are set', function (done) {
+    it('check hit properties are set', (done) => {
 
         se.search("epub", "Accessible EPUB 3")
             .then(function(hits) {
@@ -100,7 +99,7 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('test multiple match within one text node', function (done) {
+    it('test multiple match within one text node', (done) => {
 
         se.search("someone", "Accessible EPUB 3")
             .then(function(hits) {
@@ -116,7 +115,7 @@ describe('search', function () {
     });
 
     it('Test query string match within multiple books,' +
-        ' should return only 5 hits form Accessible EPUB 3', function (done) {
+        ' should return only 5 hits form Accessible EPUB 3', (done) => {
 
         se.search("someone", "Accessible EPUB 3")
             .then(function(hits) {
@@ -127,7 +126,7 @@ describe('search', function () {
     });
 
     it('Test query string match within multiple books,' +
-        ' should return only 1 hits form A First Course in Linear Algebra', function (done) {
+        ' should return only 1 hits form A First Course in Linear Algebra', (done) => {
 
         se.search("someone", "A First Course in Linear Algebra")
             .then(function(hits) {
@@ -141,7 +140,7 @@ describe('search', function () {
     // A First Course in Linear Algebra and from Accessible EPUB 3 will be indexed
     it('Test query string match within multiple books,' +
         ' should return only 6 hits form A First Course in Linear Algebra and ' +
-        'from Accessible EPUB 3 ', function (done) {
+        'from Accessible EPUB 3 ', (done) => {
 
         se.search("someone", "*")
             .then(function(hits) {
@@ -151,7 +150,7 @@ describe('search', function () {
             .fail(done);
     });
 
-    it('Test with empty paramters', function (done) {
+    it('Test with empty paramters', (done) => {
 
         se.search("", "")
             .then(function(hits) {

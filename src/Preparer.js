@@ -1,30 +1,31 @@
-const fs = require('fs'),
-    cheerio = require('cheerio'),
-    parser = require('./EpubMetaDataParser'),
-    indexingController = require('./IndexingController')();
+import fs from 'fs';
+import cheerio from 'cheerio';
+import parser from './EpubMetaDataParser';
+import ic from  './IndexingController';
 
+const indexingController = ic();
 
 const Preparer = {};
 
 /**************
  * public
  *************/
-Preparer.normalize = function (pathToEpubs, options) {
+Preparer.normalize = function (pathToEpubs, options)  {
 
     console.log('epub data folder: '.red + pathToEpubs.green + '\n\n');
 
     return parser.getMetaDatas(pathToEpubs)
-        .then(function (metaDataList) {
+        .then((metaDataList) => {
 
             console.log('Analyse folder:'.yellow + '\n');
            
             metaDataList = indexingController.doWork(metaDataList, options);
-            
-            var dataSet = [];
 
-            metaDataList.forEach(function(metaData) {
+            const dataSet = [];
+
+            metaDataList.forEach((metaData) => {
                 //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
-                var title = metaData.title;
+                const title = metaData.title;
 
                 if (metaData.writeToIndex) {
                     console.log("\t--> epub title " + title.bold.blue + ' will be added to index');
@@ -38,7 +39,7 @@ Preparer.normalize = function (pathToEpubs, options) {
         });
 };
 
-Preparer.normalizeEpupTitle = function (str) {
+Preparer.normalizeEpupTitle = function (str)  {
     return str.replace(/\s/g,'').toLowerCase();
 };
 
@@ -58,9 +59,9 @@ function prepareEpubDataForIndexing(metaData, data) {
         metaData.spineItems[0].id + ':' + metaData.title
     );
 
-    metaData.spineItems.forEach(function(spineItem) {
-        var spineItemPath = metaData.manifestPath + '/' + spineItem.href;
-        var json = htmlToJSON(spineItemPath);
+    metaData.spineItems.forEach( (spineItem) => {
+        const spineItemPath = metaData.manifestPath + '/' + spineItem.href;
+        const json = htmlToJSON(spineItemPath);
         setMetaData(json, metaData, spineItem);
         data.push(json);
     });
@@ -78,19 +79,19 @@ function setMetaData(jsonDoc, meta, spineItemMeta) {
 
 function htmlToJSON(file) {
 
-    var doc = {};
+    const doc = {};
 
     try {
-        var html = fs.readFileSync(file);
+        const html = fs.readFileSync(file);
 
-        var $ = cheerio.load(html);
+        const $ = cheerio.load(html);
 
-        $("title").each(function (i, e) {
-            var title = $(e);
+        $("title").each((i, e) => {
+            const title = $(e);
             doc.title = trim(title.text());
         });
-        $("body").each(function (i, e) {
-            var body = $(e);
+        $("body").each((i, e)=> {
+            const body = $(e);
             doc.body = trim(body.text());
 
         });

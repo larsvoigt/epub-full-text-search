@@ -1,10 +1,11 @@
 'use strict';
 
-var rimraf = require('rimraf'),
-    constants = require("../src/Constants"),
-    Q = require('q'),
-    rm = Q.denodeify(rimraf),
-    initialized = false;
+import rimraf from 'rimraf';
+import constants from "../src/Constants";
+import Q from 'q';
+
+const rm = Q.denodeify(rimraf);
+var initialized = false;
 
 module.exports = function() {
     if(initialized) {

@@ -2,24 +2,24 @@
 
 const DEFAULT_EPUB_TITLE = '*';
 
-const searchIndexSource = require('search-index'),
-    Q = require('q'),
-    searchIndex = Q.denodeify(searchIndexSource),
-    colors = require('colors'),
-    fs = require('extfs'),
-    _ = require('lodash'),
-    preparer = require('./Preparer.js'),
-    cfi = require('./CFI.js'),
-    path = require('path'),
-    constants = require("./Constants");
+import searchIndexSource from 'search-index';
+import Q  from 'q';
+import colors from 'colors';
+import fs from 'extfs';
+import _ from 'lodash';
+import preparer from './Preparer.js';
+import cfi from './CFI.js';
+import path from 'path';
+import constants from "./Constants";
 
+const searchIndex = Q.denodeify(searchIndexSource);
 
 module.exports = function (options) {
 
-    var SearchEngine = {};
-    
-    var defaultOption = {'indexPath': constants.DATA_FOLDER};
-    var options = _.isEmpty(options) ? defaultOption : options;
+    const SearchEngine = {};
+
+    const defaultOption = {'indexPath': constants.DATA_FOLDER};
+    options = _.isEmpty(options) ? defaultOption : options;
 
     SearchEngine.indexing = function (pathToEpubs) {
 
@@ -33,7 +33,7 @@ module.exports = function (options) {
         pathToEpubs = path.normalize(pathToEpubs);
 
         return preparer.normalize(pathToEpubs, options)
-            .then(function (dataSet) {
+            .then((dataSet) => {
                 console.log("\n******************************************************\n");
                 console.log("Ready with normalize epub content\n\n".yellow);
 
@@ -50,7 +50,7 @@ module.exports = function (options) {
 
     SearchEngine.add = function (jsonDoc) {
 
-        var ids = jsonDoc.FirstSpineItemsId;
+        const ids = jsonDoc.FirstSpineItemsId;
         delete jsonDoc.FirstSpineItemsId;
 
         return SearchEngine._add(jsonDoc, getIndexOptions());
@@ -58,13 +58,13 @@ module.exports = function (options) {
 
     SearchEngine.search = function (searchFor, bookTitle) {
 
-        bookTitle = bookTitle || DEFAULT_EPUB_TITLE; // * if bookTitle undefined return all hits
+       const title = bookTitle || DEFAULT_EPUB_TITLE; // * if bookTitle undefined return all hits
 
-        var q = {};
+        const q = {};
         q.query =
             {
                 AND: {
-                    'epubTitle': [preparer.normalizeEpupTitle(bookTitle)],
+                    'epubTitle': [preparer.normalizeEpupTitle(title)],
                     'body': [searchFor]
                 }
             };
@@ -75,14 +75,14 @@ module.exports = function (options) {
     SearchEngine.query = function (query, searchFor) {
 
         return SearchEngine._search(query)
-            .then(function (result) {
+            .then((result) => {
                 const hits = [];
 
                 if (!result.hits) {
                     return hits;
                 }
 
-                result.hits.forEach(function (hit) {
+                result.hits.forEach((hit) => {
                     const document = hit.document,
                         idData = document.id.split(':');
 
@@ -112,18 +112,18 @@ module.exports = function (options) {
         if (!_.isString(epubTitle) && !_.isNull(epubTitle))
             console.error('epubTitle should be null or type string');
 
-        if(beginsWith.length < 3) {//match string must be longer than threshold (3)
+        if (beginsWith.length < 3) {//match string must be longer than threshold (3)
 
-            var deferred = Q.defer();
+            const deferred = Q.defer();
             deferred.resolve([]);
             return deferred.promise;
         }
-            
-        var epubTitle = epubTitle || DEFAULT_EPUB_TITLE;
+
+        const title = epubTitle || DEFAULT_EPUB_TITLE;
 
         return SearchEngine._match({beginsWith: beginsWith, type: 'ID'})
-            .then(function (matches) {
-                return filterMatches(matches, epubTitle);
+            .then((matches) => {
+                return filterMatches(matches, title);
             });
     };
 
@@ -154,13 +154,13 @@ module.exports = function (options) {
     function filterMatches(matches, epubTitle) {
 
         return matches
-            .map(function (match) {
+            .map((match) => {
 
                 if (epubTitle === '*') {
                     // if epubTitle undefined return all matches
                     return match[0];
                 } else {
-                    var titles = match[1].map(function (id) {
+                    const titles = match[1].map((id) => {
                         // id = spineitemid:epubtitle
                         return id.split(':')[1]
                     });
@@ -171,7 +171,7 @@ module.exports = function (options) {
     }
 
     return searchIndex(options)
-        .then(function (si) {
+        .then((si) => {
             SearchEngine.si = si;
             SearchEngine._search = Q.nbind(si.search, si);
             SearchEngine._close = Q.nbind(si.close, si);
@@ -189,11 +189,11 @@ module.exports = function (options) {
  si.add([
  {date: 1464122926, text: 'some text'},
  {date: 1464122916, text: 'some another text'}
- ], function (err) {
+ ], (err) => {
  if (! err) {
- var q = {};
+ const q = {};
  q.query = { AND: [{'*': ['text']}] };
- si.search(q, function (err, results) {
+ si.search(q, (err, results) => {
  console.log(results);
  })
  }

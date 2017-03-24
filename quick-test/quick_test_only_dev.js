@@ -1,7 +1,7 @@
-var fs = require('fs');
-var rimraf = require('rimraf');
-const searchEngine = require('../');
-var INDEX_DB = 'quick_test';
+import rimraf from 'rimraf';
+import searchEngine from '../';
+
+const INDEX_DB = 'quick_test';
 //
 const CONTENT = '../node_modules/epub3-samples';
 // const CONTENT = '/home/alan/workspace/epub-full-text-search/quick-test/test_content';
@@ -12,21 +12,21 @@ console.log(process.cwd());
 function indexing(callback) {
 
     searchEngine({'indexPath': INDEX_DB})
-        .then(function (se) {
+        .then((se) => {
 
             se.indexing(CONTENT)
-                .then(function () {
+                .then(() => {
 
                     console.log('\nDONE! All is indexed.\n\n'.yellow);
-                    se.close(function () {
+                    se.close(() => {
                     });
                         return callback();
                     
-                }).fail(function (err) {
+                }).fail((err) => {
                     console.log(err);
                 });
         })
-        .fail(function (err) {
+        .fail((err) => {
             console.log(err);
         });
 }
@@ -34,22 +34,22 @@ function indexing(callback) {
 function testSearch(q, booktitle) {
 
     searchEngine({'indexPath': INDEX_DB})
-        .then(function (se) {
+        .then((se) => {
 
             // search(query, epubTitle, result_callback)
             se.search(q, booktitle)
-                .then(function (results) {
+                .then((results) => {
 
                     if(results.length === 0) {
                         console.log('Find nothing!');
                         return;
                     }
                     
-                    //var s = fs.createWriteStream('hits.json');
+                    //const s = fs.createWriteStream('hits.json');
                     //s.write(JSON.stringify(results));
                     //s.end();
 
-                    se.close(function () {
+                    se.close(() => {
                     });
 
                     console.log('total hits: ' + results.length + " (expected 15)");
@@ -63,20 +63,20 @@ function testSearch(q, booktitle) {
                         console.log('*** cfis: ' + results[i].cfis.length + ' hits\n------> ' + results[i].cfis.join('\n------> ') + '\n***');
                     }
                 })
-                .fail(function (err) {
+                .fail((err) => {
                     console.log(err);
                 });
         });
 
-    //se.search(["epub"], "Accessi", function (results) {
+    //se.search(["epub"], "Accessi", (results) => {
 //
 //    console.log("--------------------------------------------------------------------------");
 //    console.log('total hits: ' + results.length + " (expected 0)");
 //});
 
-    //    se.search(["matrix"], "", function (results) {
+    //    se.search(["matrix"], "", (results) => {
 //
-//        //var s = fs.createWriteStream('hits.json');
+//        //const s = fs.createWriteStream('hits.json');
 //        //s.write(JSON.stringify(results));
 //        //s.end();
 //        //
@@ -98,25 +98,25 @@ function testSearch(q, booktitle) {
 
 function testMatcher() {
 
-    searchEngine({'indexPath': INDEX_DB}, function (err, se) {
+    searchEngine({'indexPath': INDEX_DB}, (err, se) => {
 
         if (err)
             return console.log(err);
 
-        se.match("epu", "", function (err, results) {
+        se.match("epu", "", (err, results) => {
 
             if (err)
                 console.error(err);
 
             console.log('total hits: ' + results.length + " (expected 4)");
             console.log('suggestions: ' + results + "");
-            se.close(function () {
+            se.close(() => {
             });
         });
     });
 }
 
-indexing(function () {
+indexing(() => {
 
     testSearch("someone", "Accessible EPUB 3");
     // testSearch("epub", "Accessible EPUB 3");

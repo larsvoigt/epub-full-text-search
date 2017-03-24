@@ -1,6 +1,5 @@
-const 
-    path = require('path'),
-    osHomedir = require('os-homedir');
+import path from 'path';
+import osHomedir from 'os-homedir';
 
 function define(name, value) {
     Object.defineProperty(exports, name, {

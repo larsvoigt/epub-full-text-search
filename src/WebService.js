@@ -1,16 +1,12 @@
 // impl restart 
 // logging request 
-const express = require('express'),
-    bodyParser = require('body-parser'),
-    cors = require('cors'),
-    async = require('async'),
-    logrotate = require('logrotate-stream'),
-    fs = require('fs'),
-    searchEngine = require('./SearchEngine');
-
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import async from 'async';
+import searchEngine from './SearchEngine';
 
 const WebService = {};
-
 
 WebService.app = express();
 // it possible to config cors for indivudal routes
@@ -22,7 +18,7 @@ WebService.app.use(cors());
 function createRoutes() {
     WebService.routes = {};
 
-    WebService.routes['/search'] = function (req, res) {
+    WebService.routes['/search'] = function (req, res)  {
 
         console.log('client request');
 
@@ -31,69 +27,69 @@ function createRoutes() {
             return;
         }
 
-        var q = req.query['q'].toLowerCase().split(/\s+/);
+        const q = req.query['q'].toLowerCase().split(/\s+/);
         var bookTitle = req.query['t'];
         bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
         console.log('bookTitle: ' + bookTitle);
 
         searchEngine({})
-            .then(function (se) {
+            .then((se) => {
 
                 se.search(q[0], bookTitle)
-                    .then(function (result) {
+                    .then((result) => {
 
                         res.send(result);
-                        se.close(function (err) {
+                        se.close((err) => {
                             if (err)
                                 console.log(err);
                         });
                     })
-                    .fail(function (err) {
+                    .fail((err) => {
                         res.send(err);
 
-                        se.close(function (err) {
+                        se.close((err) => {
                             if (err)
                                 console.log(err);
                         });
                     });
             })
-            .fail(function (err) {
+            .fail((err) => {
                 console.log("error: " + err);
             });
     };
 
 
-    WebService.routes['/matcher'] = function (req, res) {
+    WebService.routes['/matcher'] = function (req, res)  {
 
         if (!req.query['beginsWith']) {
             res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
             return;
         }
 
-        var bookTitle = req.query['t'];
+        const bookTitle = req.query['t'];
         searchEngine({})
-            .then(function (se) {
+            .then((se) => {
 
                 se.match(req.query['beginsWith'], bookTitle)
-                    .then(function (matches) {
+                    .then((matches) => {
 
                         res.send(matches);
 
-                        se.close(function (err) {
+                        se.close((err) => {
                             if (err)
                                 console.log(err);
                         });
                     })
-                    .fail(function (err) {
+                    .fail((err) => {
 
-                        se.close(function (err) {
+                        se.close((err) => {
                             if (err)
                                 console.log(err);
                         });
                         console.log(err);
                     });
             })
-            .fail(function (err) {
+            .fail((err) => {
                 console.log(err);
             });
     };
@@ -109,16 +105,16 @@ function terminator(sig) {
 }
 
 
-WebService.setup = function (callback) {
+WebService.setup = function (callback)  {
 
     // WebService.ipaddress = process.env.IP;
     WebService.port = process.env.PORT || 8085;
 
-    process.on('exit', function () {
+    process.on('exit', () => {
         terminator();
     });
 
-    process.on('SIGTERM', function () {
+    process.on('SIGTERM', () => {
         terminator();
     });
 
@@ -126,7 +122,7 @@ WebService.setup = function (callback) {
 };
 
 
-WebService.init = function (callback) {
+WebService.init = function (callback)  {
 
     createRoutes();
     WebService.app.use(bodyParser.urlencoded({extended: true}));
@@ -134,14 +130,14 @@ WebService.init = function (callback) {
     // WebService.app.use(express.static('example/as-a-service/express'));
 
     //  Add handlers for the app (from the routes).
-    for (var r in WebService.routes) {
+    for (const r in WebService.routes) {
         WebService.app.get(r, WebService.routes[r]);
     }
     callback();
 };
 
 
-WebService.startupMessages = function (callback) {
+WebService.startupMessages = function (callback)  {
     console.log('');
     console.log('[INFO] Epub-full-text-search Copyright (c) 2015-2017 Lars Voigt');
     console.log('[INFO] This program comes with ABSOLUTELY NO WARRANTY.');
@@ -151,18 +147,18 @@ WebService.startupMessages = function (callback) {
     callback();
 };
 
-WebService.start = function (callback) {
+WebService.start = function (callback)  {
     //  Start the app on the specific interface (and port).
-    WebService.app.listen(WebService.port, WebService.ipaddress, function () {
+    WebService.app.listen(WebService.port, WebService.ipaddress, () => {
         //TODO: logging
         console.log('%s: Epub search started on %s:%d ...',
             new Date(), WebService.ipaddress, WebService.port);
-    }).on('error', function (e) {
+    }).on('error', (e) => {
 
         if (e.code == 'EADDRINUSE') {
             return callback('Cant start this Service -> IP address is in use!!!');
         }
-            
+
     });
 
     callback();
@@ -174,7 +170,7 @@ async.series([
     WebService.init,
     WebService.startupMessages,
     WebService.start
-], function (err) {
+], (err) => {
     if (err) {
         console.error('[WebService] Error during startup:' + err);
     }

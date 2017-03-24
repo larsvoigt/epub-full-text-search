@@ -134,14 +134,14 @@ $  curl -XGET "http://localhost:8085/matcher?beginsWith=epu"
 ## For library use
 
 ```javascript
-const epubSearch = require('epub-full-text-search');
-var options = {'indexPath': 'path_to_index-DB'}; // an own path can be set optional
+import epubSearch from 'epub-full-text-search';
+const options = {'indexPath': 'path_to_index-DB'}; // an own path can be set optional
 epubSearch(options || {})
-    .then(function (searchInstance) {
+    .then((searchInstance) => {
         
         // INDEXING (write your **unzipped** EPUB3-Document to index)
         searchInstance.indexing('your_epub(s)_directory')
-            .then(function (info) {
+            .then((info) => {
                console.log(info);
             })
             .fail(function(err) {
@@ -151,7 +151,7 @@ epubSearch(options || {})
         // SEARCHING
         // search(query, epubTitle)
         searchInstance.search('epub', "Accessible EPUB 3")
-            .then(function (results) {
+            .then((results) => {
                 console.log(results);
             })
             .fail(function(err) {
@@ -160,7 +160,7 @@ epubSearch(options || {})
             
         // COMPLEX SEARCHING
         // query(query, epubTitle)
-        var search = 'epub';
+        const search = 'epub';
         searchInstance.query({
             query: [
                 {
@@ -171,7 +171,7 @@ epubSearch(options || {})
                 }
             ]
         }, search)
-            .then(function (results) {
+            .then((results) => {
                 console.log(results);
             })
             .fail(function(err) {
@@ -181,7 +181,7 @@ epubSearch(options || {})
         // SEARCH SUGGESTIONS
         // match(beginsWith, epubTitle)
         searchInstance.match('matrix', 'A First Course in Linear Algebra')
-            .then(function (results) {
+            .then((results) => {
                 console.log(results);
             })
             .fail(function(err) {

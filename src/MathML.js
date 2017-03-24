@@ -1,5 +1,5 @@
-//var mjAPI = require("./node_modules/MathJax-node/lib/mj-page.js");
-//var typeset = mjAPI.typeset;
+//const mjAPI from "./node_modules/MathJax-node/lib/mj-page.js");
+//const typeset = mjAPI.typeset;
 //mjAPI.config({"v1.0-compatible": false, SVG: {blacker: 1}});
 //mjAPI.start();
 
@@ -12,9 +12,9 @@
 // Unfortunately the engine will not run. Ideas?
 // 
 // Now the following hack will temporally fill this gap.
-exports.process = function ($, callback) {
+exports.process = function ($, callback)  {
 
-    var mathNodes = $('mml\\:math, math').get();
+    const mathNodes = $('mml\\:math, math').get();
 
     if (mathNodes.length > 0) {
 
@@ -25,7 +25,7 @@ exports.process = function ($, callback) {
 
 
 //function processMath($) {
-//    typeset({format: "MathML", html: $("*").html()}, function (data) {
+//    typeset({format: "MathML", html: $("*").html()}, (data) => {
 //
 //        console.log(data);
 //    }

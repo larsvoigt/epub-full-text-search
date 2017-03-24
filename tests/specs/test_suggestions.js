@@ -1,9 +1,9 @@
-const should = require('should'),
-    searchEngine = require('../../'),
-    constants = require("../../src/Constants"),
-    init = require('../init');
+import should from 'should';
+import constants from "../../src/Constants";
+import searchEngine from '../../';
+import init from '../init';
 
-describe('suggestions', function () {
+describe('suggestions', () => {
 
     var se;
 
@@ -28,9 +28,9 @@ describe('suggestions', function () {
             .fail(done);
     });
 
-    it('should return all suggestions for string epub', function (done) {
+    it('should return all suggestions for string epub', (done) => {
         se.match('epub', '')
-            .then(function (matches) {
+            .then((matches) => {
                 console.log(matches);
                 matches.length.should.be.exactly(4);
                 matches[0].should.be.exactly('epub');
@@ -44,19 +44,19 @@ describe('suggestions', function () {
             .fail(done);
     });
 
-    it('should return empty list because match string must be longer than threshold (3)', function (done) {
+    it('should return empty list because match string must be longer than threshold (3)', (done) => {
         se.match('ep', '')
-            .then(function (matches) {
+            .then((matches) => {
                 matches.length.should.be.exactly(0);
                 done();
             })
             .fail(done);
     });
     
-    it('should return all suggestions for string matrix', function (done) {
+    it('should return all suggestions for string matrix', (done) => {
 
         se.match('matrix', '')
-            .then(function (matches) {
+            .then((matches) => {
                 console.log(matches);
                 matches.length.should.be.exactly(2);
                 matches[0].should.be.exactly('matrix');
@@ -67,10 +67,10 @@ describe('suggestions', function () {
             .fail(done);
     });
 
-    it('suggestions should be return nothing', function (done) {
+    it('suggestions should be return nothing', (done) => {
 
         se.match('matrix', 'Accessible EPUB 3')
-            .then(function (matches) {
+            .then((matches) => {
                 console.log(matches);
                 matches.length.should.be.exactly(0);
 
@@ -79,10 +79,10 @@ describe('suggestions', function () {
             .fail(done);
     });
 
-    it('suggestions should be return matches for A First Course in Linear Algebra', function (done) {
+    it('suggestions should be return matches for A First Course in Linear Algebra', (done) => {
 
         se.match('matrix', 'A First Course in Linear Algebra')
-            .then(function (matches) {
+            .then((matches) => {
                 console.log(matches);
                 matches.length.should.be.exactly(2);
                 matches[0].should.be.exactly('matrix');
@@ -93,10 +93,10 @@ describe('suggestions', function () {
             .fail(done);
     });
 
-    it('suggestions should be return matches for Accessible EPUB 3', function (done) {
+    it('suggestions should be return matches for Accessible EPUB 3', (done) => {
 
         se.match('epub', 'Accessible EPUB 3')
-            .then(function (matches) {
+            .then((matches) => {
                 console.log(matches);
                 matches.length.should.be.exactly(4);
                 matches[0].should.be.exactly('epub');

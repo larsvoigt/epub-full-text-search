@@ -1,7 +1,7 @@
-const low = require('lowdb'),
-    storage = require('lowdb/file-sync'),
-    path = require('path'),
-    constants = require("./Constants");
+import low from 'lowdb';
+import storage from 'lowdb/file-sync';
+import path from 'path';
+import constants from "./Constants";
 
 var _db;
 
@@ -12,17 +12,17 @@ function getDB(basePath) {
     return _db;
 }
 
-module.exports = function () {
+module.exports = function ()  {
 
-    var IndexingController = {};
+    const IndexingController = {};
 
-    IndexingController.doWork = function (metaDataList, options) {
+    IndexingController.doWork = function (metaDataList, options)  {
 
         const db = getDB(options.indexPath);
 
-        metaDataList.forEach(function (metaData) {
+        metaDataList.forEach( (metaData) => {
 
-            var query = {
+            const query = {
                 title: metaData.title,
                 filename: metaData.filename
             };

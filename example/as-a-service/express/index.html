@@ -11,12 +11,12 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
-        var host = window.location.origin;
+        const host = window.location.origin;
 
 
-        $.fn.spin = function (opts) {
-            this.each(function () {
-                var $this = $(this), data = $this.data();
+        $.fn.spin = function (opts)  {
+            this.each(() => {
+                const $this = $(this), data = $this.data();
 
                 if (data.spinner) {
                     data.spinner.stop();
@@ -60,10 +60,10 @@
 
             $('#spinner').show();
             $('#spinner').spin(getOpts());
-            var request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
+            const request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
 
             $.getJSON(request, '', {})
-                    .done(function (hits) {
+                    .done((hits) => {
 
                         $('#spinner').data().spinner.stop();
                         $('#spinner').hide();
@@ -71,7 +71,7 @@
                         if (hits.length > 0) {
 
 //                            console.log("found " + hits.length + ' hits');
-                            for (var index in hits)
+                            for (const index in hits)
                                 $("#hits").append($("<li class='list-group-item'>").html((++index) + ". <pre>" + syntaxHighlight(JSON.stringify(hits[index], undefined, 2)) + "</pre>"));
 
                         } else {
@@ -80,7 +80,7 @@
                         }
                         console.debug("search request ready");
                     })
-                    .fail(function () {
+                    .fail(() => {
                         console.error("error fulltext search request");
                     });
         }
@@ -88,27 +88,27 @@
         // looking for suggestions 
         function instantSearch() {
 
-            var q = $("#searchbox").val();
+            const q = $("#searchbox").val();
             if (q === '')
                 return;
 
-            var matcher = "/matcher?beginsWith=" + q;
-            var request = host + matcher;
+            const matcher = "/matcher?beginsWith=" + q;
+            const request = host + matcher;
 
             console.debug(request);
 
             $.getJSON(request, '', {})
-                    .done(function (data) {
+                    .done((data) => {
 
                         $("#searchbox").autocomplete({
                             source: data,
-                            select: function (event) {
+                            select: (event) => {
                                 event.stopPropagation();
                                 $("#search").trigger("click");
                             }
                         });
                     })
-                    .fail(function () {
+                    .fail(() => {
                         console.log("error fulltext search request");
                     });
         }
@@ -117,7 +117,7 @@
         function addEventHandler() {
 
             $("#search").click(search);
-            $("#searchbox").keyup(function (event) {
+            $("#searchbox").keyup((event) => {
 
                 if (event.which === 13)
                     return;
@@ -130,8 +130,8 @@
 
         function syntaxHighlight(json) {
             json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                var cls = 'number';
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+                const cls = 'number';
                 if (/^"/.test(match)) {
                     if (/:$/.test(match)) {
                         cls = 'key';

@@ -1,28 +1,27 @@
-var fs = require('fs');
-var cheerio = require('cheerio');
-var async = require('async');
-var mathML = require('./MathML.js');
-//var cfiLib = require('epub-cfi');
-//var jsdom = require('jsdom').jsdom;
+import fs from 'fs';
+import cheerio from 'cheerio';
+import mathML from './MathML.js';
+//const cfiLib from 'epub-cfi');
+//const jsdom from 'jsdom').jsdom;
 
 
 /**************
  * public
  *************/
-exports.generate = function (data) {
+exports.generate = function (data)  {
 
-    var html = fs.readFileSync(data.spineItemPath);
-    var $dom = cheerio.load(html);
-    //var cfis = [];
+    const html = fs.readFileSync(data.spineItemPath);
+    const $dom = cheerio.load(html);
+    //const cfis = [];
     var needMathMlOffset = false;
 
 
-//var document = jsdom(html,{features:{FetchExternalResources: false}});
-    mathML.process($dom, function (needOffset) {
+//const document = jsdom(html,{features:{FetchExternalResources: false}});
+    mathML.process($dom, (needOffset) => {
         needMathMlOffset = needOffset
     });
 
-    var elements = getAllTextNodesContainsQuery(data.searchFor, $dom);
+    const elements = getAllTextNodesContainsQuery(data.searchFor, $dom);
 
     return generateCFIs(data.baseCfi, elements, needMathMlOffset);
 };
@@ -32,15 +31,17 @@ exports.generate = function (data) {
  *************/
 function generateCFIs(cfiBase, elements, needOffset) {
 
-    var cfiList = [];
+    const cfiList = [];
 
-    for (var key in elements) {
+    for (const key in elements) {
 
-        var cfiParts = [];
+        const cfiParts = [];
 
-        var textNode = elements[key].textNode,
-            child = textNode.parent(),
-            childContents = child.contents();
+        const textNode = elements[key].textNode;
+        var child = textNode.parent();
+        const childContents = child.contents();
+       
+      
 
         var textNodeIndex = childContents.index(textNode) + 1;
 
@@ -53,7 +54,7 @@ function generateCFIs(cfiBase, elements, needOffset) {
 
         var parent = child.parent();
         while (parent[0]) {
-            var index = child.index(),
+            const index = child.index(),
                 inOff = (needOffset && parent[0].name === 'body'),
                 id = child.attr('id'),
                 idSelector = id ? '[' + id + ']' : '',
@@ -64,11 +65,11 @@ function generateCFIs(cfiBase, elements, needOffset) {
             child = parent;
             parent = child.parent();
         }
-        var startOffset = elements[key].range.startOffset,
+        const startOffset = elements[key].range.startOffset,
             endOffset = elements[key].range.endOffset;
 
-        var inlinePath = ',/' + textNodeIndex + ':';
-        var cfi = cfiBase + '/' + cfiParts.join('/') + inlinePath + startOffset + inlinePath + endOffset;
+        const inlinePath = ',/' + textNodeIndex + ':';
+        const cfi = cfiBase + '/' + cfiParts.join('/') + inlinePath + startOffset + inlinePath + endOffset;
 
         cfiList.push(cfi);
     }
@@ -77,7 +78,7 @@ function generateCFIs(cfiBase, elements, needOffset) {
 
 function getAllTextNodesContainsQuery(q, $) {
 
-    var matches = [];
+    const matches = [];
 
     $('body').find("*").contents().filter(function () {
 
@@ -85,14 +86,14 @@ function getAllTextNodesContainsQuery(q, $) {
 
     }).each(function () {
 
-        var text = $(this).text();
+        const text = $(this).text();
 
         // the query can match several times in the same text element
         // so it necessary to get all indices 
         const indices = allIndexOf(text, q);
 
         for (var i in indices) {
-            var startOffset = indices[i],
+            const startOffset = indices[i],
                 endOffset = startOffset + q.length;
 
             matches.push({
@@ -109,7 +110,7 @@ function getAllTextNodesContainsQuery(q, $) {
 
 function allIndexOf(str, q, matchCase = false) {
 
-    var indices = [];
+    const indices = [];
     if (!matchCase)
         str = str.toLowerCase();
     for (var pos = str.indexOf(q); pos !== -1; pos = str.indexOf(q, pos + 1))

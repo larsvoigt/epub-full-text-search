@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 
-const colors = require('colors'),
-    cproc = require('child_process'),
-    exec = cproc.exec,
-    fs = require('fs'),
-    async = require('async'),
-    constants = require("../src/Constants");
+import colors from 'colors';
+import cproc from 'child_process';
+import constants from "../src/Constants";
 
 
+const exec = cproc.exec;  
 //console.log(__dirname);
 
 var node;
@@ -51,18 +49,18 @@ switch (process.argv[2]) {
 
     case 'upgrade':
         // async.series([
-        //     function (next) {
+        //     (next) => {
         //         process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
         //         require('child_process').execFile('/usr/bin/env', ['npm', 'i'], next);
         //     }
-        // ], function (err) {
+        // ], (err) => {
         //     if (err) {
         //         process.stdout.write('\nError'.red + ': ' + err.message + '\n');
         //     } else {
-        //         var message = 'Epub search service Upgrade Complete!';
+        //         const message = 'Epub search service Upgrade Complete!';
         //
-        //         var columns = process.stdout.columns;
-        //         var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
+        //         const columns = process.stdout.columns;
+        //         const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
         //
         //         process.stdout.write('OK\n'.green);
         //         process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
