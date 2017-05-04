@@ -11,14 +11,14 @@ describe('delete ', function () {
 
     var se;
     const PORT = 8089;
-    const DB = 'Del-Test';
+    const DB = 'DEL-Test';
     var server;
 
     beforeEach(function (done) {
         this.timeout(10000);
         init()
             .then(function () {
-                return searchEngine({'indexPath': constants.TEST_DB});
+                return searchEngine({'indexPath': DB});
             })
             .then(function (_se) {
                 se = _se;
@@ -36,6 +36,7 @@ describe('delete ', function () {
 
         if (server)
             server.close();
+
         rimraf.sync(DB);
     });
 

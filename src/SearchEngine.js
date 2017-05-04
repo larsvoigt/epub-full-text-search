@@ -64,7 +64,7 @@ module.exports = function (options) {
     SearchEngine.del = function (id) {
 
         if (!id || id.length < 1)
-            return Q.reject('Del function: Id must be set!');
+            return Q.reject('Del function: Id have to be set!');
 
 //TODO: Means get all docs, bad performance??? ATM no other choice.  Todo performance test with a lot of docs
         const q = {query: {AND: {'body': ['*']}}};
