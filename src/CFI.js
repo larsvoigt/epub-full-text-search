@@ -1,29 +1,38 @@
-import fs from 'fs';
 import cheerio from 'cheerio';
 import mathML from './MathML.js';
-//const cfiLib from 'epub-cfi');
-//const jsdom from 'jsdom').jsdom;
+import readFile from 'fs-readfile-promise';
+import validUrl from 'valid-url';
+import rp from 'request-promise';
 
 
 /**************
  * public
  *************/
-exports.generate = function (data)  {
+exports.generate = function (data) {
 
-    const html = fs.readFileSync(data.spineItemPath);
-    const $dom = cheerio.load(html);
-    //const cfis = [];
-    var needMathMlOffset = false;
+    return new Promise(function (resolve, reject) {
 
+        const fetch = validUrl.isUri(data.spineItemPath) ? rp(data.spineItemPath) : readFile(data.spineItemPath);
 
-//const document = jsdom(html,{features:{FetchExternalResources: false}});
-    mathML.process($dom, (needOffset) => {
-        needMathMlOffset = needOffset
+        fetch
+            .then(html => {
+
+                const $dom = cheerio.load(html);
+                var needMathMlOffset = false;
+
+                mathML.process($dom, needOffset => {
+                    needMathMlOffset = needOffset
+                });
+
+                const elements = getAllTextNodesContainsQuery(data.searchFor, $dom);
+                const result = generateCFIs(data.baseCfi, elements, needMathMlOffset);
+                resolve(result);
+            })
+            .catch(err => {
+                console.error(err);
+                reject(err);
+            });
     });
-
-    const elements = getAllTextNodesContainsQuery(data.searchFor, $dom);
-
-    return generateCFIs(data.baseCfi, elements, needMathMlOffset);
 };
 
 /**************
@@ -40,8 +49,7 @@ function generateCFIs(cfiBase, elements, needOffset) {
         const textNode = elements[key].textNode;
         var child = textNode.parent();
         const childContents = child.contents();
-       
-      
+
 
         var textNodeIndex = childContents.index(textNode) + 1;
 
@@ -89,7 +97,7 @@ function getAllTextNodesContainsQuery(q, $) {
         const text = $(this).text();
 
         // the query can match several times in the same text element
-        // so it necessary to get all indices 
+        // so it necessary to get all indices
         const indices = allIndexOf(text, q);
 
         for (var i in indices) {

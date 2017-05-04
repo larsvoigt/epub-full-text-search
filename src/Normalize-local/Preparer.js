@@ -10,29 +10,29 @@ const Preparer = {};
 /**************
  * public
  *************/
-Preparer.normalize = function (pathToEpubs, options)  {
+Preparer.normalize = function (pathToEPUBs, options)  {
 
-    console.log('epub data folder: '.red + pathToEpubs.green + '\n\n');
+    console.log('EPUB data local: '.blue + pathToEPUBs.green + '\n\n');
 
-    return parser.getMetaDatas(pathToEpubs)
-        .then((metaDataList) => {
+    return parser.getMetaData(pathToEPUBs)
+        .then(metaDataList => {
 
-            console.log('Analyse folder:'.yellow + '\n');
+            console.log('Analyse local:'.yellow + '\n');
            
             metaDataList = indexingController.doWork(metaDataList, options);
 
             const dataSet = [];
 
-            metaDataList.forEach((metaData) => {
+            metaDataList.forEach(metaData => {
                 //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
                 const title = metaData.title;
 
                 if (metaData.writeToIndex) {
-                    console.log("\t--> epub title " + title.bold.blue + ' will be added to index');
+                    console.log("\t--> EPUB title " + title.bold.blue + ' will be added to index');
 
-                    prepareEpubDataForIndexing(metaData, dataSet);
+                    prepareEPUBDataForIndexing(metaData, dataSet);
                 } else {
-                    console.log("\t--> epub title " + title.green + ' already indexed');
+                    console.log("\t--> EPUB title " + title.green + ' already indexed');
                 }
             });
             return dataSet;
@@ -40,13 +40,16 @@ Preparer.normalize = function (pathToEpubs, options)  {
 };
 
 Preparer.normalizeEpupTitle = function (str)  {
+
+    if(str === '*')
+        return str;
     return str.replace(/\s/g,'').toLowerCase();
 };
 
 /**************
  * private
  *************/
-function prepareEpubDataForIndexing(metaData, data) {
+function prepareEPUBDataForIndexing(metaData, data) {
     if(!metaData.spineItems.length) {
         return;
     }
@@ -59,7 +62,7 @@ function prepareEpubDataForIndexing(metaData, data) {
         metaData.spineItems[0].id + ':' + metaData.title
     );
 
-    metaData.spineItems.forEach( (spineItem) => {
+    metaData.spineItems.forEach( spineItem => {
         const spineItemPath = metaData.manifestPath + '/' + spineItem.href;
         const json = htmlToJSON(spineItemPath);
         setMetaData(json, metaData, spineItem);

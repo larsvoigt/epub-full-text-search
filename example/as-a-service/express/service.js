@@ -43,7 +43,7 @@ const SampleService = function ()  {
                     return se.search(q, bookTitle);
 
                 })
-                .then((result) => {
+                .then(result => {
                     res.send(result);
                     return se.close();
                 })
@@ -67,7 +67,7 @@ const SampleService = function ()  {
                     se = _se;
                     return se.match(req.query['beginsWith'], bookTitle);
                 })
-                .then((matches) => {
+                .then(matches => {
                     res.send(matches);
 
                     return se.close();
@@ -133,7 +133,7 @@ const SampleService = function ()  {
                 se = _se;
                 return se.indexing(epubs);
             })
-            .then((info) => {
+            .then(info => {
                 console.log(info);
 
                 return se.close();
@@ -175,7 +175,7 @@ sase.start();
 //        persistent: true
 //    }).on('all', (event, path) => {
 //
-//        se.indexing(epubContent, (info) => {
+//        se.indexing(epubContent, info => {
 //            console.log(info);
 //        });
 //

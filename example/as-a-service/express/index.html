@@ -63,7 +63,7 @@
             const request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
 
             $.getJSON(request, '', {})
-                    .done((hits) => {
+                    .done(hits => {
 
                         $('#spinner').data().spinner.stop();
                         $('#spinner').hide();
@@ -98,11 +98,11 @@
             console.debug(request);
 
             $.getJSON(request, '', {})
-                    .done((data) => {
+                    .done(data => {
 
                         $("#searchbox").autocomplete({
                             source: data,
-                            select: (event) => {
+                            select: event => {
                                 event.stopPropagation();
                                 $("#search").trigger("click");
                             }
@@ -117,7 +117,7 @@
         function addEventHandler() {
 
             $("#search").click(search);
-            $("#searchbox").keyup((event) => {
+            $("#searchbox").keyup(event => {
 
                 if (event.which === 13)
                     return;
@@ -130,8 +130,8 @@
 
         function syntaxHighlight(json) {
             json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-                const cls = 'number';
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+                var cls = 'number';
                 if (/^"/.test(match)) {
                     if (/:$/.test(match)) {
                         cls = 'key';

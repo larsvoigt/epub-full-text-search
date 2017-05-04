@@ -4,39 +4,41 @@ import fs from 'fs';
 import Q from 'q';
 
 
-const
-    readdir = Q.denodeify(fs.readdir),
+const readdir = Q.denodeify(fs.readdir),
     readFile = Q.denodeify(fs.readFile),
     stat = Q.denodeify(fs.stat),
     parser = new xml2js.Parser(),
     parseString = Q.denodeify(parser.parseString);
 
-exports.getMetaDatas = function (pathToEpubs) {
-    return getRootFiles(pathToEpubs)
-        .then((containerFiles) => {
-            return Q.all(containerFiles.map((file) => {
+const MetaDataParser = {};
+const container = 'container.xml';
+
+MetaDataParser.getMetaData = function (pathToEPUBs) {
+
+    return getContainerFiles(pathToEPUBs)
+        .then(containerFiles => {
+            return Q.all(containerFiles.map(file => {
                 return getBookMetaData(file);
             }));
         })
-        .fail((err) => {
+        .fail(err => {
             console.error(err);
         });
 };
 
-function getRootFiles(dir, results) {
+
+function getContainerFiles(dir, results) {
 
     results = results || [];
 
-    const container = 'container.xml';
-
     return readdir(dir)
-        .then((files) => {
-            return Q.all(files.map((file) => {
+        .then(files => {
+            return Q.all(files.map(file => {
                 file = dir + '/' + file;
                 return stat(file)
-                    .then((fileStat) => {
+                    .then(fileStat => {
                         if (fileStat && fileStat.isDirectory()) {
-                            return getRootFiles(file, results);
+                            return getContainerFiles(file, results);
                         } else if (path.basename(file) === container) {
                             results.push(file);
                         }
@@ -46,10 +48,11 @@ function getRootFiles(dir, results) {
         .then(() => {
             return results;
         })
-        .fail((err) => {
+        .fail(err => {
             console.error(err)
         });
 }
+
 
 const getBookMetaData = function (containerFile) {
 
@@ -57,19 +60,19 @@ const getBookMetaData = function (containerFile) {
     var manifestPath;
 
     return getManifest(containerFile)
-        .then((result) => {
+        .then(result => {
             const opfFile = root + '/' + result;
             manifestPath = path.dirname(root + '/' + result);
 
             return readFile(opfFile);
         })
-        .then((opfContent) => {
+        .then(opfContent => {
             return Q.all([
                 getBookTitle(opfContent),
                 getSpineItems(opfContent)
             ]);
         })
-        .then((results) => {
+        .then(results => {
             return {
                 filename: path.basename(root),
                 manifestPath: manifestPath,
@@ -77,7 +80,7 @@ const getBookMetaData = function (containerFile) {
                 spineItems: results[1]
             };
         })
-        .fail((err) => {
+        .fail(err => {
             console.error(err);
         });
 };
@@ -85,13 +88,13 @@ const getBookMetaData = function (containerFile) {
 function getManifest(containerFile) {
 
     return readFile(containerFile)
-        .then((data) => {
+        .then(data => {
             return parseString(data);
         })
-        .then((result) => {
+        .then(result => {
             return result.container.rootfiles[0].rootfile[0].$['full-path'];
         })
-        .fail((err) => {
+        .fail(err => {
             if (err && err.code === 'ENOENT') {
                 throw new Error('File ' + containerFile + 'doesn\'t exist');
             }
@@ -101,19 +104,19 @@ function getManifest(containerFile) {
 
 function getBookTitle(data) {
     return parseString(data)
-        .then((result) => {
+        .then(result => {
             const metadata = result.package.metadata[0];
             return metadata['dc:title'][0]._ || metadata['dc:title'][0];
         })
-        .fail((err) => {
+        .fail(err => {
             console.error(err);
         });
 }
 
 function getSpineItems(data) {
-    
-    return parseString(data).then((r) => {
-        
+
+    return parseString(data).then(r => {
+
         const manifest = r.package.manifest[0];
         const spine = r.package.spine[0];
 
@@ -121,7 +124,7 @@ function getSpineItems(data) {
 
         for (var i = 0; i < spine.itemref.length; i++) {
 
-            const spineItem = manifest.item.filter((value) => {
+            const spineItem = manifest.item.filter(value => {
 
                 if (value.$.id === spine.itemref[i].$.idref)
                     return value;
@@ -138,7 +141,9 @@ function getSpineItems(data) {
 
         return result;
     })
-        .fail((err) => {
+        .fail(err => {
             console.error(err);
         })
 }
+
+module.exports = MetaDataParser;

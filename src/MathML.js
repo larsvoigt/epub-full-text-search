@@ -25,7 +25,7 @@ exports.process = function ($, callback)  {
 
 
 //function processMath($) {
-//    typeset({format: "MathML", html: $("*").html()}, (data) => {
+//    typeset({format: "MathML", html: $("*").html()}, data => {
 //
 //        console.log(data);
 //    }

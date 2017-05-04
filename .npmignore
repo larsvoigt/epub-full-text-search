@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+!/src/
+/tests/
+/node_modules/
+/mocha_test_DB/
+/example/
+/bin/

@@ -18,9 +18,9 @@ WebService.app.use(cors());
 function createRoutes() {
     WebService.routes = {};
 
-    WebService.routes['/search'] = function (req, res)  {
+    WebService.routes['/search'] = function (req, res) {
 
-        console.log('client request');
+        console.log('[INFO] client request search');
 
         if (!req.query['q']) {
             res.status(500).send('Can`t found query parameter q -> /search?q=word');
@@ -28,84 +28,129 @@ function createRoutes() {
         }
 
         const q = req.query['q'].toLowerCase().split(/\s+/);
+
         var bookTitle = req.query['t'];
+        var uuid = req.query['uuid'];
+        uuid = uuid || '-1';
         bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-        console.log('bookTitle: ' + bookTitle);
+        console.log('[INFO] bookTitle: ' + bookTitle);
+        console.log('[INFO] uuid: ' + uuid);
 
         searchEngine({})
-            .then((se) => {
+            .then(se => {
 
-                se.search(q[0], bookTitle)
-                    .then((result) => {
+                se.search(q[0], bookTitle, uuid)
+                    .then(result => {
 
                         res.send(result);
-                        se.close((err) => {
+                        se.close(err => {
                             if (err)
-                                console.log(err);
+                                console.error('[ERROR] ' + err);
                         });
                     })
-                    .fail((err) => {
+                    .fail(err => {
                         res.send(err);
 
-                        se.close((err) => {
+                        se.close(err => {
                             if (err)
-                                console.log(err);
+                                console.error('[ERROR] ' + err);
                         });
                     });
             })
-            .fail((err) => {
-                console.log("error: " + err);
+            .fail(err => {
+                console.error('[ERROR] ' + err);
             });
     };
 
 
-    WebService.routes['/matcher'] = function (req, res)  {
+    WebService.routes['/matcher'] = function (req, res) {
 
-        if (!req.query['beginsWith']) {
+        const beginsWith = req.query['beginsWith'];
+        if (!beginsWith) {
             res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
             return;
         }
 
-        const bookTitle = req.query['t'];
-        searchEngine({})
-            .then((se) => {
+        var bookTitle = req.query['t'];
+        var uuid = req.query['uuid'];
 
-                se.match(req.query['beginsWith'], bookTitle)
-                    .then((matches) => {
+
+        uuid = uuid || '-1';
+        bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
+        console.log('[INFO] client request match');
+        console.log('[INFO] bookTitle: ' + bookTitle);
+        console.log('[INFO] uuid: ' + uuid);
+
+        searchEngine({})
+            .then(se => {
+                se.match(beginsWith, bookTitle, uuid)
+                    .then(matches => {
 
                         res.send(matches);
-
-                        se.close((err) => {
+                        se.close(err => {
                             if (err)
-                                console.log(err);
+                                console.error('[ERROR] ' + err);
                         });
                     })
-                    .fail((err) => {
+                    .fail(err => {
 
-                        se.close((err) => {
+                        se.close(err => {
                             if (err)
-                                console.log(err);
+                                console.error('[ERROR] ' + err);
                         });
-                        console.log(err);
+                        console.error('[ERROR] ' + err);
                     });
             })
-            .fail((err) => {
-                console.log(err);
+            .fail(err => {
+                console.error('[ERROR] ' + err);
+            });
+    };
+
+
+    WebService.routes['/addToIndex'] = function (req, res) {
+// TODO: testing
+        if (!req.query['url'] || !req.query['uuid']) {
+            res.status(500).send('Can`t found query parameter beginsWith -> /addToIndex?url=UrlToEPUB&uuid=uuid');
+            return;
+        }
+
+        const url = req.query['url'];
+        const uuid = req.query['uuid'];
+        searchEngine({})
+            .then(se => {
+                se.indexing(url, uuid)
+                    .then(() => {
+
+                        res.status(200).send('DONE! EPUB is indexed.');
+                        console.log('[INFO] DONE! EPUB is indexed.')
+                        se.close(() => {
+                        });
+
+                    }).catch(err => {
+                    res.status(500).send(err);
+                    console.error(err);
+                });
+            })
+            .fail(err => {
+                res.status(500).send(err);
+                console.error(err);
             });
     };
 }
 
+
+
 function terminator(sig) {
     if (typeof sig === "string") {
-        console.log('%s: Received %s - terminating service ...',
+        console.log('[INFO] %s: Received %s - terminating service ...',
             Date(Date.now()), sig);
         process.exit(1);
     }
-    console.log('%s: Epub search service stopped.', Date(Date.now()));
+    console.log('[INFO] %s: EPUB search service stopped.', Date(Date.now()));
 }
 
 
-WebService.setup = function (callback)  {
+WebService.setup = function (callback) {
 
     // WebService.ipaddress = process.env.IP;
     WebService.port = process.env.PORT || 8085;
@@ -122,7 +167,7 @@ WebService.setup = function (callback)  {
 };
 
 
-WebService.init = function (callback)  {
+WebService.init = function (callback) {
 
     createRoutes();
     WebService.app.use(bodyParser.urlencoded({extended: true}));
@@ -137,9 +182,9 @@ WebService.init = function (callback)  {
 };
 
 
-WebService.startupMessages = function (callback)  {
+WebService.startupMessages = function (callback) {
     console.log('');
-    console.log('[INFO] Epub-full-text-search Copyright (c) 2015-2017 Lars Voigt');
+    console.log('[INFO] EPUB-full-text-search Copyright (c) 2015-2017 Lars Voigt');
     console.log('[INFO] This program comes with ABSOLUTELY NO WARRANTY.');
     console.log('[INFO] This is free software, and you are welcome to redistribute it under certain conditions.');
     console.log('[INFO] For the full license, please visit: https://opensource.org/licenses/MIT');
@@ -147,16 +192,16 @@ WebService.startupMessages = function (callback)  {
     callback();
 };
 
-WebService.start = function (callback)  {
+WebService.start = function (callback) {
     //  Start the app on the specific interface (and port).
     WebService.app.listen(WebService.port, WebService.ipaddress, () => {
         //TODO: logging
-        console.log('%s: Epub search started on %s:%d ...',
+        console.log('[INFO] %s: EPUB search started on %s:%d ...',
             new Date(), WebService.ipaddress, WebService.port);
-    }).on('error', (e) => {
+    }).on('error', e => {
 
         if (e.code == 'EADDRINUSE') {
-            return callback('Cant start this Service -> IP address is in use!!!');
+            return callback('Cant start this Service -> Port is in use!!!');
         }
 
     });
@@ -170,8 +215,10 @@ async.series([
     WebService.init,
     WebService.startupMessages,
     WebService.start
-], (err) => {
+], err => {
     if (err) {
-        console.error('[WebService] Error during startup:' + err);
+        console.error('[ERROR] Error during startup: ' + err);
+        process.exit(1);
     }
+
 });

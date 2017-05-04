@@ -1,7 +1,7 @@
 import low from 'lowdb';
 import storage from 'lowdb/file-sync';
 import path from 'path';
-import constants from "./Constants";
+import constants from "../Constants";
 
 var _db;
 
@@ -20,7 +20,7 @@ module.exports = function ()  {
 
         const db = getDB(options.indexPath);
 
-        metaDataList.forEach( (metaData) => {
+        metaDataList.forEach( metaData => {
 
             const query = {
                 title: metaData.title,

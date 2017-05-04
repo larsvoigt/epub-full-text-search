@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -25,6 +25,7 @@
     "npm": ">= 2.11.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
@@ -49,6 +50,7 @@
     "express": "~4.12.3",
     "extfs": "~0.0.7",
     "forever": "^0.15.3",
+    "fs-readfile-promise": "^3.0.0",
     "lodash": "~3.10.1",
     "logrotate-stream": "^0.2.5",
     "lowdb": "^0.12.5",
@@ -56,16 +58,23 @@
     "os-homedir": "^1.0.2",
     "q": "^1.4.1",
     "readdirp": "^2.0.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
     "search-index": "~0.8.10",
+    "serve": "^5.1.4",
+    "uuid": "^3.0.1",
+    "valid-url": "^1.0.9",
     "xml2js": "~0.4.8"
   },
   "bin": {
-    "epub-search": "./bin/epub-search"
+    "epub-search": "./dist/bin/epub-search"
   },
   "scripts": {
-    "start": "npm run express-service",
-    "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
-    "express-service": "node example/as-a-service/express/service.js",
-    "test": "date && mocha --compilers js:babel-core/register tests --recursive"
+    "build-src": "./node_modules/.bin/babel src --presets babel-preset-es2015 --out-dir dist/lib",
+    "build-bin": "./node_modules/.bin/babel bin/* --presets babel-preset-es2015 --out-dir dist",
+    "build": "npm run build-src && npm run build-bin",
+    "test": "date && mocha --compilers js:babel-core/register tests --recursive",
+    "serve:epub": "./node_modules/.bin/serve -p 8089 ./node_modules/epub3-samples/accessible_epub_3",
+    "test:webservice": "./node_modules/.bin/babel-node ./src/WebService.js"
   }
 }

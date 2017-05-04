@@ -4,7 +4,7 @@ import constants from "../../src/Constants";
 import searchEngine from '../../';
 import init from '../init';
 
-describe('search', () => {
+describe('query', () => {
 
     var se;
 
