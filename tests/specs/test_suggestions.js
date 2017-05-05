@@ -10,7 +10,7 @@ describe('suggestions', () => {
     rimraf.sync(DB);
 
     beforeEach(function(done) {
-        this.timeout(10000);
+        this.timeout(15000);
         searchEngine({'indexPath': DB})
             .then(function (_se) {
                 se = _se;

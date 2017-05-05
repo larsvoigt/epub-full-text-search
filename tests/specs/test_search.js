@@ -17,7 +17,7 @@ describe('search', () => {
     var server;
 
     beforeEach(function (done) {
-        this.timeout(10000);
+        this.timeout(15000);
 
         searchEngine({'indexPath': DB})
             .then(function (_se) {

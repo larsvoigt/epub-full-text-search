@@ -32,7 +32,7 @@ describe('query', () => {
     });
 
     it('without filename query', function (done) {
-        this.timeout(10000);
+        this.timeout(15000);
         const search = 'test';
         se.query({query: [{AND: [{'*': [search]}]}]}, search)
             .then(function (hits) {
