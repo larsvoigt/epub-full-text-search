@@ -3,7 +3,7 @@ import searchEngine from '../../';
 import constants from "../../src/Constants";
 import init from '../init';
 import express from 'express';
-import uuidV1 from 'uuid/v1'
+import uuidV1 from 'uuid/v1';
 import rimraf from 'rimraf';
 
 
@@ -59,7 +59,7 @@ describe('delete ', function () {
 
     it('Delete should be fail. Id is not set.', function (done) {
 
-        this.timeout(10000);
+        this.timeout(1000);
 
         se.del("")
             .then(() => {
@@ -94,6 +94,35 @@ describe('delete ', function () {
                                         console.error(err);
                                     });
                             });
+                        });
+                });
+        });
+    });
+
+
+    it('Should delete nothing, because uuid is not valid.', function (done) {
+
+        this.timeout(15000);
+
+        let app = express();
+        app.use(express.static('./node_modules/epub3-samples/'));
+        server = app.listen(PORT, () => {
+            const uuid = uuidV1();
+            se.indexing('http://localhost:' + PORT + '/accessible_epub_3/', uuid)
+                .then(() => {
+                    se.del('gdzuegwduzew')
+                        .then(() => {
+                            se.get(uuid)
+                                .then(docs => {
+                                    docs.length.should.be.exactly(20);
+                                    done();
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+                        })
+                        .catch(err => {
+                            console.error(err);
                         });
                 });
         });

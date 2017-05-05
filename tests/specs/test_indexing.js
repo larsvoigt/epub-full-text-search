@@ -5,19 +5,20 @@ import constants from "../../src/Constants";
 import init from '../init';
 import express from 'express';
 import uuidV1 from 'uuid/v1';
-
+import rimraf from 'rimraf';
 
 describe('indexing ', function () {
 
     var se;
     const PORT = 8089;
     var server;
+    const DB = 'INDEXING-Test';
 
     beforeEach(function (done) {
         this.timeout(10000);
         init()
             .then(function () {
-                return searchEngine({'indexPath': constants.TEST_DB});
+                return searchEngine({'indexPath': DB});
             })
             .then(function (_se) {
                 se = _se;
@@ -29,12 +30,15 @@ describe('indexing ', function () {
     afterEach(function (done) {
         se.close()
             .then(function () {
-                done();
+                // rimraf.sync(DB);
+
+                if (server)
+                    server.close();
+                rimraf(DB, function () {
+                    done();
+                });
             })
             .fail(done);
-
-        if(server)
-            server.close();
     });
 
     it('Should fail if directory is empty', function (done) {
@@ -74,9 +78,7 @@ describe('indexing ', function () {
         server = app.listen(PORT, () => {
             se.indexing('http://localhost:' + PORT + '/', uuid)
                 .then(() => {
-                    se.del(uuid).then(() => {
-                        done();
-                    });
+                    done();
                 });
         });
     });

@@ -4,7 +4,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import async from 'async';
-import searchEngine from './SearchEngine';
+import search from './Rest-API/Search';
+import matcher from './Rest-API/Matcher';
+import addToIndex from './Rest-API/AddToIndex';
+import deleteFromIndex from './Rest-API/DeleteFromIndex';
 
 const WebService = {};
 
@@ -12,133 +15,14 @@ WebService.app = express();
 // it possible to config cors for indivudal routes
 // https://www.npmjs.com/package/cors
 WebService.app.use(cors());
+WebService.app.use(bodyParser.urlencoded({extended: true}));
+WebService.app.use(bodyParser.json());
 
-//watchForUpdateIndex(service, index, epubs);
-
-function createRoutes() {
-    WebService.routes = {};
-
-    WebService.routes['/search'] = function (req, res) {
-
-        console.log('[INFO] client request search');
-
-        if (!req.query['q']) {
-            res.status(500).send('Can`t found query parameter q -> /search?q=word');
-            return;
-        }
-
-        const q = req.query['q'].toLowerCase().split(/\s+/);
-
-        var bookTitle = req.query['t'];
-        var uuid = req.query['uuid'];
-        uuid = uuid || '-1';
-        bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-        console.log('[INFO] bookTitle: ' + bookTitle);
-        console.log('[INFO] uuid: ' + uuid);
-
-        searchEngine({})
-            .then(se => {
-
-                se.search(q[0], bookTitle, uuid)
-                    .then(result => {
-
-                        res.send(result);
-                        se.close(err => {
-                            if (err)
-                                console.error('[ERROR] ' + err);
-                        });
-                    })
-                    .fail(err => {
-                        res.send(err);
-
-                        se.close(err => {
-                            if (err)
-                                console.error('[ERROR] ' + err);
-                        });
-                    });
-            })
-            .fail(err => {
-                console.error('[ERROR] ' + err);
-            });
-    };
-
-
-    WebService.routes['/matcher'] = function (req, res) {
-
-        const beginsWith = req.query['beginsWith'];
-        if (!beginsWith) {
-            res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
-            return;
-        }
-
-        var bookTitle = req.query['t'];
-        var uuid = req.query['uuid'];
-
-
-        uuid = uuid || '-1';
-        bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-        console.log('[INFO] client request match');
-        console.log('[INFO] bookTitle: ' + bookTitle);
-        console.log('[INFO] uuid: ' + uuid);
-
-        searchEngine({})
-            .then(se => {
-                se.match(beginsWith, bookTitle, uuid)
-                    .then(matches => {
-
-                        res.send(matches);
-                        se.close(err => {
-                            if (err)
-                                console.error('[ERROR] ' + err);
-                        });
-                    })
-                    .fail(err => {
-
-                        se.close(err => {
-                            if (err)
-                                console.error('[ERROR] ' + err);
-                        });
-                        console.error('[ERROR] ' + err);
-                    });
-            })
-            .fail(err => {
-                console.error('[ERROR] ' + err);
-            });
-    };
-
-
-    WebService.routes['/addToIndex'] = function (req, res) {
-// TODO: testing
-        if (!req.query['url'] || !req.query['uuid']) {
-            res.status(500).send('Can`t found query parameter beginsWith -> /addToIndex?url=UrlToEPUB&uuid=uuid');
-            return;
-        }
-
-        const url = req.query['url'];
-        const uuid = req.query['uuid'];
-        searchEngine({})
-            .then(se => {
-                se.indexing(url, uuid)
-                    .then(() => {
-
-                        res.status(200).send('DONE! EPUB is indexed.');
-                        console.log('[INFO] DONE! EPUB is indexed.')
-                        se.close(() => {
-                        });
-
-                    }).catch(err => {
-                    res.status(500).send(err);
-                    console.error(err);
-                });
-            })
-            .fail(err => {
-                res.status(500).send(err);
-                console.error(err);
-            });
-    };
-}
-
-
+// routes
+WebService.app.get('/search', search);
+WebService.app.get('/matcher', matcher);
+WebService.app.get('/addToIndex', addToIndex); // POST or GET???
+WebService.app.get('/deleteFromIndex', deleteFromIndex); // POST or GET???
 
 function terminator(sig) {
     if (typeof sig === "string") {
@@ -167,21 +51,6 @@ WebService.setup = function (callback) {
 };
 
 
-WebService.init = function (callback) {
-
-    createRoutes();
-    WebService.app.use(bodyParser.urlencoded({extended: true}));
-    WebService.app.use(bodyParser.json());
-    // WebService.app.use(express.static('example/as-a-service/express'));
-
-    //  Add handlers for the app (from the routes).
-    for (const r in WebService.routes) {
-        WebService.app.get(r, WebService.routes[r]);
-    }
-    callback();
-};
-
-
 WebService.startupMessages = function (callback) {
     console.log('');
     console.log('[INFO] EPUB-full-text-search Copyright (c) 2015-2017 Lars Voigt');
@@ -205,14 +74,12 @@ WebService.start = function (callback) {
         }
 
     });
-
     callback();
 };
 
 
 async.series([
     WebService.setup,
-    WebService.init,
     WebService.startupMessages,
     WebService.start
 ], err => {

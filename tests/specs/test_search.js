@@ -3,20 +3,29 @@ import should from 'should';
 import constants from "../../src/Constants";
 import searchEngine from '../../';
 import init from '../init';
+import uuidV1 from 'uuid/v1';
+import rimraf from 'rimraf';
+import express from 'express';
+
 
 describe('search', () => {
 
     var se;
+    const PORT = 8089;
+    const DB = 'SEARCH-Test';
+    rimraf.sync(DB);
+    var server;
 
     beforeEach(function (done) {
         this.timeout(10000);
-        init()
-            .then(function () {
-                return searchEngine({'indexPath': constants.TEST_DB});
-            })
+
+        searchEngine({'indexPath': DB})
             .then(function (_se) {
                 se = _se;
-                done();
+                se.indexing(constants.EPUB)
+                    .then(() => {
+                        done();
+                    });
             })
             .fail(done);
     });
@@ -27,6 +36,10 @@ describe('search', () => {
                 done();
             })
             .fail(done);
+
+        if (server)
+            server.close();
+
     });
 
     it('count hits of keyword', done => {
@@ -136,7 +149,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    // Note: this test case need to be fitted if more than the books  
+    // Note: this test case need to be fitted if more than the books
     // A First Course in Linear Algebra and from Accessible EPUB 3 will be indexed
     it('Test query string match within multiple books,' +
         ' should return only 6 hits form A First Course in Linear Algebra and ' +
@@ -158,6 +171,33 @@ describe('search', () => {
                 done();
             })
             .fail(done);
+    });
+
+    it('Search with uuid.', function (done) {
+
+        //TODO: Use promise all ?
+        this.timeout(150000);
+        const uuid1 = uuidV1();
+        const uuid2 = uuidV1();
+        let app = express();
+        app.use(express.static('./node_modules/epub3-samples/'));
+        server = app.listen(PORT, () => {
+            se.flush().then(() => {
+                se.indexing('http://localhost:' + PORT + '/accessible_epub_3/', uuid1)
+                    .then(() => {
+                        se.indexing('http://localhost:' + PORT + '/linear-algebra/', uuid2)
+                            .then(() => {
+                                se.search("epub", "", uuid1)
+                                    .then(function (hits) {
+                                        hits.length.should.be.exactly(15);
+                                        done();
+                                        rimraf.sync(DB); // Hacky to clean up
+                                    })
+                                    .fail(done);
+                        });
+                });
+            });
+        });
     });
 });
 

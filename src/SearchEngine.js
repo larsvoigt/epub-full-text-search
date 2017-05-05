@@ -1,5 +1,8 @@
 'use strict';
-
+// TODOs:
+// [ ] separate api feature in own modules
+// [ ] logging
+// [ ] rest api del
 const DEFAULT_EPUB_TITLE = '*';
 
 import searchIndexSource from 'search-index';
@@ -113,6 +116,11 @@ module.exports = function (options) {
             });
     };
 
+    SearchEngine.flush = function () {
+
+        return SearchEngine._flush()
+    };
+
     SearchEngine.search = function (searchFor, bookTitle, uuid) {
 
         const title = bookTitle || DEFAULT_EPUB_TITLE; // * if bookTitle undefined return all hits
@@ -167,6 +175,8 @@ module.exports = function (options) {
                     .catch(err => {
                         console.error(err);
                     });
+            }).catch(err => {
+                console.error(err);
             });
     };
 
@@ -188,10 +198,6 @@ module.exports = function (options) {
             .then(matches => {
                 return filterMatches(matches, title, uuid);
             });
-    };
-
-    SearchEngine.empty = function () {
-        return SearchEngine._empty();
     };
 
     SearchEngine.close = function () {
@@ -246,11 +252,11 @@ module.exports = function (options) {
             SearchEngine.si = si;
             SearchEngine._search = Q.nbind(si.search, si);
             SearchEngine._close = Q.nbind(si.close, si);
-            SearchEngine._empty = Q.nbind(si.empty, si);
             SearchEngine._match = Q.nbind(si.match, si);
             SearchEngine._add = Q.nbind(si.add, si);
             SearchEngine._del = Q.nbind(si.del, si);
             SearchEngine._get = Q.nbind(si.get, si);
+            SearchEngine._flush = Q.nbind(si.flush, si);
             return SearchEngine;
         });
 };

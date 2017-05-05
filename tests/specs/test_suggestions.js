@@ -1,21 +1,23 @@
 import should from 'should';
 import constants from "../../src/Constants";
 import searchEngine from '../../';
-import init from '../init';
+import rimraf from 'rimraf';
 
 describe('suggestions', () => {
 
     var se;
+    const DB = 'SUGGESTIONS-Test';
+    rimraf.sync(DB);
 
     beforeEach(function(done) {
         this.timeout(10000);
-        init()
-            .then(function() {
-                return searchEngine({'indexPath': constants.TEST_DB});
-            })
-            .then(function(_se) {
+        searchEngine({'indexPath': DB})
+            .then(function (_se) {
                 se = _se;
-                done();
+                se.indexing(constants.EPUB)
+                    .then(() => {
+                        done();
+                    });
             })
             .fail(done);
     });
@@ -103,7 +105,7 @@ describe('suggestions', () => {
                 matches[1].should.be.exactly('epubs');
                 matches[2].should.be.exactly('epubcheck');
                 matches[3].should.be.exactly('epubreadingsystem');
-
+                rimraf.sync(DB); // Hacky to clean up
                 done();
             })
             .fail(done);
