@@ -2,7 +2,6 @@
 import should from 'should';
 import constants from "../../src/Constants";
 import searchEngine from '../../';
-import init from '../init';
 import uuidV1 from 'uuid/v1';
 import rimraf from 'rimraf';
 import express from 'express';
@@ -194,8 +193,8 @@ describe('search', () => {
                                         rimraf.sync(DB); // Hacky to clean up
                                     })
                                     .fail(done);
-                        });
-                });
+                            });
+                    });
             });
         });
     });

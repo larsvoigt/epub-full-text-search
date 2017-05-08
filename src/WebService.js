@@ -30,7 +30,7 @@ function terminator(sig) {
             Date(Date.now()), sig);
         process.exit(1);
     }
-    console.log('[INFO] %s: EPUB search service stopped.', Date(Date.now()));
+    console.log('[INFO] %s: EPUB search stopped.', Date(Date.now()));
 }
 
 
@@ -89,3 +89,6 @@ async.series([
     }
 
 });
+
+
+module.exports = WebService.app;

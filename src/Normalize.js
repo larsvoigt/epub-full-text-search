@@ -32,4 +32,9 @@ Normalize.normalizeEpupTitle = function(title) {
     return preparerLocal.normalizeEpupTitle(title);
 };
 
+Normalize.normalizeUUID = function (uuid) {
+
+    return preparerUrl.normalizeUUID(uuid);
+};
+
 module.exports = Normalize;

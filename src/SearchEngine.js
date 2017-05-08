@@ -11,7 +11,7 @@ import colors from 'colors';
 import _ from 'lodash';
 import validUrl from 'valid-url';
 
-import indexing from './Normalize';
+import normalize from './Normalize';
 import cfi from './CFI.js';
 import constants from "./Constants";
 
@@ -33,23 +33,24 @@ module.exports = function (options) {
 
             //TODO: fix url if '/' lost at the end of uri
             console.log('Indexing URI'.blue);
-            return indexing.url(EPUBLocation, dataSet => {
+            uuid = normalize.normalizeUUID(uuid);
+            return normalize.url(EPUBLocation, dataSet => {
                 dataSet.map(doc => {
                     doc.id = doc.id.split(':')[0] + ':' + uuid;
                     doc.uuid = uuid;
                 });
                 console.log("Ready with normalize EPUB\n\n".yellow);
-                console.log("Start indexing EPUB.".yellow);
+                console.log("Start normalize EPUB.".yellow);
                 return SearchEngine.add(dataSet);
             })
         } else {
             console.log('Indexing local path'.blue);
-            return indexing.local(EPUBLocation, options, dataSet => {
+            return normalize.local(EPUBLocation, options, dataSet => {
 
                 console.log("Ready with normalize EPUB\n\n".yellow);
 
                 if (dataSet.length > 0) {
-                    console.log("Start indexing EPUB-data.".yellow);
+                    console.log("Start normalize EPUB-data.".yellow);
                     return SearchEngine.add(dataSet);
                 } else {
                     console.log("DONE! Nothing to do, EPUBs already indexed.\n\n".yellow);
@@ -69,8 +70,7 @@ module.exports = function (options) {
         if (!id || id.length < 1)
             return Q.reject('Del function: Id have to be set!');
 
-//TODO: Means get all docs, bad performance??? ATM no other choice.  Todo performance test with a lot of docs
-        const q = {query: {AND: {'body': ['*']}}};
+        const q = {query: {AND: {'uuid': [normalize.normalizeUUID(id)]}}};
 
         return SearchEngine._search(q)
             .then(result => {
@@ -78,13 +78,7 @@ module.exports = function (options) {
                 if (!result.hits) {
                     return q.reject('No hits!');
                 }
-
-                const ids = [];
-                result.hits.forEach(hit => {
-                    if (hit.id.split(':')[1] === id)
-                        ids.push(hit.id);
-                });
-                return SearchEngine._del(ids);
+                return SearchEngine._del(result.hits);
             })
             .catch(err => {
                 return Q.reject(err);
@@ -94,7 +88,7 @@ module.exports = function (options) {
 
     SearchEngine.get = function (id) {
 
-        const q = {query: {AND: {'body': ['*']}}};
+        const q = {query: {AND: {'uuid': [normalize.normalizeUUID(id)]}}};
 
         return SearchEngine._search(q)
             .then(result => {
@@ -102,13 +96,7 @@ module.exports = function (options) {
                 if (!result.hits) {
                     return q.reject('No hits!');
                 }
-
-                const hits = [];
-                result.hits.forEach(hit => {
-                    if (hit.id.split(':')[1] === id)
-                        hits.push(hit);
-                });
-                return hits;
+                return result.hits;
             })
             .catch(err => {
                 return Q.reject(err);
@@ -129,10 +117,12 @@ module.exports = function (options) {
         q.searchFor = searchFor;
         q.query = {AND: {'body': [searchFor]}};
 
-        if (uuid !== '-1')
-            q.query.AND.epubTitle = [indexing.normalizeEpupTitle(title)];
+        // Attention AND property have to be an array!!!
+        if (uuid && uuid.length > 0)
+            q.query.AND.uuid = [normalize.normalizeUUID(uuid)];
         else
-            q.query.AND.uuid = uuid;
+            q.query.AND.epubTitle = [normalize.normalizeEpupTitle(title)];
+
 
         return SearchEngine.query(q);
     };
@@ -216,7 +206,7 @@ module.exports = function (options) {
                 {fieldName: 'filename', searchable: true, store: true},
                 {fieldName: 'title', searchable: true, store: false},
                 {fieldName: 'body', searchable: true, store: false},
-                {fieldName: 'uuid', searchable: true, store: true}
+                {fieldName: 'uuid', searchable: false, store: true}
             ]
         };
     }

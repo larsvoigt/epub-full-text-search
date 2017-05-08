@@ -14,7 +14,7 @@ module.exports = function (req, res) {
 
     searchEngine({})
         .then(se => {
-            se.del(id)
+            se.del(uuid)
                 .then(() => {
                     res.send('Document with ID ' + uuid + ' deleted.');
                     se.close(err => {

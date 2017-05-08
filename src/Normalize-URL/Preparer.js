@@ -21,9 +21,12 @@ Preparer.normalize = function (urlToEPUBs) {
         });
 };
 
-Preparer.normalizeEpupTitle = function (str) {
-    return str.replace(/\s/g, '').toLowerCase();
+// It is necessary to remove hyphens from uuid because search-index process it wrong with hyphens.
+// Otherwise search for uuid fails.
+Preparer.normalizeUUID = function (str) {
+    return str.replace(/-/g, '');
 };
+
 
 /**************
  * private
@@ -77,7 +80,6 @@ function prepareEPUBDataForIndexing(metaData) {
 function setMetaData(jsonDoc, meta, spineItemMeta) {
 
     jsonDoc.spineItemPath = meta.url + 'EPUB/' + spineItemMeta.href;
-    jsonDoc.epubTitle = Preparer.normalizeEpupTitle(meta.title);
     jsonDoc.href = spineItemMeta.href;
     jsonDoc.baseCfi = spineItemMeta.baseCfi;
     jsonDoc.id = spineItemMeta.id + ':' + meta.title;

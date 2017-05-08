@@ -1,6 +1,5 @@
 import should from 'should';
 import searchEngine from '../../';
-import constants from "../../src/Constants";
 import init from '../init';
 import express from 'express';
 import uuidV1 from 'uuid/v1';
