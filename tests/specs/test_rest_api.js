@@ -1,4 +1,4 @@
-const  chai = require('chai');
+const chai = require('chai');
 import should from 'should';
 import chaiHttp from 'chai-http';
 import webservice from './../../src/WebService';
@@ -31,24 +31,6 @@ describe('rest api', function () {
         done();
     });
 
-    describe('/addToIndex', () => {
-
-        it('It should add document to index (normalize epub content)', function (done) {
-
-            this.timeout(10000);
-            chai.request(webservice)
-                .get('/addToIndex')
-                .query({url: 'http://localhost:8089/', uuid: uuid1}) // /search?name=foo&limit=10
-                .end((err, res) => {
-                    res.status.should.be.equal(200);
-                    res.text.should.be.type('string');;
-                    res.text.should.be.equal('DONE! EPUB is indexed.');
-                    done();
-                });
-        });
-
-    });
-
     describe('/deleteFromIndex', () => {
 
         it('It should delete document from index.', function (done) {
@@ -73,12 +55,12 @@ describe('rest api', function () {
 
     describe('/search', () => {
 
-        it('It should delete document from index.', function (done) {
+        it('It should indexing document and test search for term.', function (done) {
 
             this.timeout(10000);
             chai.request(webservice)
                 .get('/addToIndex')
-                .query({url: 'http://localhost:8089/', uuid: uuid1}) // /search?name=foo&limit=10
+                .query({url: 'http://localhost:8089/', uuid: uuid1})
                 .end((err, res) => {
                     chai.request(webservice)
                         .get('/search')
@@ -92,4 +74,38 @@ describe('rest api', function () {
                 });
         });
     });
+
+    describe('/addToIndex', () => {
+
+        it('It should add document to index (normalize epub content)', function (done) {
+
+            this.timeout(10000);
+            chai.request(webservice)
+                .get('/addToIndex')
+                .query({url: 'http://localhost:8089/', uuid: uuid1}) // /search?name=foo&limit=10
+                .end((err, res) => {
+                    res.status.should.be.equal(200);
+                    res.text.should.be.type('string');
+                    res.text.should.be.equal('DONE! EPUB is indexed.');
+                    done();
+                });
+        });
+
+        it('It should indexing document from remote resource. The resource is fetched over https.' +
+            'So this test checks the request support for secure communication over https and ' +
+            'will fail if the remote resource could not be found.', function (done) {
+
+            this.timeout(30000);
+            chai.request(webservice)
+                .get('/addToIndex')
+                .query({url: 'https://readium.firebaseapp.com/epub_content/accessible_epub_3/', uuid: uuid1})
+                .end((err, res) => {
+                    res.status.should.be.equal(200);
+                    res.text.should.be.type('string');
+                    res.text.should.be.equal('DONE! EPUB is indexed.');
+                    done();
+                });
+        });
+    });
+
 });

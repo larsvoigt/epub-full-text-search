@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import parser from './MetaDataParser';
-import rp from 'request-promise';
+import helper from './../Helper';
 
 const Preparer = {};
 
@@ -9,7 +9,7 @@ const Preparer = {};
  *************/
 Preparer.normalize = function (urlToEPUBs) {
 
-    console.log('URL to EPUB data: '.blue + urlToEPUBs.green + '\n\n');
+    console.log('URL of EPUB data: '.blue + urlToEPUBs.green + '\n\n');
 
     return parser.getMetaDataFromUrl(urlToEPUBs)
         .then(metaData => {
@@ -42,14 +42,12 @@ function prepareEPUBDataForIndexing(metaData) {
     const arrayOfPromises = metaData.spineItems.map(spineItem => {
 
         const spineUri = metaData.url + 'EPUB/' + spineItem.href;
-        const options = {
-            uri: spineUri,
-            transform: function (body) {
-                return cheerio.load(body);
-            }
-        };
+        return helper.getContent(spineUri)
+            .then(body => {
 
-        return rp(options);
+                return cheerio.load(body);
+            })
+
     });
 
     return Promise.all(arrayOfPromises)
@@ -80,6 +78,7 @@ function prepareEPUBDataForIndexing(metaData) {
 function setMetaData(jsonDoc, meta, spineItemMeta) {
 
     jsonDoc.spineItemPath = meta.url + 'EPUB/' + spineItemMeta.href;
+
     jsonDoc.href = spineItemMeta.href;
     jsonDoc.baseCfi = spineItemMeta.baseCfi;
     jsonDoc.id = spineItemMeta.id + ':' + meta.title;

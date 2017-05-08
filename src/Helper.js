@@ -1,20 +1,26 @@
-import request from 'request';
-
 
 const Helper = {};
 
-
-Helper.fetchUrlContent = function (href, callback) {
-
-    request(href, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            return callback(body);
-        }
-        else
-            console.error('[ERROR] ' + error);
-    });
+Helper.getContent = function (url) {
+    // from here https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/
+    return new Promise((resolve, reject) => {
+        // select http or https module, depending on reqested url
+        const lib = url.startsWith('https') ? require('https') : require('http');
+        const request = lib.get(url, (response) => {
+            // handle http errors
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                reject(new Error('Failed to load page, status code: ' + response.statusCode));
+            }
+            // temporary data holder
+            const body = [];
+            // on every content chunk, push it to the data array
+            response.on('data', (chunk) => body.push(chunk));
+            // we are done, resolve promise with those joined chunks
+            response.on('end', () => resolve(body.join('')));
+        });
+        // handle connection errors of the request
+        request.on('error', (err) => reject(err))
+    })
 };
-
-
 module.exports = Helper;
 

@@ -1,6 +1,6 @@
 import xml2js from 'xml2js';
 import Q from 'q';
-import rp from 'request-promise';
+import helper from './../Helper';
 
 
 const parser = new xml2js.Parser(),
@@ -11,17 +11,17 @@ const container = 'container.xml';
 
 MetaDataParser.getMetaDataFromUrl = function (urlToEpub) {
 
-    const containerLink = urlToEpub + '/META-INF/' + container;
+    const containerLink = urlToEpub + 'META-INF/' + container;
 
     return new Promise(function (resolve, reject) {
 
-        rp(containerLink)
+        helper.getContent(containerLink)
             .then(xmlString => {
                 return getManifest(xmlString);
             })
             .then(result => {
-                const opfFile = urlToEpub + '/' + result;
-                return rp(opfFile);
+                const opfFile = urlToEpub + result;
+                return helper.getContent(opfFile);
             })
             .then(opfContent => {
                 return Q.all([
