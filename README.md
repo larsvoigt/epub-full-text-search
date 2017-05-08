@@ -142,20 +142,20 @@ epubSearch(options || {})
         // INDEXING (write your **unzipped** EPUB3-Document to index)
         searchInstance.indexing('your_epub(s)_directory')
             .then(info => {
-               console.log(info);
+               winston.log('info', info);
             })
             .fail(function(err) {
-                console.error(err);
+                winston.log('error', err);
             });
        
         // SEARCHING
         // search(query, epubTitle)
         searchInstance.search('epub', "Accessible EPUB 3")
             .then(results => {
-                console.log(results);
+                winston.log('info', results);
             })
             .fail(function(err) {
-                console.error(err);
+                winston.log('error', err);
             });
             
         // COMPLEX SEARCHING
@@ -172,24 +172,24 @@ epubSearch(options || {})
             ]
         }, search)
             .then(results => {
-                console.log(results);
+                winston.log('info', results);
             })
             .fail(function(err) {
-                console.error(err);
+                winston.log('error', err);
             });
      
         // SEARCH SUGGESTIONS
         // match(beginsWith, epubTitle)
         searchInstance.match('matrix', 'A First Course in Linear Algebra')
             .then(results => {
-                console.log(results);
+                winston.log('info', results);
             })
             .fail(function(err) {
-                console.error(err);
+                winston.log('error', err);
             });
     })
     .fail(function(err) {
-        console.error(err);
+        winston.log('error', err);
     });
 
 ``` 

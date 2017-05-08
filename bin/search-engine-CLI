@@ -18,7 +18,7 @@ if (program.writeToIndex) {
             se.indexing(program.writeToIndex)
                 .then(() => {
 
-                    console.log('\nDONE! All is indexed.\n\n'.yellow);
+                    console.log('DONE! All is indexed.'.yellow);
                     se.close(() => {
                     });
 

@@ -4,6 +4,7 @@ import init from '../init';
 import express from 'express';
 import uuidV1 from 'uuid/v1';
 import rimraf from 'rimraf';
+import winston from './../../src/Logger';
 
 
 describe('delete ', function () {
@@ -64,7 +65,7 @@ describe('delete ', function () {
             .then(() => {
             })
             .catch(err => {
-                console.error(err);
+                winston.log('error', err);
                 done();
             });
     });
@@ -90,7 +91,7 @@ describe('delete ', function () {
                                         done();
                                     })
                                     .catch(err => {
-                                        console.error(err);
+                                        winston.log('error', err);
                                     });
                             });
                         });
@@ -117,11 +118,11 @@ describe('delete ', function () {
                                     done();
                                 })
                                 .catch(err => {
-                                    console.error(err);
+                                    winston.log('error', err);
                                 });
                         })
                         .catch(err => {
-                            console.error(err);
+                            winston.log('error', err);
                         });
                 });
         });

@@ -1,8 +1,9 @@
 import searchEngine from './../SearchEngine';
+import winston from './../Logger';
 
 module.exports = function (req, res) {
 
-    console.log('[INFO] client request search');
+    winston.log('info', 'client request search');
 
     if (!req.query['q']) {
         res.status(500).send('Can`t found query parameter q -> /search?q=word');
@@ -15,8 +16,8 @@ module.exports = function (req, res) {
     var uuid = req.query['uuid'];
     uuid = uuid || '-1';
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-    console.log('[INFO] bookTitle: ' + bookTitle);
-    console.log('[INFO] uuid: ' + uuid);
+    winston.log('info', 'bookTitle: ' + bookTitle);
+    winston.log('info', 'uuid: ' + uuid);
 
     searchEngine({})
         .then(se => {
@@ -27,7 +28,7 @@ module.exports = function (req, res) {
                     res.send(result);
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
                 })
                 .fail(err => {
@@ -35,11 +36,11 @@ module.exports = function (req, res) {
 
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
                 });
         })
         .fail(err => {
-            console.error('[ERROR] ' + err);
+            winston.log('error', err);
         });
 };

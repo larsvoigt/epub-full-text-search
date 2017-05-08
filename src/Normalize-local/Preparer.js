@@ -2,6 +2,7 @@ import fs from 'fs';
 import cheerio from 'cheerio';
 import parser from './EpubMetaDataParser';
 import ic from  './IndexingController';
+import winston from './../Logger';
 
 const indexingController = ic();
 
@@ -12,27 +13,27 @@ const Preparer = {};
  *************/
 Preparer.normalize = function (pathToEPUBs, options)  {
 
-    console.log('EPUB data local: '.blue + pathToEPUBs.green + '\n\n');
+    winston.log('info', 'EPUB data local: '.blue + pathToEPUBs.green);
 
     return parser.getMetaData(pathToEPUBs)
         .then(metaDataList => {
 
-            console.log('Analyse local:'.yellow + '\n');
+            winston.log('info', 'Analyse local:'.yellow);
            
             metaDataList = indexingController.doWork(metaDataList, options);
 
             const dataSet = [];
 
             metaDataList.forEach(metaData => {
-                //console.log(metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
+                //winston.log('info', metaDataList[metaData].title + "   " + metaDataList[metaData].writeToIndex);
                 const title = metaData.title;
 
                 if (metaData.writeToIndex) {
-                    console.log("\t--> EPUB title " + title.bold.blue + ' will be added to index');
+                    winston.log('info', "\t--> EPUB title " + title.bold.blue + ' will be added to index');
 
                     prepareEPUBDataForIndexing(metaData, dataSet);
                 } else {
-                    console.log("\t--> EPUB title " + title.green + ' already indexed');
+                    winston.log('info', "\t--> EPUB title " + title.green + ' already indexed');
                 }
             });
             return dataSet;
@@ -100,7 +101,7 @@ function htmlToJSON(file) {
         });
 
     } catch (err) {
-        console.error(err);
+        winston.log('error', err);
     }
 
     return doc;

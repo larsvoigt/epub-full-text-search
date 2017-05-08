@@ -27,6 +27,6 @@ exports.process = function ($, callback)  {
 //function processMath($) {
 //    typeset({format: "MathML", html: $("*").html()}, data => {
 //
-//        console.log(data);
+//        winston.log('info', data);
 //    }
 //};

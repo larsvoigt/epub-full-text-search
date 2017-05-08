@@ -1,4 +1,5 @@
 import searchEngine from './../SearchEngine';
+import winston from './../Logger';
 
 module.exports = function (req, res) {
 
@@ -9,8 +10,8 @@ module.exports = function (req, res) {
     }
 
     const uuid = req.query['uuid'];
-    console.log('[INFO] client request delete');
-    console.log('[INFO] uuid: ' + uuid);
+    winston.log('info', 'client request delete');
+    winston.log('info', 'uuid: ' + uuid);
 
     searchEngine({})
         .then(se => {
@@ -19,19 +20,19 @@ module.exports = function (req, res) {
                     res.send('Document with ID ' + uuid + ' deleted.');
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
                 })
                 .fail(err => {
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
-                    console.error('[ERROR] ' + err);
+                    winston.log('error', err);
                     res.send('Somthing goes wrong:  ID ' + uuid);
                 });
         })
         .fail(err => {
-            console.error('[ERROR] ' + err);
+            winston.log('error', err);
         });
 };

@@ -61,11 +61,12 @@
     "q": "^1.4.1",
     "readdirp": "^2.0.0",
     "request": "^2.81.0",
-    "request-promise": "^4.2.0",
+    "request-promise": "^4.2.1",
     "search-index": "~0.8.10",
     "serve": "^5.1.4",
     "uuid": "^3.0.1",
     "valid-url": "^1.0.9",
+    "winston": "^2.3.1",
     "xml2js": "~0.4.8"
   },
   "bin": {

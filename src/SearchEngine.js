@@ -1,8 +1,10 @@
 'use strict';
 // TODOs:
 // [ ] separate api feature in own modules
-// [ ] logging
-// [ ] rest api del
+// [X] logging
+// [X] rest api del
+// [ ] possibility to choose other backend search engines -> interface
+
 const DEFAULT_EPUB_TITLE = '*';
 
 import searchIndexSource from 'search-index';
@@ -10,6 +12,7 @@ import Q  from 'q';
 import colors from 'colors';
 import _ from 'lodash';
 import validUrl from 'valid-url';
+import winston from './Logger';
 
 import normalize from './Normalize';
 import cfi from './CFI.js';
@@ -26,34 +29,34 @@ module.exports = function (options) {
 
     SearchEngine.indexing = function (EPUBLocation, uuid) {
 
-        console.log("\n\n\n******************************************************\n");
-        console.log("Start normalize EPUB content".yellow);
+        winston.log('info', "******************************************************");
+        winston.log('info', "Start normalize EPUB content".yellow);
 
         if (validUrl.isUri(EPUBLocation)) {
 
             //TODO: fix url if '/' lost at the end of uri
-            console.log('Indexing URI'.blue);
+            winston.log('info', 'Indexing URI'.blue);
             uuid = normalize.normalizeUUID(uuid);
             return normalize.url(EPUBLocation, dataSet => {
                 dataSet.map(doc => {
                     doc.id = doc.id.split(':')[0] + ':' + uuid;
                     doc.uuid = uuid;
                 });
-                console.log("Ready with normalize EPUB\n\n".yellow);
-                console.log("Start normalize EPUB.".yellow);
+                winston.log('info', "Ready with normalize EPUB".yellow);
+                winston.log('info', "Start normalize EPUB.".yellow);
                 return SearchEngine.add(dataSet);
             })
         } else {
-            console.log('Indexing local path'.blue);
+            winston.log('info', 'Indexing local path'.blue);
             return normalize.local(EPUBLocation, options, dataSet => {
 
-                console.log("Ready with normalize EPUB\n\n".yellow);
+                winston.log('info', "Ready with normalize EPUB".yellow);
 
                 if (dataSet.length > 0) {
-                    console.log("Start normalize EPUB-data.".yellow);
+                    winston.log('info', "Start normalize EPUB-data.".yellow);
                     return SearchEngine.add(dataSet);
                 } else {
-                    console.log("DONE! Nothing to do, EPUBs already indexed.\n\n".yellow);
+                    winston.log('info', "DONE! Nothing to do, EPUBs already indexed.".yellow);
                     return;
                 }
             })
@@ -82,7 +85,7 @@ module.exports = function (options) {
             })
             .catch(err => {
                 return Q.reject(err);
-                console.error(err);
+                winston.log('error', err);
             });
     };
 
@@ -100,7 +103,7 @@ module.exports = function (options) {
             })
             .catch(err => {
                 return Q.reject(err);
-                console.error(err);
+                winston.log('error', err);
             });
     };
 
@@ -163,17 +166,17 @@ module.exports = function (options) {
 
                     })
                     .catch(err => {
-                        console.error(err);
+                        winston.log('error', err);
                     });
             }).catch(err => {
-                console.error(err);
+                winston.log('error', err);
             });
     };
 
     SearchEngine.match = function (beginsWith, EPUBTitle, uuid) {
 
         if (!_.isString(EPUBTitle) && !_.isNull(EPUBTitle))
-            console.error('EPUBTitle should be null or type string');
+            winston.log('error', 'EPUBTitle should be null or type string');
 
         if (beginsWith.length < 3) {//match string must be longer than threshold (3)
 
@@ -263,7 +266,7 @@ module.exports = function (options) {
  const q = {};
  q.query = { AND: [{'*': ['text']}] };
  si.search(q, (err, results) => {
- console.log(results);
+ winston.log('info', results);
  })
  }
  })

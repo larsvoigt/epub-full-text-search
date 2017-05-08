@@ -1,6 +1,7 @@
 import cheerio from 'cheerio';
 import parser from './MetaDataParser';
 import helper from './../Helper';
+import winston from './../Logger';
 
 const Preparer = {};
 
@@ -9,7 +10,7 @@ const Preparer = {};
  *************/
 Preparer.normalize = function (urlToEPUBs) {
 
-    console.log('URL of EPUB data: '.blue + urlToEPUBs.green + '\n\n');
+    winston.log('info', 'URL of EPUB data: '.blue + urlToEPUBs.green);
 
     return parser.getMetaDataFromUrl(urlToEPUBs)
         .then(metaData => {
@@ -17,7 +18,7 @@ Preparer.normalize = function (urlToEPUBs) {
             return prepareEPUBDataForIndexing(metaData);
 
         }).catch(function (err) {
-            console.error(err);
+            winston.log('error', err);
         });
 };
 
@@ -70,7 +71,7 @@ function prepareEPUBDataForIndexing(metaData) {
             return data;
         })
         .catch(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 }
 

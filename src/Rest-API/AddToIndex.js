@@ -1,4 +1,5 @@
 import searchEngine from './../SearchEngine';
+import winston from './../Logger';
 
 module.exports = function (req, res) {
 // TODO: testing
@@ -15,17 +16,17 @@ module.exports = function (req, res) {
                 .then(() => {
 
                     res.status(200).send('DONE! EPUB is indexed.');
-                    console.log('[INFO] DONE! EPUB is indexed.')
+                    winston.log('info', 'DONE! EPUB is indexed.')
                     se.close(() => {
                     });
 
                 }).catch(err => {
                 res.status(500).send(err);
-                console.error(err);
+                winston.log('error', err);
             });
         })
         .fail(err => {
             res.status(500).send(err);
-            console.error(err);
+            winston.log('error', err);
         });
 };

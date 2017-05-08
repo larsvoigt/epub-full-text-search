@@ -1,4 +1,5 @@
 import searchEngine from './../SearchEngine';
+import winston from './../Logger';
 
 module.exports = function (req, res) {
 
@@ -14,9 +15,9 @@ module.exports = function (req, res) {
 
     uuid = uuid || '-1';
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-    console.log('[INFO] client request match');
-    console.log('[INFO] bookTitle: ' + bookTitle);
-    console.log('[INFO] uuid: ' + uuid);
+    winston.log('info', 'client request match');
+    winston.log('info', 'bookTitle: ' + bookTitle);
+    winston.log('info', 'uuid: ' + uuid);
 
     searchEngine({})
         .then(se => {
@@ -26,19 +27,19 @@ module.exports = function (req, res) {
                     res.send(matches);
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
                 })
                 .fail(err => {
 
                     se.close(err => {
                         if (err)
-                            console.error('[ERROR] ' + err);
+                            winston.log('error', err);
                     });
-                    console.error('[ERROR] ' + err);
+                    winston.log('error', err);
                 });
         })
         .fail(err => {
-            console.error('[ERROR] ' + err);
+            winston.log('error', err);
         });
 };

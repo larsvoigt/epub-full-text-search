@@ -95,7 +95,7 @@ describe('rest api', function () {
             'So this test checks the request support for secure communication over https and ' +
             'will fail if the remote resource could not be found.', function (done) {
 
-            this.timeout(30000);
+            this.timeout(40000);
             chai.request(webservice)
                 .get('/addToIndex')
                 .query({url: 'https://readium.firebaseapp.com/epub_content/accessible_epub_3/', uuid: uuid1})

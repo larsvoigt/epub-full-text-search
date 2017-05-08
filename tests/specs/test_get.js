@@ -4,6 +4,7 @@ import init from '../init';
 import express from 'express';
 import uuidV1 from 'uuid/v1';
 import rimraf from 'rimraf';
+import winston from './../../src/Logger';
 
 
 describe('get ', function () {
@@ -57,7 +58,7 @@ describe('get ', function () {
                             });
                         })
                         .catch(err => {
-                            console.error(err);
+                            winston.log('error', err);
                         });
                 });
         });

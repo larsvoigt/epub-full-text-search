@@ -3,6 +3,7 @@ import mathML from './MathML.js';
 import readFile from 'fs-readfile-promise';
 import validUrl from 'valid-url';
 import rp from 'request-promise';
+import winston from './Logger';
 
 
 /**************
@@ -29,7 +30,7 @@ exports.generate = function (data) {
                 resolve(result);
             })
             .catch(err => {
-                console.error(err);
+                winston.log('error', err);
                 reject(err);
             });
     });

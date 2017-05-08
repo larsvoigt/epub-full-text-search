@@ -2,7 +2,7 @@ import xml2js from 'xml2js';
 import path from 'path';
 import fs from 'fs';
 import Q from 'q';
-
+import winston from './../Logger';
 
 const readdir = Q.denodeify(fs.readdir),
     readFile = Q.denodeify(fs.readFile),
@@ -22,7 +22,7 @@ MetaDataParser.getMetaData = function (pathToEPUBs) {
             }));
         })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 };
 
@@ -49,7 +49,7 @@ function getContainerFiles(dir, results) {
             return results;
         })
         .fail(err => {
-            console.error(err)
+            winston.log('error', err)
         });
 }
 
@@ -81,7 +81,7 @@ const getBookMetaData = function (containerFile) {
             };
         })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 };
 
@@ -109,7 +109,7 @@ function getBookTitle(data) {
             return metadata['dc:title'][0]._ || metadata['dc:title'][0];
         })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 }
 
@@ -142,7 +142,7 @@ function getSpineItems(data) {
         return result;
     })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         })
 }
 

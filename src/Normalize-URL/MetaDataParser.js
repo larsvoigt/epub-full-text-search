@@ -1,6 +1,7 @@
 import xml2js from 'xml2js';
 import Q from 'q';
 import helper from './../Helper';
+import winston from './../Logger';
 
 
 const parser = new xml2js.Parser(),
@@ -39,7 +40,7 @@ MetaDataParser.getMetaDataFromUrl = function (urlToEpub) {
                 );
             })
             .catch(err => {
-                console.error(err);
+                winston.log('error', err);
                 reject(err);
             });
 
@@ -54,7 +55,7 @@ function getManifest(data) {
             return result.container.rootfiles[0].rootfile[0].$['full-path'];
         })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 }
 
@@ -66,7 +67,7 @@ function getBookTitle(data) {
             return metadata['dc:title'][0]._ || metadata['dc:title'][0];
         })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         });
 }
 
@@ -99,7 +100,7 @@ function getSpineItems(data) {
         return result;
     })
         .fail(err => {
-            console.error(err);
+            winston.log('error', err);
         })
 }
 

@@ -8,6 +8,7 @@ import search from './Rest-API/Search';
 import matcher from './Rest-API/Matcher';
 import addToIndex from './Rest-API/AddToIndex';
 import deleteFromIndex from './Rest-API/DeleteFromIndex';
+import winston from './Logger';
 
 const WebService = {};
 
@@ -26,11 +27,11 @@ WebService.app.get('/deleteFromIndex', deleteFromIndex); // POST or GET???
 
 function terminator(sig) {
     if (typeof sig === "string") {
-        console.log('[INFO] %s: Received %s - terminating service ...',
+        winston.log('info', '%s: Received %s - terminating service ...',
             Date(Date.now()), sig);
         process.exit(1);
     }
-    console.log('[INFO] %s: EPUB search stopped.', Date(Date.now()));
+    winston.log('info', '%s: EPUB search stopped.', Date(Date.now()));
 }
 
 
@@ -52,12 +53,12 @@ WebService.setup = function (callback) {
 
 
 WebService.startupMessages = function (callback) {
-    console.log('');
-    console.log('[INFO] EPUB-full-text-search Copyright (c) 2015-2017 Lars Voigt');
-    console.log('[INFO] This program comes with ABSOLUTELY NO WARRANTY.');
-    console.log('[INFO] This is free software, and you are welcome to redistribute it under certain conditions.');
-    console.log('[INFO] For the full license, please visit: https://opensource.org/licenses/MIT');
-    console.log('');
+    winston.log('info', '');
+    winston.log('info', 'EPUB-search Copyright (c) 2015-2017 Lars Voigt');
+    winston.log('info', 'This program comes with ABSOLUTELY NO WARRANTY.');
+    winston.log('info', 'This is free software, and you are welcome to redistribute it under certain conditions.');
+    winston.log('info', 'For the full license, please visit: https://opensource.org/licenses/MIT');
+    winston.log('info', '');
     callback();
 };
 
@@ -65,7 +66,7 @@ WebService.start = function (callback) {
     //  Start the app on the specific interface (and port).
     WebService.app.listen(WebService.port, WebService.ipaddress, () => {
         //TODO: logging
-        console.log('[INFO] %s: EPUB search started on %s:%d ...',
+        winston.log('info', '%s: EPUB search started on %s:%d ...',
             new Date(), WebService.ipaddress, WebService.port);
     }).on('error', e => {
 
@@ -84,7 +85,7 @@ async.series([
     WebService.start
 ], err => {
     if (err) {
-        console.error('[ERROR] Error during startup: ' + err);
+        winston.log('error', 'Error during startup: ' + err);
         process.exit(1);
     }
 
