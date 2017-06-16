@@ -9,7 +9,7 @@ import searchEngine from './SearchEngine';
 const WebService = {};
 
 WebService.app = express();
-// it possible to config cors for indivudal routes
+// Have a look here to config cors for indivudal routes
 // https://www.npmjs.com/package/cors
 WebService.app.use(cors());
 
