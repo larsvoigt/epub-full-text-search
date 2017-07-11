@@ -71,5 +71,5 @@
     "test": "date && mocha --compilers js:babel-core/register tests --recursive",
     "postinstall": "npm run build"
   },
-  "main": "dist/bundle.js"
+  "main": "dist/SearchEngine.js"
 }
