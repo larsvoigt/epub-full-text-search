@@ -7,4 +7,3 @@ node_modules
 /bin/pidfile
 /src/IndexControllerDB.json
 .idea
-dist
