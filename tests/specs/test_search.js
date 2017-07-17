@@ -6,7 +6,6 @@ import uuidV1 from 'uuid/v1';
 import rimraf from 'rimraf';
 import express from 'express';
 
-
 describe('search', () => {
 
     var se;
@@ -16,7 +15,7 @@ describe('search', () => {
     var server;
 
     beforeEach(function (done) {
-        this.timeout(15000);
+        this.timeout(20000);
 
         searchEngine({'indexPath': DB})
             .then(function (_se) {
@@ -175,7 +174,7 @@ describe('search', () => {
     it('Search with uuid.', function (done) {
 
         //TODO: Use promise all ?
-        this.timeout(150000);
+        this.timeout(20000);
         const uuid1 = uuidV1();
         const uuid2 = uuidV1();
         let app = express();
