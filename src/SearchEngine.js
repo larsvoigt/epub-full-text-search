@@ -9,7 +9,6 @@ const DEFAULT_EPUB_TITLE = '*';
 
 import searchIndexSource from 'search-index';
 import Q  from 'q';
-import colors from 'colors';
 import _ from 'lodash';
 import validUrl from 'valid-url';
 import winston from './Logger';
@@ -84,8 +83,8 @@ module.exports = function (options) {
                 return SearchEngine._del(result.hits);
             })
             .catch(err => {
-                return Q.reject(err);
                 winston.log('error', err);
+                return Q.reject(err);
             });
     };
 
@@ -102,8 +101,8 @@ module.exports = function (options) {
                 return result.hits;
             })
             .catch(err => {
-                return Q.reject(err);
                 winston.log('error', err);
+                return Q.reject(err);
             });
     };
 

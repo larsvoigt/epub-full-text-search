@@ -16,6 +16,18 @@ winston.addColors({
 });
 
 winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, { level: 'debug', colorize:true });
+winston.add(winston.transports.Console, {
+    level: 'error',
+    colorize:true,
+    prettyPrint: true
+});
+// winston.add(winston.transports.File, {
+//     level: 'error',
+//     filename: 'epub-search.log',
+//     maxsize: 5242880, //5MB
+//     maxFiles: 5,
+//     colorize: false,
+//     prettyPrint: true
+// });
 
 module.exports = winston;
