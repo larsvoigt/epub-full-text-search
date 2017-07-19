@@ -13,7 +13,7 @@ import winston from './Logger';
 const WebService = {};
 
 WebService.app = express();
-// it possible to config cors for indivudal routes
+// Have a look here to config cors for indivudal routes
 // https://www.npmjs.com/package/cors
 WebService.app.use(cors());
 WebService.app.use(bodyParser.urlencoded({extended: true}));

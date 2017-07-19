@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import colors from 'colors';
+import 'colors';
 import cproc from 'child_process';
 import constants from "../lib/Constants";
 import fs from 'fs';

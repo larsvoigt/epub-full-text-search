@@ -19,7 +19,7 @@ to indexing the base content.
 ### Online Demo
 [Demo](http://protected-dusk-3051.herokuapp.com/)
 
-###Features included:
+### Features included:
 
 * Full text search (get all query matches for one epub-document or for a whole epub collection)  
 * Instant search (provide suggestions)
