@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -67,7 +67,7 @@
   "scripts": {
     "start": "npm run express-service",
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
-    "express-service": "./node_modules/.bin/babel-node example/as-a-service/express/service.js",
+    "express-service": "babel-node example/as-a-service/express/service.js",
     "test": "date && mocha --compilers js:babel-core/register tests --recursive"
   }
 }
