@@ -66,8 +66,11 @@
   },
   "scripts": {
     "start": "npm run express-service",
+    "build": "babel src -d dist --copy-files",
     "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
     "express-service": "node example/as-a-service/express/service.js",
-    "test": "date && mocha --compilers js:babel-core/register tests --recursive"
-  }
+    "test": "date && mocha --compilers js:babel-core/register tests --recursive",
+    "postinstall": "npm run build"
+  },
+  "main": "dist/SearchEngine.js"
 }
