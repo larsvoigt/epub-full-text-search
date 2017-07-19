@@ -3,8 +3,9 @@
     <meta charset="UTF-8">
     <title>express service</title>
     <link href="main.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet prefetch"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -12,80 +13,53 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script>
         const host = window.location.origin;
-
-
-        $.fn.spin = function (opts)  {
-            this.each(() => {
-                const $this = $(this), data = $this.data();
-
-                if (data.spinner) {
-                    data.spinner.stop();
-                    delete data.spinner
-                }
-                if (opts !== false) {
-                    window.s = data.spinner = new Spinner($.extend({color: $this.css('color')}, opts)).spin(this)
-                }
-            });
-            return this
-        };
-
-        function getOpts() {
-            return {
-                lines: 13 // The number of lines to draw
-                , length: 17 // The length of each line
-                , width: 3 // The line thickness
-                , radius: 15 // The radius of the inner circle
-                , scale: 1 // Scales overall size of the spinner
-                , corners: 1 // Corner roundness (0..1)
-                , color: '#FFF' // #rgb or #rrggbb or array of colors
-                , opacity: 0.25 // Opacity of the lines
-                , rotate: 0 // The rotation offset
-                , direction: 1 // 1: clockwise, -1: counterclockwise
-                , speed: 1 // Rounds per second
-                , trail: 60 // Afterglow percentage
-                , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-                , zIndex: 2e9 // The z-index (defaults to 2000000000)
-                , className: 'spinner' // The CSS class to assign to the spinner
-                , top: '50%' // Top position relative to parent
-                , left: '50%' // Left position relative to parent
-                , shadow: false // Whether to render a shadow
-                , hwaccel: false // Whether to use hardware acceleration
-                , position: 'absolute' // Element positioning
-            }
+        var bootstrapAlert = function() {}
+        bootstrapAlert.error = function(message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>'+message+'</span></div>')
         }
-
         function search() {
 
             $("#hits").empty();
+            $('#search').button('loading');
 
-            $('#spinner').show();
-            $('#spinner').spin(getOpts());
+            const term = $("#searchbox").val();
+
+            if(term === "") {
+                bootstrapAlert.error("Add search term ;-)");
+                $('#search').button('reset');
+                return;
+            }
+
+
             const request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
-
             $.getJSON(request, '', {})
-                    .done((hits) => {
+                .done((hits) => {
 
-                        $('#spinner').data().spinner.stop();
-                        $('#spinner').hide();
+                    $('#search').button('reset');
 
-                        if (hits.length > 0) {
+                    if (hits.length > 0) {
+//                        console.log("found " + hits.length + ' hits');
 
-//                            console.log("found " + hits.length + ' hits');
-                            for (const index in hits)
-                                $("#hits").append($("<li class='list-group-item'>").html((++index) + ". <pre>" + syntaxHighlight(JSON.stringify(hits[index], undefined, 2)) + "</pre>"));
+                        $('#hitsCount').text(hits.length + "." + ' hits');
+                        for (var index in hits)
+                            $("#hits").append($("<li class='list-group-item'>").html((++index) + ". <pre>" + syntaxHighlight(JSON.stringify(hits[index], undefined, 2)) + "</pre>"));
 
-                        } else {
+                    } else {
 
-                            $("#hits").append($("<li>").html("<li class='list-group-item'>No Hits </li>"));
-                        }
-                        console.debug("search request ready");
-                    })
-                    .fail(() => {
-                        console.error("error fulltext search request");
-                    });
+                        $("#hits").append($("<li>").html("<li class='list-group-item'>No Hits </li>"));
+                    }
+                    console.debug("search request ready");
+                })
+                .fail((d, textStatus, error) => {
+
+                    $('#search').button('reset');
+                    const err = d.status + " " + error + " -> message: " + d.responseText;
+                    bootstrapAlert.error(err);
+                    console.error(`Search request failed: \n ${err}`);
+                });
         }
 
-        // looking for suggestions 
+        // looking for suggestions
         function instantSearch() {
 
             const q = $("#searchbox").val();
@@ -98,19 +72,22 @@
             console.debug(request);
 
             $.getJSON(request, '', {})
-                    .done((data) => {
+                .done((data) => {
 
-                        $("#searchbox").autocomplete({
-                            source: data,
-                            select: (event) => {
-                                event.stopPropagation();
-                                $("#search").trigger("click");
-                            }
-                        });
-                    })
-                    .fail(() => {
-                        console.log("error fulltext search request");
+                    $("#searchbox").autocomplete({
+                        source: data,
+                        select: (event) => {
+                            event.stopPropagation();
+                            $("#search").trigger("click");
+                        }
                     });
+                })
+                .fail((d, textStatus, error) => {
+
+                    const err = d.status + " " + error + " -> message: " + d.responseText;
+                    bootstrapAlert.error(err);
+                    console.error(`Search request failed: \n ${err}`);
+                });
         }
 
 
@@ -131,7 +108,7 @@
         function syntaxHighlight(json) {
             json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-                const cls = 'number';
+                var cls = 'number';
                 if (/^"/.test(match)) {
                     if (/:$/.test(match)) {
                         cls = 'key';
@@ -146,7 +123,6 @@
                 return '<span class="' + cls + '">' + match + '</span>';
             });
         }
-
     </script>
 </head>
 <body>
@@ -155,40 +131,42 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
 
-        <h1>Epub Full Text Search Example</h1>
+        <h1>Epub Search</h1>
 
-        <h2>Sample ebooks:</h2>
+        <h3>Sample books:</h3>
         <ul>
             <li>Accessible EPUB 3</li>
             <li>A First Course in Linear Algebra</li>
         </ul>
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Add a query (e.g. math, epub, ...)</h3>
+                <h3 class="panel-title">E.g. search for math, epub, someone, ...</h3>
             </div>
             <div class="panel-body">
                 <form class="form-search form-inline">
                     <div class="input-group">
                         <input type="text" id="searchbox" name="searchbox" class="form-control search-query"
-                               placeholder="Search..." data-provide="typeahead"/> 
-                            <span class="input-group-btn">
-                               <button id="search" type="button" class="btn btn-primary"> Search</button>
+                               placeholder="Search" data-provide="typeahead"/>
+                        <span class="input-group-btn">
+                               <button id="search"
+                                       type="button"
+                                       class="btn btn-primary"
+                                       data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Search</button>
                            </span>
                     </div>
                 </form>
+
             </div>
-
-
         </div>
+        <div id = "alert_placeholder"></div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Hits</h3>
+                <h3 id="hitsCount" class="panel-title">Hits</h3>
             </div>
             <div id="hits" class="list-group">
             </div>
         </div>
     </div>
 </div>
-<div id="spinner"></div>
 </body>
 </html>
