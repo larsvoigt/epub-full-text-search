@@ -6,8 +6,8 @@ const INDEX_DB = 'quick_test';
 const CONTENT = '../node_modules/epub3-samples';
 // const CONTENT = '/home/alan/workspace/epub-full-text-search/quick-test/test_content';
 
-console.log(process.cwd()); 
- rimraf.sync('IndexControllerDB.json');
+console.log(process.cwd());
+rimraf.sync('IndexControllerDB.json');
 
 function indexing(callback) {
 
@@ -20,11 +20,11 @@ function indexing(callback) {
                     console.log('\nDONE! All is indexed.\n\n'.yellow);
                     se.close(() => {
                     });
-                        return callback();
-                    
+                    return callback();
+
                 }).fail((err) => {
-                    console.log(err);
-                });
+                console.log(err);
+            });
         })
         .fail((err) => {
             console.log(err);
@@ -40,11 +40,11 @@ function testSearch(q, booktitle) {
             se.search(q, booktitle)
                 .then((results) => {
 
-                    if(results.length === 0) {
+                    if (results.length === 0) {
                         console.log('Find nothing!');
                         return;
                     }
-                    
+
                     //const s = fs.createWriteStream('hits.json');
                     //s.write(JSON.stringify(results));
                     //s.end();
@@ -52,8 +52,8 @@ function testSearch(q, booktitle) {
                     se.close(() => {
                     });
 
-                    console.log('total hits: ' + results.length + " (expected 15)");
-
+                    console.log('total hits: ' + results.length + " (expected 15 if query=epub)");
+                    var i;
                     for (i in results) {
                         console.log("--------------------------------------------------------------------------");
                         console.log('*** epubTitle: ' + results[i].epubTitle + ' ***');
@@ -118,8 +118,8 @@ function testMatcher() {
 
 indexing(() => {
 
-    testSearch("someone", "Accessible EPUB 3");
-    // testSearch("epub", "Accessible EPUB 3");
+    // testSearch("someone", "Accessible EPUB 3");
+    testSearch("epub", "Accessible EPUB 3");
     //testSearch("그가 장난기", "");
     //testMatcher();
 
