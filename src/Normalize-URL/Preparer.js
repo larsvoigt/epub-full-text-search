@@ -18,7 +18,7 @@ Preparer.normalize = function (urlToEPUBs) {
             return prepareEPUBDataForIndexing(metaData);
 
         }).catch(function (err) {
-            winston.log('error', err);
+            winston.log('error','normalize url' + urlToEPUBs + ' ' + err);
         });
 };
 
@@ -71,7 +71,7 @@ function prepareEPUBDataForIndexing(metaData) {
             return data;
         })
         .catch(err => {
-            winston.log('error', err);
+            winston.log('error', 'prepareEPUBDataForIndexing: ' + err);
         });
 }
 

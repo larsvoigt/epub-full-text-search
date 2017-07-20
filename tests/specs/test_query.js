@@ -11,7 +11,7 @@ describe('query', () => {
     rimraf.sync(DB);
 
     beforeEach(function (done) {
-        this.timeout(15000);
+        this.timeout(25000);
         searchEngine({'indexPath': DB})
             .then(function (_se) {
                 se = _se;

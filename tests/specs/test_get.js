@@ -41,7 +41,7 @@ describe('get ', function () {
     });
 
 
-    it('Should get docs for passed uuid.', function (done) {
+    it('Should get results for uuid.', function (done) {
 
         this.timeout(10000);
         const uuid = uuidV1();

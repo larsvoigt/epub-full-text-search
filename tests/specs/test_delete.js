@@ -41,7 +41,7 @@ describe('delete ', function () {
     });
 
 
-    it('Should delete all doc with passed uuid.', function (done) {
+    it('Should delete book with uuid.', function (done) {
 
         this.timeout(10000);
         const uuid = uuidV1();

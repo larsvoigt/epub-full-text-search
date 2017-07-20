@@ -15,7 +15,7 @@ describe('search', () => {
     var server;
 
     beforeEach(function (done) {
-        this.timeout(20000);
+        this.timeout(30000);
 
         searchEngine({'indexPath': DB})
             .then(function (_se) {
@@ -40,7 +40,7 @@ describe('search', () => {
 
     });
 
-    it('count hits of keyword', done => {
+    it('count hits of search term', done => {
         se.search("epub", "Accessible EPUB 3")
             .then(function (hits) {
                 hits.length.should.be.exactly(15);
@@ -49,7 +49,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('should find no hits if keyword is not included', done => {
+    it('should find no hits if search term is not included', done => {
 
         se.search("Accessi", "Accessible EPUB 3")
             .then(function (hits) {
@@ -70,7 +70,7 @@ describe('search', () => {
     //         .fail(done);
     // });
 
-    it('should return always the same hits', done => {
+    it('Test the same search twice; it should return always the same hits', done => {
 
         var first;
 
@@ -86,7 +86,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('check hit properties are set', done => {
+    it('check all result properties are set', done => {
 
         se.search("epub", "Accessible EPUB 3")
             .then(function (hits) {
@@ -110,7 +110,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('test multiple match within one text node', done => {
+    it('test multiple matches within one text node', done => {
 
         se.search("someone", "Accessible EPUB 3")
             .then(function (hits) {
@@ -125,8 +125,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('Test query string match within multiple books,' +
-        ' should return only 5 hits form Accessible EPUB 3', done => {
+    it('Test multiple books are index, but it should get only hits from specific book', done => {
 
         se.search("someone", "Accessible EPUB 3")
             .then(function (hits) {
@@ -136,8 +135,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('Test query string match within multiple books,' +
-        ' should return only 1 hits form A First Course in Linear Algebra', done => {
+    it('Test multiple books are index, but it should get only hits from specific book', done => {
 
         se.search("someone", "A First Course in Linear Algebra")
             .then(function (hits) {
@@ -147,11 +145,7 @@ describe('search', () => {
             .fail(done);
     });
 
-    // Note: this test case need to be fitted if more than the books
-    // A First Course in Linear Algebra and from Accessible EPUB 3 will be indexed
-    it('Test query string match within multiple books,' +
-        ' should return only 6 hits form A First Course in Linear Algebra and ' +
-        'from Accessible EPUB 3 ', done => {
+    it('Test search over all book: Should get all hits form all books', done => {
 
         se.search("someone", "*")
             .then(function (hits) {
@@ -174,7 +168,7 @@ describe('search', () => {
     it('Search with uuid.', function (done) {
 
         //TODO: Use promise all ?
-        this.timeout(20000);
+        this.timeout(30000);
         const uuid1 = uuidV1();
         const uuid2 = uuidV1();
         let app = express();

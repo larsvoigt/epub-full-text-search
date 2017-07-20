@@ -43,6 +43,9 @@ module.exports = function (options) {
                 });
                 winston.log('info', "Ready with normalize EPUB".yellow);
                 winston.log('info', "Start normalize EPUB.".yellow);
+                // var fs = require('fs');
+                // fs.writeFileSync('/tmp/fs.tmp', JSON.stringify(dataSet));
+
                 return SearchEngine.add(dataSet);
             })
         } else {
@@ -124,7 +127,6 @@ module.exports = function (options) {
             q.query.AND.uuid = [normalize.normalizeUUID(uuid)];
         else
             q.query.AND.epubTitle = [normalize.normalizeEpupTitle(title)];
-
 
         return SearchEngine.query(q);
     };

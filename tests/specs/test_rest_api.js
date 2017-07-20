@@ -33,7 +33,7 @@ describe('rest api', function () {
 
     describe('/deleteFromIndex', () => {
 
-        it('It should delete document from index.', function (done) {
+        it('It should delete the ebook from index.', function (done) {
 
             this.timeout(10000);
             chai.request(webservice)
@@ -55,7 +55,8 @@ describe('rest api', function () {
 
     describe('/search', () => {
 
-        it('It should indexing document and test search for term.', function (done) {
+        it('It should indexing the ebook via url on the fly. ' +
+            'When the index process is ready it will also tested if a specific search term can be find.', function (done) {
 
             this.timeout(10000);
             chai.request(webservice)
@@ -77,7 +78,7 @@ describe('rest api', function () {
 
     describe('/addToIndex', () => {
 
-        it('It should add document to index (normalize epub content)', function (done) {
+        it('It should indexing the ebook via url on the fly.', function (done) {
 
             this.timeout(10000);
             chai.request(webservice)
@@ -91,8 +92,8 @@ describe('rest api', function () {
                 });
         });
 
-        it('It should indexing document from remote resource. The resource is fetched over https.' +
-            'So this test checks the request support for secure communication over https and ' +
+        it('It should indexing the pointed ebook from remote. The ebooks resources can get via https.' +
+            'So this test checks the support of secure communication over https and ' +
             'will fail if the remote resource could not be found.', function (done) {
 
             this.timeout(40000);

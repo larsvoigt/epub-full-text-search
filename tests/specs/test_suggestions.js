@@ -11,7 +11,7 @@ describe('suggestions', () => {
     rimraf.sync(DB);
 
     beforeEach(function(done) {
-        this.timeout(15000);
+        this.timeout(25000);
         searchEngine({'indexPath': DB})
             .then(function (_se) {
                 se = _se;
@@ -31,7 +31,7 @@ describe('suggestions', () => {
             .fail(done);
     });
 
-    it('should return all suggestions for string epub', done => {
+    it('should return all suggestions for term epub', done => {
         se.match('epub', '')
             .then(matches => {
                 winston.log('info', matches);
@@ -47,7 +47,7 @@ describe('suggestions', () => {
             .fail(done);
     });
 
-    it('should return empty list because match string must be longer than threshold (3)', done => {
+    it('Test suggestions threshold', done => {
         se.match('ep', '')
             .then(matches => {
                 matches.length.should.be.exactly(0);
@@ -56,7 +56,7 @@ describe('suggestions', () => {
             .fail(done);
     });
     
-    it('should return all suggestions for string matrix', done => {
+    it('should return all suggestions for term matrix', done => {
 
         se.match('matrix', '')
             .then(matches => {
@@ -70,7 +70,7 @@ describe('suggestions', () => {
             .fail(done);
     });
 
-    it('suggestions should be return nothing', done => {
+    it('No suggestions, should return nothing.', done => {
 
         se.match('matrix', 'Accessible EPUB 3')
             .then(matches => {
@@ -82,7 +82,7 @@ describe('suggestions', () => {
             .fail(done);
     });
 
-    it('suggestions should be return matches for A First Course in Linear Algebra', done => {
+    it('should get suggestions for book "A First Course in Linear Algebra"', done => {
 
         se.match('matrix', 'A First Course in Linear Algebra')
             .then(matches => {
@@ -96,7 +96,7 @@ describe('suggestions', () => {
             .fail(done);
     });
 
-    it('suggestions should be return matches for Accessible EPUB 3', done => {
+    it('should get suggestions for book "Accessible EPUB 3"', done => {
 
         se.match('epub', 'Accessible EPUB 3')
             .then(matches => {

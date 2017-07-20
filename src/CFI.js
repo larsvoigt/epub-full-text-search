@@ -3,9 +3,8 @@ import S from 'string';
 import mathML from './MathML.js';
 import readFile from 'fs-readfile-promise';
 import validUrl from 'valid-url';
-import rp from 'request-promise';
 import winston from './Logger';
-
+import helper from './Helper';
 
 /**************
  * public
@@ -14,10 +13,9 @@ exports.generate = function (data) {
 
     return new Promise(function (resolve, reject) {
 
-        const fetch = validUrl.isUri(data.spineItemPath) ? rp(data.spineItemPath) : readFile(data.spineItemPath);
+        const fetch = validUrl.isUri(data.spineItemPath) ? helper.getContent(data.spineItemPath) : readFile(data.spineItemPath);
 
-        fetch
-            .then(html => {
+        fetch.then(html => {
 
                 const $dom = cheerio.load(html);
                 var needMathMlOffset = false;
