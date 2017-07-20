@@ -24,16 +24,9 @@ pre {
     color: #8e1aff;
 }
 
-#spinner {
+button {
     position: relative;
-    background-color: #3d6169;
-    width: 100px;
-    height: 100px;
-    margin: 0 20px 20px 0;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    display: none;
+    padding: 10px 20px 10px 34px;
 }
 
 ul.ui-autocomplete {

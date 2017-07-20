@@ -64,6 +64,7 @@
     "request-promise": "^4.2.1",
     "search-index": "~0.8.10",
     "serve": "^5.1.4",
+    "string": "^3.3.3",
     "uuid": "^3.0.1",
     "valid-url": "^1.0.9",
     "winston": "^2.3.1",

@@ -52,9 +52,9 @@ function testSearch(q, booktitle) {
                     se.close(() => {
                     });
 
-                    console.log('total hits: ' + results.length + " (expected 15)");
-
-                    for (var i in results) {
+                    console.log('total hits: ' + results.length + " (expected 15 if query=epub)");
+                    var i;
+                    for (i in results) {
                         console.log("--------------------------------------------------------------------------");
                         console.log('*** epubTitle: ' + results[i].epubTitle + ' ***');
                         console.log("--------------------------------------------------------------------------");
@@ -118,8 +118,8 @@ function testMatcher() {
 
 indexing(() => {
 
-    //testSearch("someone", "Accessible EPUB 3");
-    testSearch("epub", "");
+    // testSearch("someone", "Accessible EPUB 3");
+    testSearch("epub", "Accessible EPUB 3");
     //testSearch("그가 장난기", "");
     //testMatcher();
 

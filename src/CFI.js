@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import S from 'string';
 import mathML from './MathML.js';
 import readFile from 'fs-readfile-promise';
 import validUrl from 'valid-url';
@@ -80,7 +81,7 @@ function generateCFIs(cfiBase, elements, needOffset) {
         const inlinePath = ',/' + textNodeIndex + ':';
         const cfi = cfiBase + '/' + cfiParts.join('/') + inlinePath + startOffset + inlinePath + endOffset;
 
-        cfiList.push(cfi);
+        cfiList.push({ cfi, excerpt: elements[key].excerpt });
     }
     return cfiList;
 }
@@ -105,12 +106,26 @@ function getAllTextNodesContainsQuery(q, $) {
             const startOffset = indices[i],
                 endOffset = startOffset + q.length;
 
+            const excerptLength = 80;
+            let startExcerpt = startOffset - Math.floor((excerptLength - q.length) / 2);
+            if (startExcerpt < 0) {
+                // Start from the begining of the text if there are not enough characters before it
+                startExcerpt = 0;
+            }
+            let excerpt = text.slice(startExcerpt);
+            excerpt = excerpt.slice(excerpt.indexOf(' ') + 1); // trim to start on a full word
+            excerpt = S(excerpt).truncate(excerptLength).s;
+            if (startExcerpt > 0) {
+                excerpt = `...${excerpt}`; // add begining ellipsis
+            }
+
             matches.push({
                 textNode: $(this),
                 range: {
                     startOffset: startOffset,
                     endOffset: endOffset
-                }
+                },
+                excerpt,
             });
         }
     });
