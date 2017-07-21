@@ -7,14 +7,17 @@
 [![Build Status][travis-image]][travis-url] [![NPM version][npm-version-image]][npm-url] 
 
 # EPUB-Search
-## Search engine for EPUB3 documents 
+## Search engine for digital publication based on EPUB 3
 
-EPUB-Search can be used to search in EPUB3-Documents.
- 
-You can make your whole cloud based epub3-book-collection content based searchable.
+EPUB-Search is making your digital publications searchable.
+
+What is the use case:
+* server-side microservice to search within EPUBs for browser-based “cloud” readers
+*
+
 
 EPUB-Search uses [search-index](https://github.com/fergiemcdowall/search-index) 
-to indexing the base content.
+to indexing book content.
 
 ### Online Demo
 [Demo](http://protected-dusk-3051.herokuapp.com/)
@@ -25,7 +28,7 @@ to indexing the base content.
 * Instant search (provide suggestions)
 * Full javascript
 * Hits including [cfi](http://www.idpf.org/epub/linking/cfi/epub-cfi.html) references
-* Returning result in JSON format
+* Returning results in JSON format
 
 ## Installation
 
