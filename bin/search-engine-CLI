@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import searchEngine from '../src/SearchEngine';
+import searchEngine from '../lib/SearchEngine';
 import path from 'path';
 
 program
-    .version('0.2.1')
+    .version('0.3.0')
     .usage('[options] <file ...>')
     .option('-p, --writeToIndex <path>', 'Path to epub folder which contains epub-documents that should be written to index' +
         ' (Hint: the epub content have to be unzipped)')

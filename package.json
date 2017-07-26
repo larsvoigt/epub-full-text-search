@@ -1,6 +1,6 @@
 {
   "name": "epub-full-text-search",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "description": "Sample Application",
   "keywords": [
     "epub3",
@@ -62,12 +62,16 @@
     "xml2js": "~0.4.8"
   },
   "bin": {
-    "epub-search": "./bin/epub-search"
+    "epub-search": "./dist/bin/epub-search"
   },
   "scripts": {
     "start": "npm run express-service",
-    "only-client": "node_modules/browserify/bin/cmd.js -t brfs example/only-client-side/main.js > example/only-client-side/bundle.js",
     "express-service": "babel-node example/as-a-service/express/service.js",
-    "test": "date && mocha --compilers js:babel-core/register tests --recursive"
+    "build-src": "./node_modules/.bin/babel src --presets babel-preset-es2015 --out-dir dist/lib",
+    "build-bin": "./node_modules/.bin/babel ./bin/epub-search  --presets babel-preset-es2015 --out-file ./dist/bin/epub-search && ./node_modules/.bin/babel ./bin/search-engine-CLI  --presets babel-preset-es2015 --out-file ./dist/bin/search-engine-CLI",
+    "build": "npm run build-src && npm run build-bin",
+    "test": "date && mocha --compilers js:babel-core/register tests --recursive",
+    "serve:epub": "./node_modules/.bin/serve -p 8089 ./node_modules/epub3-samples/accessible_epub_3",
+    "test:webservice": "./node_modules/.bin/babel-node ./src/WebService.js"
   }
 }
