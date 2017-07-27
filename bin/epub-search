@@ -3,15 +3,17 @@
 import 'colors';
 import cproc from 'child_process';
 import constants from "../lib/Constants";
-import path from 'path';
+import fs from 'fs';
+import forever from 'forever';
 
 
-const exec = cproc.exec;  
-console.log("exec path: " + __dirname);
+const exec = cproc.exec;
+const OUT = 'out.log';
+const ERR = 'err.log';
 
-var node;
-var forever = './../../node_modules/.bin/forever ';
-forever = path.normalize(forever);
+console.log('exec path: ' + __dirname);
+
+var child;
 
 switch (process.argv[2]) {
 
@@ -19,83 +21,90 @@ switch (process.argv[2]) {
     case 'writeToIndex':
         cproc.fork(__dirname + '/search-engine-CLI', process.argv);
         break;
-    case 'status':
-        node = exec(forever + 'list');
-        break;
+    // case 'status':
+    //     forever.list(false, (err, data) => {
+    //         console.log(data);
+    //     });
+    //     break;
 
     case 'start':
-        process.stdout.write('\nStarting Epub search service\n'.bold);
-        const logging = '-o ' + constants.DATA_FOLDER + '/out.log -e ' + constants.DATA_FOLDER + '/err.log ';
-        node = exec(forever + logging + __dirname + '/../lib/WebService.js', {
-            env: process.env
+        process.stdout.write('\nStarting EPUB search ...\n'.bold);
+        // const logging = '-o ' + constants.DATA_FOLDER + '/' + OUT + ' -e ' + constants.DATA_FOLDER + '/' + ERR;
+        // //  console.log(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js');
+        // node = exec(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js', {
+        //     env: process.env
+        // });
+
+
+        child = forever.startDaemon(__dirname + '/../lib/WebService.js', {
+            'silent': false,
+            'minUptime': 5000,
+            'spinSleepTime': 2000,
+            'logFile': constants.DATA_FOLDER + '/' + OUT,
+            'errFile': constants.DATA_FOLDER + '/' + ERR
         });
+
+        printManual();
+        process.stdout.write('\nEPUB search started\n'.bold);
+        exit();
+
         break;
 
     case 'stop':
-        node = exec(forever + 'stopall');
+        process.stdout.write('\nStopping EPUB search ...'.bold);
+        forever.stopAll();
+        process.stdout.write('\nEPUB search stopped'.bold);
+        exit();
         break;
 
-    case 'restart':
-        node = exec(forever + 'restartall');
-        break;
-    
-    case 'log':
-
-        process.stdout.write('\nFind Epub search log-files here ' +  constants.DATA_FOLDER.bold + '\n\n');
-        // process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit'.red);
-        // process.stdout.write('\n\n'.reset);
-        // //cproc.spawn('tail', ['-F', './logs/output.log'], {
-        // //    cwd: __dirname,
-        // //    stdio: 'inherit'
-        // //});
+    case 'logs':
+        process.stdout.write('\nFind log-files here ' +  constants.DATA_FOLDER.bold + '\n\n');
+        fs.readFile(constants.DATA_FOLDER + '/' + OUT, 'utf8', function(err, data) {
+            if (err) throw err;
+            console.log(data);
+        });
+        fs.readFile(constants.DATA_FOLDER + '/' + ERR, 'utf8', function(err, data) {
+            if (err) throw err;
+            console.log(data);
+        });
         break;
 
-    case 'upgrade':
-        // async.series([
-        //     (next) => {
-        //         process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
-        //         require('child_process').execFile('/usr/bin/env', ['npm', 'i'], next);
-        //     }
-        // ], (err) => {
-        //     if (err) {
-        //         process.stdout.write('\nError'.red + ': ' + err.message + '\n');
-        //     } else {
-        //         const message = 'Epub search service Upgrade Complete!';
-        //
-        //         const columns = process.stdout.columns;
-        //         const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
-        //
-        //         process.stdout.write('OK\n'.green);
-        //         process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
-        //     }
-        // });
-        break;
 
     default:
-        process.stdout.write('\n\nWelcome to Epub search service\n\n'.bold);
-        process.stdout.write('Usage: epub-search [action] [options]\n\n');
-        process.stdout.write('Actions:\n');
-        process.stdout.write('\t' + 'start'.yellow + '\t\tStart the service\n');
-        process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the service\n');
-        process.stdout.write('\t' + 'status'.yellow + '\t\tGet the state of the service\n');
-        process.stdout.write('\t' + 'writeToIndex'.yellow + '\tEpub-book(s) which should be written to index.' +
-            '(Hint: the epub content have to be unzipped)\n'.red + '\n\n');
-        process.stdout.write('Options:\n');
-        process.stdout.write('\t' + '-p'.yellow + '\tPath to epub folder which contains epub-book(s).\n\n');
+        printManual();
         break;
 }
 
 
-if (node) {
-    node.stdout.on('data', (data) => {
-        console.log(`${data}`);
-    });
+function printManual() {
+    process.stdout.write('\nWelcome to EPUB search service\n'.bold);
+    process.stdout.write('Usage: epub-search [action] [options]\n');
+    process.stdout.write('Actions:\n');
+    process.stdout.write('\t' + 'start'.yellow + '\t\tStart the service\n');
+    process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the service\n');
+    // process.stdout.write('\t' + 'status'.yellow + '\t\tGet the state of the service\n');
+    process.stdout.write('\t' + 'logs'.yellow + '\t\tShow the log files\n');
+    process.stdout.write('\t' + 'writeToIndex'.yellow + '\tEPUB-book(s) which should be written to index.' +
+        ' (Hint: the EPUB content have to be unzipped)\n'.red);
+    process.stdout.write('Options:\n');
+    process.stdout.write('\t' + '-p'.yellow + '\tPath to EPUB folder which contains EPUB-book(s).\n\n');
+}
 
-    node.stderr.on('data', (data) => {
-        console.log(`${data}`.red);
-    });
 
-    node.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-    });
+function exit() {
+    process.stdout.write('\n\nPress any key to exit\n');
+
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', process.exit.bind(process, 0));
+}
+
+if (child) {
+
+    child.on( "exit", function() {
+        process.stdout.write( 'App has exited!' );
+    } );
+    child.on( "restart", function() {
+        process.stdout.write( 'App has restarted.' );
+    } );
 }
