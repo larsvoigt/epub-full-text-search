@@ -61,7 +61,6 @@
     "os-homedir": "^1.0.2",
     "q": "^1.4.1",
     "readdirp": "^2.0.0",
-    "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "search-index": "~0.8.10",
     "serve": "^5.1.4",
@@ -80,6 +79,7 @@
     "build": "npm run build-src && npm run build-bin",
     "test": "date && mocha --compilers js:babel-core/register tests --recursive",
     "serve:epub": "./node_modules/.bin/serve -p 8089 ./node_modules/epub3-samples/accessible_epub_3",
-    "test:webservice": "./node_modules/.bin/babel-node ./src/WebService.js"
+    "test:webservice": "./node_modules/.bin/babel-node ./src/WebService.js",
+    "express-service": "babel-node example/as-a-service/express/service.js"
   }
 }

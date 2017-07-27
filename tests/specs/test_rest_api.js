@@ -58,7 +58,7 @@ describe('rest api', function () {
         it('It should indexing the ebook via url on the fly. ' +
             'When the index process is ready it will also tested if a specific search term can be find.', function (done) {
 
-            this.timeout(10000);
+            this.timeout(25000);
             chai.request(webservice)
                 .get('/addToIndex')
                 .query({url: 'http://localhost:8089/', uuid: uuid1})
@@ -96,7 +96,7 @@ describe('rest api', function () {
             'So this test checks the support of secure communication over https and ' +
             'will fail if the remote resource could not be found.', function (done) {
 
-            this.timeout(40000);
+            this.timeout(60000);
             chai.request(webservice)
                 .get('/addToIndex')
                 .query({url: 'https://readium.firebaseapp.com/epub_content/accessible_epub_3/', uuid: uuid1})

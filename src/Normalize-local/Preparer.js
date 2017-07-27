@@ -13,12 +13,12 @@ const Preparer = {};
  *************/
 Preparer.normalize = function (pathToEPUBs, options)  {
 
-    winston.log('info', 'EPUB data local: '.blue + pathToEPUBs.green);
+    winston.log('info', 'EPUB data local: ' + pathToEPUBs.red);
 
     return parser.getMetaData(pathToEPUBs)
         .then(metaDataList => {
 
-            winston.log('info', 'Analyse local:'.yellow);
+            winston.log('info', 'Analyse local:');
            
             metaDataList = indexingController.doWork(metaDataList, options);
 
@@ -33,7 +33,7 @@ Preparer.normalize = function (pathToEPUBs, options)  {
 
                     prepareEPUBDataForIndexing(metaData, dataSet);
                 } else {
-                    winston.log('info', "\t--> EPUB title " + title.green + ' already indexed');
+                    winston.log('info', "\t--> EPUB title " + title.red + ' already indexed');
                 }
             });
             return dataSet;

@@ -145,11 +145,21 @@ describe('search', () => {
             .fail(done);
     });
 
-    it('Test search over all book: Should get all hits form all books', done => {
+    it('Test search within all book (two arg): Should get all hits form all books', done => {
 
         se.search("someone", "*")
             .then(function (hits) {
                 hits.length.should.be.exactly(6);
+                done();
+            })
+            .fail(done);
+    });
+
+    it('Test search within all books (three arg): Should get all hits form all books', done => {
+
+        se.search("epub", "*", "-1")
+            .then(function (hits) {
+                hits.length.should.be.exactly(15);
                 done();
             })
             .fail(done);

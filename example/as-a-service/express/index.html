@@ -1,172 +1,146 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>express service</title>
-    <link href="main.css" type="text/css" rel="stylesheet">
+    <title>EPUB search demo</title>
     <link rel="stylesheet prefetch"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script>
-        const host = window.location.origin;
-        var bootstrapAlert = function() {}
-        bootstrapAlert.error = function(message) {
-            $('#alert_placeholder').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>'+message+'</span></div>')
-        }
-        function search() {
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <link href="main.css" type="text/css" rel="stylesheet">
 
-            $("#hits").empty();
-            $('#search').button('loading');
-
-            const term = $("#searchbox").val();
-
-            if(term === "") {
-                bootstrapAlert.error("Add search term ;-)");
-                $('#search').button('reset');
-                return;
-            }
-
-
-            const request = host + '/search?q=' + $("#searchbox").val();// + '&t=' + epubTitle;
-            $.getJSON(request, '', {})
-                .done((hits) => {
-
-                    $('#search').button('reset');
-
-                    if (hits.length > 0) {
-//                        console.log("found " + hits.length + ' hits');
-
-                        $('#hitsCount').text(hits.length + "." + ' hits');
-                        for (var index in hits)
-                            $("#hits").append($("<li class='list-group-item'>").html((++index) + ". <pre>" + syntaxHighlight(JSON.stringify(hits[index], undefined, 2)) + "</pre>"));
-
-                    } else {
-
-                        $("#hits").append($("<li>").html("<li class='list-group-item'>No Hits </li>"));
-                    }
-                    console.debug("search request ready");
-                })
-                .fail((d, textStatus, error) => {
-
-                    $('#search').button('reset');
-                    const err = d.status + " " + error + " -> message: " + d.responseText;
-                    bootstrapAlert.error(err);
-                    console.error(`Search request failed: \n ${err}`);
-                });
-        }
-
-        // looking for suggestions
-        function instantSearch() {
-
-            const q = $("#searchbox").val();
-            if (q === '')
-                return;
-
-            const matcher = "/matcher?beginsWith=" + q;
-            const request = host + matcher;
-
-            console.debug(request);
-
-            $.getJSON(request, '', {})
-                .done((data) => {
-
-                    $("#searchbox").autocomplete({
-                        source: data,
-                        select: (event) => {
-                            event.stopPropagation();
-                            $("#search").trigger("click");
-                        }
-                    });
-                })
-                .fail((d, textStatus, error) => {
-
-                    const err = d.status + " " + error + " -> message: " + d.responseText;
-                    bootstrapAlert.error(err);
-                    console.error(`Search request failed: \n ${err}`);
-                });
-        }
-
-
-        function addEventHandler() {
-
-            $("#search").click(search);
-            $("#searchbox").keyup((event) => {
-
-                if (event.which === 13)
-                    return;
-
-                instantSearch();
-                event.stopPropagation();
-            });
-        }
-        window.onload = addEventHandler;
-
-        function syntaxHighlight(json) {
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-                var cls = 'number';
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = 'key';
-                    } else {
-                        cls = 'string';
-                    }
-                } else if (/true|false/.test(match)) {
-                    cls = 'boolean';
-                } else if (/null/.test(match)) {
-                    cls = 'null';
-                }
-                return '<span class="' + cls + '">' + match + '</span>';
-            });
-        }
-    </script>
 </head>
 <body>
-<div class="container theme-showcase" role="main">
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-
-        <h1>Epub Search</h1>
-
-        <h3>Sample books:</h3>
-        <ul>
-            <li>Accessible EPUB 3</li>
-            <li>A First Course in Linear Algebra</li>
-        </ul>
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">E.g. search for math, epub, someone, ...</h3>
-            </div>
-            <div class="panel-body">
-                <form class="form-search form-inline">
-                    <div class="input-group">
-                        <input type="text" id="searchbox" name="searchbox" class="form-control search-query"
-                               placeholder="Search" data-provide="typeahead"/>
-                        <span class="input-group-btn">
+<div class="theme-showcase" role="main">
+    <div class="">
+        <h1 align="center">EPUB Search</h1>
+        <div id="exTab3" class="mainContainer">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#pre" data-toggle="tab">Preindexing</a></li>
+                <li><a href="#fly" data-toggle="tab">Indexing on the fly</a></li>
+                <li><a href="#real" data-toggle="tab">Use-case cloudreader</a></li>
+            </ul>
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="pre">
+                    <h4>Sample books preindexed:</h4>
+                    <ul>
+                        <li>Accessible EPUB 3</li>
+                        <li>A First Course in Linear Algebra</li>
+                    </ul>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">E.g. search for math, epub, someone, ...</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-search form-inline">
+                                <div class="input-group">
+                                    <input type="text" id="searchbox" name="searchbox" class="form-control search-query"
+                                           placeholder="Search" data-provide="typeahead"/>
+                                    <span class="input-group-btn">
                                <button id="search"
                                        type="button"
-                                       class="btn btn-primary"
+                                       class="btn btn-default"
                                        data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Search</button>
                            </span>
-                    </div>
-                </form>
+                                </div>
+                            </form>
 
-            </div>
-        </div>
-        <div id = "alert_placeholder"></div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 id="hitsCount" class="panel-title">Hits</h3>
-            </div>
-            <div id="hits" class="list-group">
+                        </div>
+                    </div>
+                    <div id="alert_placeholder"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 id="hitsCount" class="panel-title">Hits</h3>
+                        </div>
+                        <div id="hits" class="list-group">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="fly">
+                    <h3>Indexing on the fly</h3>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Add EPUB Url</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-search form-inline">
+                                <div class="input-group">
+                                    <input type="text" id="url" name="indexUrl" class="form-control search-query"
+                                           placeholder="URL"/>
+                                    <span class="input-group-btn">
+                               <button id="indexUrl"
+                                       type="button"
+                                       class="btn btn-default"
+                                       data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Index Url</button>
+                           </span>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="real">
+                    <h3>Use-case cloud reader</h3>
+                    <p>For this demo is readium cloud reader <a href="https://readium.firebaseapp.com">https://readium.firebaseapp.com</a>
+                        used.</p>
+                    <div>
+                        <iframe id="readium1" src="http://localhost:8085/readium"></iframe>
+                    </div>
+                    <div id="searchControl" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading panel-heading-custom">
+                                <h3 class="panel-title">Choose a book to enable the search.</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-search form-inline">
+                                    <div class="input-group">
+                                        <input type="text" id="searchbox1" name="searchbox"
+                                               class="form-control search-query"
+                                               placeholder="Search" data-provide="typeahead"/>
+                                        <span class="input-group-btn">
+                               <button id="search1"
+                                       type="button"
+                                       class="btn btn-default"
+                                       data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Search</button>
+                           </span>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="listWrapper">
+                            <ul id="results" class="list-group" style="list-style-type:lower-greek;">
+                                <li>List item 1</li>
+                                <li>List item 2</li>
+                                <li>List item 3</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 </body>
+<script src="controller.js"></script>
 </html>

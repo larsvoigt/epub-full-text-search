@@ -1,3 +1,18 @@
+h1 {
+    font: 400 100px/1.3 'Oleo Script', Helvetica, sans-serif;
+    color: #2b2b2b;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+}
+ /*{*/
+    /*font: 400 20px/1.3 'Oleo Script', Helvetica, sans-serif;*/
+    /*color: #2b2b2b;*/
+    /*text-shadow: 4px 4px 0px rgba(0,0,0,0.1);*/
+/*}*/
+.mainContainer {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
 pre {
     outline: 1px solid #ccc;
     padding: 5px;
@@ -45,7 +60,6 @@ ul.ui-autocomplete {
     background-color: #fff;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    /*border: 1px solid #ccc;*/
     border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 4px;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
@@ -74,4 +88,50 @@ li.ui-menu-item.ui-state-focus {
 .ui-helper-hidden-accessible {
     position: absolute;
     left: -9999px;
+}
+
+body {
+    background-color: #eee;
+
+}
+.jumbotron {
+    height: 100vh; /*vh == viewport height*/
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+iframe {
+    height: 70%;
+    width: 50%;
+    float: left;
+}
+
+#searchControl {
+    height: 70%;
+    width: 50%;
+    background-color: #ffffff;
+    float: left;
+    border-radius: 5px;
+    border: 2px solid #c1c2ca;
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills > li > a {
+    border-radius: 4px 4px 0 0 ;
+}
+
+#exTab3 .tab-content {
+    background-color: #c1c2ca;
+    padding : 5px 15px;
+}
+
+.panel-default > .panel-heading-custom {
+    background: #4d4d4d; color: #fff;
+}
+
+.listWrapper {
+    max-height:400px;
+    overflow-y:auto;
 }

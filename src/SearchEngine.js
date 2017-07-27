@@ -29,7 +29,7 @@ module.exports = function (options) {
     SearchEngine.indexing = function (EPUBLocation, uuid) {
 
         winston.log('info', "******************************************************");
-        winston.log('info', "Start normalize EPUB content".yellow);
+        winston.log('info', "Start normalize EPUB content");
 
         if (validUrl.isUri(EPUBLocation)) {
 
@@ -41,8 +41,8 @@ module.exports = function (options) {
                     doc.id = doc.id.split(':')[0] + ':' + uuid;
                     doc.uuid = uuid;
                 });
-                winston.log('info', "Ready with normalize EPUB".yellow);
-                winston.log('info', "Start normalize EPUB.".yellow);
+                winston.log('info', "Ready with normalize EPUB");
+                winston.log('info', "Start normalize EPUB.");
                 // var fs = require('fs');
                 // fs.writeFileSync('/tmp/fs.tmp', JSON.stringify(dataSet));
 
@@ -52,13 +52,13 @@ module.exports = function (options) {
             winston.log('info', 'Indexing local path'.blue);
             return normalize.local(EPUBLocation, options, dataSet => {
 
-                winston.log('info', "Ready with normalize EPUB".yellow);
+                winston.log('info', "Ready with normalize EPUB");
 
                 if (dataSet.length > 0) {
-                    winston.log('info', "Start normalize EPUB-data.".yellow);
+                    winston.log('info', "Start normalize EPUB-data.");
                     return SearchEngine.add(dataSet);
                 } else {
-                    winston.log('info', "DONE! Nothing to do, EPUBs already indexed.".yellow);
+                    winston.log('info', "DONE! Nothing to do, EPUBs already indexed.");
                     return;
                 }
             })
@@ -123,7 +123,7 @@ module.exports = function (options) {
         q.query = {AND: {'body': [searchFor]}};
 
         // Attention AND property have to be an array!!!
-        if (uuid && uuid.length > 0)
+        if (uuid && uuid.length > 0 && uuid !== '-1')
             q.query.AND.uuid = [normalize.normalizeUUID(uuid)];
         else
             q.query.AND.epubTitle = [normalize.normalizeEpupTitle(title)];

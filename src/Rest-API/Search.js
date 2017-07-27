@@ -16,8 +16,7 @@ module.exports = function (req, res) {
     var uuid = req.query['uuid'];
     uuid = uuid || '-1';
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-    winston.log('info', 'bookTitle: ' + bookTitle);
-    winston.log('info', 'uuid: ' + uuid);
+    winston.log('info', 'request search'.blue + ' -> query: ' + q + ' -> bookTitle: ' + bookTitle + ' -> uuid: ' + uuid);
 
     searchEngine({})
         .then(se => {

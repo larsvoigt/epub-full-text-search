@@ -57,8 +57,7 @@ WebService.startupMessages = function (callback) {
     winston.log('info', 'EPUB-search Copyright (c) 2015-2017 Lars Voigt');
     winston.log('info', 'This program comes with ABSOLUTELY NO WARRANTY.');
     winston.log('info', 'This is free software, and you are welcome to redistribute it under certain conditions.');
-    winston.log('info', 'For the full license, please visit: https://opensource.org/licenses/MIT');
-    winston.log('info', '');
+    winston.log('info', 'For the full license, please visit: https://opensource.org/licenses/MIT \n');
     callback();
 };
 
@@ -66,7 +65,7 @@ WebService.start = function (callback) {
     //  Start the app on the specific interface (and port).
     WebService.app.listen(WebService.port, WebService.ipaddress, () => {
         //TODO: logging
-        winston.log('info', '%s: EPUB search started on %s:%d ...',
+        winston.log('info', '%s: EPUB search started on %s:%d ... \n',
             new Date(), WebService.ipaddress, WebService.port);
     }).on('error', e => {
 

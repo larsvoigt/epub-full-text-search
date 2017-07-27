@@ -10,8 +10,7 @@ module.exports = function (req, res) {
     }
 
     const uuid = req.query['uuid'];
-    winston.log('info', 'client request delete');
-    winston.log('info', 'uuid: ' + uuid);
+    winston.log('info', 'client request delete -> uuid: ' + uuid);
 
     searchEngine({})
         .then(se => {
