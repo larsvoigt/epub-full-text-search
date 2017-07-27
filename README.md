@@ -78,7 +78,7 @@ $ epub-search writeToIndex -p  <path>
 
 ### Search 
 
-Search at index for some query:
+Search for term:
 
 ```
 http://localhost:8085/search?q=...
@@ -91,7 +91,7 @@ Offering search suggestions
 $  http://localhost:8085/matcher?beginsWith=...
 ```
 
-#### Example:
+#### Expample:
 
 At first, please install epub-search globally: 
 
