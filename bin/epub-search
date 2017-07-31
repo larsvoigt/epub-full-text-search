@@ -15,6 +15,11 @@ console.log('exec path: ' + __dirname);
 
 var child;
 
+// temp data folder
+if (!fs.existsSync(constants.DATA_FOLDER)){
+    fs.mkdirSync(constants.DATA_FOLDER);
+}
+
 switch (process.argv[2]) {
 
 
