@@ -1,12 +1,23 @@
+import winston from './Logger';
 
 const Helper = {};
 
-Helper.getContent = function (url) {
+Helper.getContent = function (endpoint) {
     // from here https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/
     return new Promise((resolve, reject) => {
         // select http or https module, depending on reqested url
-        const lib = url.startsWith('https') ? require('https') : require('http');
-        const request = lib.get(url, (response) => {
+        const lib = endpoint.startsWith('https') ? require('https') : require('http');
+        const url = require('url');
+        const HttpsProxyAgent = require('https-proxy-agent');
+        const proxy = process.env.http_proxy || 'http://192.168.1.135:8080';
+        // console.log('using proxy server %j', proxy);
+        winston.log('info','attempting to GET %j', endpoint);
+        const options = url.parse(endpoint);
+        const agent = new HttpsProxyAgent(proxy);
+        options.agent = agent;
+
+
+        const request = lib.get(options, (response) => {
             // handle http errors
             if (response.statusCode < 200 || response.statusCode > 299) {
                 reject(new Error('Failed to load page for normalization, status code: ' + response.statusCode));

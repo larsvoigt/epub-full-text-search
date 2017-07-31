@@ -2,6 +2,7 @@
  * Created by larsvoigt on 21.07.17.
  */
 const host = window.location.origin;
+const readiumHost = 'https://readium.firebaseapp.com/';
 
 var uuid;
 var epub;
@@ -162,11 +163,13 @@ function searchReadium() {
 
                         const excerpt = hits[i].cfis[ii].excerpt.replace(new RegExp("(" + term + ")", "gi"), '<b>$1</b>');
                         const idref = hits[i].id;
-                        const cfi = hits[i].cfis[ii].cfi.replace(',', '\,');
-                        const link = `https://readium.firebaseapp.com/?epub=${epub}&goto={"idref" : "${idref}", "elementCfi" : "${cfi}"}`;
+                        const elementcfi = hits[i].cfis[ii].cfi.split('!')[1];
+                        const goto = `&goto={"idref" : "${idref}", "elementCfi" : "${elementcfi}"}`
+                            .replace(/'/g,"%27").replace(/"/g,"%22").replace(/:/g,"%3A");
+                        var gotoEncoded = /*readiumHost + */`readium/?epub=${epub}${goto}`;
                         var entry = `<li class="list-group-item list-group-item-warning">`;
                        // entry += `<a data-toggle="tooltip" title=${cfi} href=\"javascript:openCFI(${href}, ${cfi})\">${excerpt}</a>`;
-                        entry += `<a data-toggle="tooltip" title=${cfi} href=${link} >${link}</a>`;
+                        entry += `<a data-toggle="tooltip" title=${elementcfi} href=${gotoEncoded} >${goto}</a>`;
                         entry += `</li>`;
                         $cfis.append(entry);
 
