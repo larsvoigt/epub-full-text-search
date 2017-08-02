@@ -12,6 +12,11 @@ module.exports = function (req, res) {
     const uuid = req.query['uuid'];
     winston.log('info', 'client request delete -> uuid: ' + uuid);
 
+    if (!uuid) {
+        res.status(500).send('Uuid is undefined.');
+        return;
+    }
+
     searchEngine({})
         .then(se => {
             se.del(uuid)

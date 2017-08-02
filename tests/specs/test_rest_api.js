@@ -53,6 +53,36 @@ describe('rest api', function () {
         });
     });
 
+    describe('/matcher', () => {
+
+        it('It should return suggestions.', function (done) {
+
+            this.timeout(25000);
+            chai.request(webservice)
+                .get('/addToIndex')
+                .query({url: 'http://localhost:8089/', uuid: uuid1})
+                .end((err, res) => {
+                    chai.request(webservice)
+                        .get('/matcher')
+                        .query({beginsWith: 'epub', uuid: uuid1})
+                        .end((err, res) => {
+
+                        if(err)
+                            console.error(err);
+
+                            res.status.should.be.equal(200);
+                            const matches = JSON.parse(res.text);
+                            matches.length.should.be.exactly(4);
+                            matches[0].should.be.exactly('epub');
+                            matches[1].should.be.exactly('epubs');
+                            matches[2].should.be.exactly('epubcheck');
+                            matches[3].should.be.exactly('epubreadingsystem');
+                            done();
+                        });
+                });
+        });
+    });
+
     describe('/search', () => {
 
         it('It should indexing the ebook via url on the fly. ' +
@@ -80,7 +110,7 @@ describe('rest api', function () {
 
         it('It should indexing the ebook via url on the fly.', function (done) {
 
-            this.timeout(10000);
+            this.timeout(25000);
             chai.request(webservice)
                 .get('/addToIndex')
                 .query({url: 'http://localhost:8089/', uuid: uuid1}) // /search?name=foo&limit=10
