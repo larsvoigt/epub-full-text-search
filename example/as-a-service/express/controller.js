@@ -2,12 +2,12 @@
  * Created by larsvoigt on 21.07.17.
  */
 const host = window.location.origin;
-const readiumHost = 'https://readium.firebaseapp.com/';
 
 var uuid;
 var epub;
 
 $("#searchControl").find('*').attr('disabled', true);
+$('#readium1').attr('src', host + '/readium');
 
 $('iframe').on('load', () => {
 
@@ -15,6 +15,9 @@ $('iframe').on('load', () => {
 
     // indexing
     contentWindow.$(contentWindow).on('readepub', (e, eventPayload) => {
+
+        if(epub === eventPayload.epub)
+            return;
 
         epub = eventPayload.epub;
         console.log('readepub: ' + epub);
@@ -56,7 +59,6 @@ $('iframe').on('load', () => {
                 }
             );
     });
-
 });
 
 
@@ -156,7 +158,7 @@ function searchReadium() {
 
                 for (var i in hits) {
                     const href = hits[i].href;
-                    const $href = $(`<li class="list-group-item list-group-item-success"> spine item:  ${href} </li>`);
+                    const $href = $(`<li class="list-group-item"> spine item:  ${href} </li>`);
                     const $cfis = $(`<ul class="list-group"></ul>`);
 
                     for (var ii in hits[i].cfis) {
@@ -164,21 +166,21 @@ function searchReadium() {
                         const excerpt = hits[i].cfis[ii].excerpt.replace(new RegExp("(" + term + ")", "gi"), '<b>$1</b>');
                         const idref = hits[i].id;
                         const elementcfi = hits[i].cfis[ii].cfi.split('!')[1];
-                        const goto = `&goto={"idref" : "${idref}", "elementCfi" : "${elementcfi}"}`
-                            .replace(/'/g,"%27").replace(/"/g,"%22").replace(/:/g,"%3A");
-                        var gotoEncoded = /*readiumHost + */`readium/?epub=${epub}${goto}`;
+                        const goto = `&goto={"idref" : "${idref}", "elementCfi" : "${elementcfi}"}`;
+                        const reqGoto = host + `/readium/?epub=${epub}${goto}`;
+
                         var entry = `<li class="list-group-item list-group-item-warning">`;
-                       // entry += `<a data-toggle="tooltip" title=${cfi} href=\"javascript:openCFI(${href}, ${cfi})\">${excerpt}</a>`;
-                        entry += `<a data-toggle="tooltip" title=${elementcfi} href=${gotoEncoded} >${goto}</a>`;
+                        entry += `<a data-toggle="tooltip" title=${elementcfi} goto='${reqGoto}' href="#">${excerpt}</a>`;
+                        // entry += `<a data-toggle="tooltip" title=${elementcfi} href='${reqGoto}' >${goto}</a>`;
                         entry += `</li>`;
                         $cfis.append(entry);
-
-
                     }
                     $href.append($cfis);
                     $("#results").append($href);
                 }
                 $('[data-toggle="tooltip"]').tooltip();
+
+                $('a').click(openCFI); // Is it tricky to add listener to any link element?
             } else
                 $("#results").append($("<li>").html("<li>No Hits </li>"));
 
@@ -192,9 +194,44 @@ function searchReadium() {
         });
 }
 
-function openCFI(href, cfi){
-    const contentWindow = $('#readium1')[0].contentWindow;
-    const readium = contentWindow.Readium;
+
+// todo: refactoring overload instantSearch()
+function instantSearchReadium() {
+
+    const q = $("#searchbox1").val();
+    if (q === '')
+        return;
+
+    const matcher = `/matcher?beginsWith=${q}&uuid=${uuid}`;
+    const request = host + matcher;
+
+    console.debug(request);
+
+    $.getJSON(request, '', {})
+        .done(data => {
+
+            $("#searchbox1").autocomplete({
+                source: data,
+                select: (event) => {
+                    event.stopPropagation();
+                    $("#search1").trigger("click");
+                }
+            });
+        })
+        .fail((d, textStatus, error) => {
+
+            const err = d.status + " " + error + " -> message: " + d.responseText;
+            bootstrapAlert.error(err);
+            console.error(`Search request failed: \n ${err}`);
+        });
+}
+
+
+function openCFI(){
+    // const contentWindow = $('#readium1')[0].contentWindow;
+    // const readium = contentWindow.Readium;
+
+    $('#readium1').attr('src', $(this).attr('goto'));
 }
 
 
@@ -211,6 +248,14 @@ function addEventHandler() {
     });
 
     $("#search1").click(searchReadium);
+    $("#searchbox1").keyup((event) => {
+
+        if (event.which === 13)
+            return;
+
+        instantSearchReadium();
+        event.stopPropagation();
+    });
 }
 window.onload = addEventHandler;
 

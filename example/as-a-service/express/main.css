@@ -9,8 +9,10 @@ h1 {
     /*text-shadow: 4px 4px 0px rgba(0,0,0,0.1);*/
 /*}*/
 .mainContainer {
+    height: 90vh; /*vh == viewport height*/
     margin-left: 5%;
     margin-right: 5%;
+    margin-bottom: 5%;
 }
 
 pre {
@@ -97,7 +99,6 @@ body {
 .jumbotron {
     height: 100vh; /*vh == viewport height*/
     width: 100vw;
-    margin: 0;
     padding: 0;
 }
 
@@ -134,4 +135,24 @@ iframe {
 .listWrapper {
     max-height:400px;
     overflow-y:auto;
+}
+
+/* tab color */
+.nav-tabs>li>a {
+    background-color: #333333;
+    border-color: #777777;
+    color:#fff;
+}
+
+/* active tab color */
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    color: #fff;
+    background-color: #666;
+    border: 1px solid #888888;
+}
+
+/* hover tab color */
+.nav-tabs>li>a:hover {
+    border-color: #000000;
+    background-color: #111111;
 }
