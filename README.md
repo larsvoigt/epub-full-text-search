@@ -58,7 +58,7 @@ Usage: epub-search [action] [options]
 Actions:
         start           Start the service
         stop            Stop the service
-        status          Get the state of the service
+        logs            Show logs
         writeToIndex    Epub-book(s) which should be written to index.(Hint: the epub content have to be unzipped)
 
 Options:
@@ -81,7 +81,7 @@ $ epub-search writeToIndex -p  <path>
 
 ### Search 
 
-Search at index for some query:
+Search for term:
 
 ```
 http://localhost:8085/search?q=...
@@ -114,24 +114,26 @@ Add sample epubs to index:
 epub-search writeToIndex -p {prefix}/node_modules/epub-full-text-search/node_modules/epub3-samples
 ```
 
-After that we can get some hits for the query ``epub``:
+Now we can get some hits for the term ``epub``:
 
-Search in the whole indexed ebook-collection:
+<sub>For requests you can use *$ curl -XGET "http://localhost:8085/search?q=math"* or the *browser*...</sub>
 
-```
-$ curl -XGET "http://localhost:8085/search?q=math"
-```
-
-Set query filter book title ```t="..."``` to search only within a specific ebook:
+* Search in the whole indexed ebook-collection:
 
 ```
-$ curl -XGET "http://localhost:8085/search?q=epub&t=Accessible+EPUB+3"
+http://localhost:8085/search?q=math
 ```
 
-Or we can get some suggestions for autocomplete feature:
+* Set query filter book title ```t="..."``` to search only within a specific ebook:
 
 ```
-$  curl -XGET "http://localhost:8085/matcher?beginsWith=epu"
+http://localhost:8085/search?q=epub&t=Accessible+EPUB+3
+```
+
+* Or we can get some suggestions for instant searching:
+
+```
+http://localhost:8085/matcher?beginsWith=epu
 ```
 
 ## For library use

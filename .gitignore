@@ -7,7 +7,9 @@ node_modules
 /bin/pidfile
 /src/IndexControllerDB.json
 .idea
+
 /dist/
+
 /quick-test/quick_test/
 package-lock.json
 quick-test/quick_test/

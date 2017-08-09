@@ -190,7 +190,7 @@ module.exports = function (options) {
 
         return SearchEngine._match({beginsWith: beginsWith, type: 'ID'})
             .then(matches => {
-                return filterMatches(matches, title, uuid);
+                return filterMatches(matches, title, !uuid ? uuid : normalize.normalizeUUID(uuid));
             });
     };
 

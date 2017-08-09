@@ -14,7 +14,7 @@ Helper.getContent = function (endpoint) {
         winston.log('info','attempting to GET %j', endpoint);
         const options = url.parse(endpoint);
         const agent = new HttpsProxyAgent(proxy);
-        options.agent = agent;
+        // options.agent = agent; // uncomment to set proxy settings
 
 
         const request = lib.get(options, (response) => {

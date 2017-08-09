@@ -36,12 +36,12 @@
         <h1 align="center">EPUB Search</h1>
         <div id="exTab3" class="mainContainer">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#pre" data-toggle="tab">Preindexing</a></li>
+                <li class="active"><a href="#real" data-toggle="tab">Use-case cloudreader</a></li>
+                <li><a href="#pre" data-toggle="tab">Preindexing</a></li>
                 <li><a href="#fly" data-toggle="tab">Indexing on the fly</a></li>
-                <li><a href="#real" data-toggle="tab">Use-case cloudreader</a></li>
             </ul>
             <div class="tab-content clearfix">
-                <div class="tab-pane active" id="pre">
+                <div class="tab-pane" id="pre">
                     <h4>Sample books preindexed:</h4>
                     <ul>
                         <li>Accessible EPUB 3</li>
@@ -99,12 +99,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="real">
+                <div class="tab-pane active" id="real">
                     <h3>Use-case cloud reader</h3>
-                    <p>For this demo is readium cloud reader <a href="https://readium.firebaseapp.com">https://readium.firebaseapp.com</a>
-                        used.</p>
+                    <p>Demo is using readium cloud reader <a href="https://readium.firebaseapp.com">https://readium.firebaseapp.com</a></p>
                     <div>
-                        <iframe id="readium1" src="http://localhost:8085/readium"></iframe>
+                        <iframe id="readium1"></iframe>
                     </div>
                     <div id="searchControl" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">
                         <div class="panel panel-default ">

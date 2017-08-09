@@ -2,9 +2,10 @@
 
 import program from 'commander';
 import searchEngine from '../lib/SearchEngine';
+import path from 'path';
 
 program
-    .version('0.2.1')
+    .version('0.3.0')
     .usage('[options] <file ...>')
     .option('-p, --writeToIndex <path>', 'Path to EPUB folder which contains EPUB-documents that should be written to index' +
         ' (Hint: the EPUB content have to be unzipped)')

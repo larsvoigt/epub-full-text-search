@@ -4,16 +4,21 @@ import 'colors';
 import cproc from 'child_process';
 import constants from "../lib/Constants";
 import fs from 'fs';
+import forever from 'forever';
 
 
 const exec = cproc.exec;
 const OUT = 'out.log';
 const ERR = 'err.log';
-//console.log(__dirname);
 
-var node;
+console.log('exec path: ' + __dirname);
 
-const forever = "./../../node_modules/.bin/forever ";
+var child;
+
+// temp data folder
+if (!fs.existsSync(constants.DATA_FOLDER)){
+    fs.mkdirSync(constants.DATA_FOLDER);
+}
 
 switch (process.argv[2]) {
 
@@ -21,27 +26,44 @@ switch (process.argv[2]) {
     case 'writeToIndex':
         cproc.fork(__dirname + '/search-engine-CLI', process.argv);
         break;
+    // case 'status':
+    //     forever.list(false, (err, data) => {
+    //         console.log(data);
+    //     });
+    //     break;
 
     case 'start':
-        process.stdout.write('\nStarting EPUB search service\n'.bold);
-        const logging = '-o ' + constants.DATA_FOLDER + '/' + OUT + ' -e ' + constants.DATA_FOLDER + '/' + ERR;
-      //  console.log(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js');
-        node = exec(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js', {
-            env: process.env
+        process.stdout.write('\nStarting EPUB search ...\n'.bold);
+        // const logging = '-o ' + constants.DATA_FOLDER + '/' + OUT + ' -e ' + constants.DATA_FOLDER + '/' + ERR;
+        // //  console.log(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js');
+        // node = exec(forever +  logging + ' --minUptime 5000 --spinSleepTime 2000 ' + ' start ' + __dirname + '/../lib/WebService.js', {
+        //     env: process.env
+        // });
+
+
+        child = forever.startDaemon(__dirname + '/../lib/WebService.js', {
+            'silent': false,
+            'minUptime': 5000,
+            'spinSleepTime': 2000,
+            'logFile': constants.DATA_FOLDER + '/' + OUT,
+            'errFile': constants.DATA_FOLDER + '/' + ERR
         });
+
+        printManual();
+        process.stdout.write('\nEPUB search started\n'.bold);
+        exit();
+
         break;
 
     case 'stop':
-        node = exec(forever + 'stopall');
+        process.stdout.write('\nStopping EPUB search ...'.bold);
+        forever.stopAll();
+        process.stdout.write('\nEPUB search stopped'.bold);
+        exit();
         break;
 
-    case 'restart':
-        node = exec(forever + 'restartall');
-        break;
-    
     case 'logs':
-
-        process.stdout.write('\nFind EPUB search log-files here ' +  constants.DATA_FOLDER.bold + '\n\n');
+        process.stdout.write('\nFind log-files here ' +  constants.DATA_FOLDER.bold + '\n\n');
         fs.readFile(constants.DATA_FOLDER + '/' + OUT, 'utf8', function(err, data) {
             if (err) throw err;
             console.log(data);
@@ -54,30 +76,40 @@ switch (process.argv[2]) {
 
 
     default:
-        process.stdout.write('\n\nWelcome to EPUB search service\n\n'.bold);
-        process.stdout.write('Usage: epub-search [action] [options]\n\n');
-        process.stdout.write('Actions:\n');
-        process.stdout.write('\t' + 'start'.yellow + '\t\tStart the service\n');
-        process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the service\n');
-        process.stdout.write('\t' + 'status'.yellow + '\t\tGet the state of the service\n');
-        process.stdout.write('\t' + 'writeToIndex'.yellow + '\tEPUB-book(s) which should be written to index.' +
-            '(Hint: the EPUB content have to be unzipped)\n'.red + '\n\n');
-        process.stdout.write('Options:\n');
-        process.stdout.write('\t' + '-p'.yellow + '\tPath to EPUB folder which contains EPUB-book(s).\n\n');
+        printManual();
         break;
 }
 
 
-if (node) {
-    node.stdout.on('data', data => {
-        console.log(`${data}`);
-    });
+function printManual() {
+    process.stdout.write('\nWelcome to EPUB search service\n'.bold);
+    process.stdout.write('Usage: epub-search [action] [options]\n');
+    process.stdout.write('Actions:\n');
+    process.stdout.write('\t' + 'start'.yellow + '\t\tStart the service\n');
+    process.stdout.write('\t' + 'stop'.yellow + '\t\tStop the service\n');
+    // process.stdout.write('\t' + 'status'.yellow + '\t\tGet the state of the service\n');
+    process.stdout.write('\t' + 'logs'.yellow + '\t\tShow the log files\n');
+    process.stdout.write('\t' + 'writeToIndex'.yellow + '\tEPUB-book(s) which should be written to index.' +
+        ' (Hint: the EPUB content have to be unzipped)\n'.red);
+    process.stdout.write('Options:\n');
+    process.stdout.write('\t' + '-p'.yellow + '\tPath to EPUB folder which contains EPUB-book(s).\n\n');
+}
 
-    node.stderr.on('data', data => {
-        console.log(`${data}`.red);
-    });
 
-    node.on('close', code => {
-        console.log(`child process exited with code ${code}`);
-    });
+function exit() {
+    process.stdout.write('\n\nPress any key to exit\n');
+
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', process.exit.bind(process, 0));
+}
+
+if (child) {
+
+    child.on( "exit", function() {
+        process.stdout.write( 'App has exited!' );
+    } );
+    child.on( "restart", function() {
+        process.stdout.write( 'App has restarted.' );
+    } );
 }
