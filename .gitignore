@@ -9,7 +9,3 @@ node_modules
 .idea
 
 /dist/
-
-/quick-test/quick_test/
-package-lock.json
-quick-test/quick_test/
