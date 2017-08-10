@@ -137,7 +137,7 @@ http://localhost:8085/matcher?beginsWith=epu
 ```
 
 ## For library use
-
+<!--
 ```javascript
 import epubSearch from 'epub-full-text-search';
 const options = {'indexPath': 'path_to_index-DB'}; // an own path can be set optional
@@ -199,7 +199,7 @@ epubSearch(options || {})
 
 ``` 
    
-
+-->
 ## Example
 
 
