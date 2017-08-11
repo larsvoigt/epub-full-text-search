@@ -78,7 +78,7 @@
   "scripts": {
     "start": "npm run express-service",
     "express-service": "babel-node example/as-a-service/express/service.js",
-    "build": "npm run build-src && npm run build-bin-epub-search && npm run build-bin-search-engine-CLI",
+    "build": "npm run build:src && npm run build:bin-epub-search && npm run build:bin-search-engine-CLI",
     "build:src": "./node_modules/.bin/babel src --presets babel-preset-es2015 --out-dir dist/lib",
     "build:bin-epub-search": "./node_modules/.bin/babel ./bin/epub-search  --presets babel-preset-es2015 --out-file ./dist/bin/epub-search",
     "build:bin-search-engine-CLI": "./node_modules/.bin/babel ./bin/search-engine-CLI --presets babel-preset-es2015 --out-file ./dist/bin/search-engine-CLI",
