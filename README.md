@@ -9,11 +9,11 @@
 # EPUB-Search
 ## Search engine for digital publication based on EPUB 3
 
-EPUB-Search is making your digital publications searchable.
+Welcome! EPUB-Search is making your digital publications searchable.
 
 What is the use case:
 * server-side microservice to search within EPUBs for browser-based “cloud” readers
-*
+* For EPUB that lives online
 
 
 EPUB-Search uses [search-index](https://github.com/fergiemcdowall/search-index) 
