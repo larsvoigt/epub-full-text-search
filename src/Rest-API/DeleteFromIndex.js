@@ -5,7 +5,7 @@ module.exports = function (req, res) {
 
     const beginsWith = req.query['uuid'];
     if (!beginsWith) {
-        res.status(500).send('Can`t found query parameter beginsWith -> /deleteFromIndex?uuid=uuid');
+        res.status(500).send('Can`t find query parameter beginsWith -> /deleteFromIndex?uuid=uuid');
         return;
     }
 

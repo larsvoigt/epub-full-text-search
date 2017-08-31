@@ -9,15 +9,13 @@
 # EPUB-Search
 ## Search engine for digital publication based on EPUB 3
 
-Welcome! EPUB-Search is making your digital publications searchable.
+Welcome! EPUB-Search makes your digital publications searchable.
 
 What is the use case:
-* server-side microservice to search within EPUBs for browser-based “cloud” readers
-* For EPUB that lives online
+* Server-side microservice to search for browser-based “cloud” readers within EPUBs
+* For EPUBs that lives online
+* To search within your local EPUB-stock
 
-
-EPUB-Search uses [search-index](https://github.com/fergiemcdowall/search-index) 
-to indexing book content.
 
 ### Online Demo
 [Demo](http://protected-dusk-3051.herokuapp.com/)
@@ -25,10 +23,13 @@ to indexing book content.
 ### Features included:
 
 * Full text search (get all query matches for one epub-document or for a whole epub collection)  
-* Instant search (provide suggestions)
+* Autocomplete
 * Full javascript
 * Hits including [cfi](http://www.idpf.org/epub/linking/cfi/epub-cfi.html) references
-* Returning results in JSON format
+* Response results in JSON format
+* Pre-indexing
+* Indexing on-the-fly
+
 
 ## Installation
 
@@ -72,30 +73,69 @@ Options:
 $ [sudo] epub-search start
 ```
 
-### Indexing
-Let´s start to index some epub-documents: 
+### Modus operandi
+
+EPUB search provides two *modus operandi*:
+* The first one is **Indexing On-the-fly**. This means the ebook will be indexed in the background when it gets opened. 
+The assumption for this *mode* is the EPUB3-book which is remote available. 
+The generated search-index will be deleted if the ebook is closed.     
+ 
+* The second one is **Pre-Indexing**. This means all ebooks on the local machine can be indexed 
+and the generated search index will be persistent available during all reading sessions. So it possible the search terms within all indexed
+ebooks. 
+
+
+#### Indexing On-the-fly
+
+#####Indexing
+
+``` 
+http://localhost:8085/addToIndex?url=${epub}/&uuid=${uuid}
+
+```
+
+##### Search
+```
+http://localhost:8085/search?q=${term}&uuid=${uuid}
+```
+
+##### Delete index
+```
+http://localhost:8085/deleteFromIndex?&uuid=${uuid}
+```
+
+
+#### Pre-Indexing
+
+##### Indexing
+
+Let´s start to index some EPUBs: 
 
 ```
 $ epub-search writeToIndex -p  <path>
 ```
 
-### Search 
+##### Search 
 
 Search for term:
 
-```
-http://localhost:8085/search?q=...
-```
-### Suggestions
+<pre>
+http://localhost:8085/search?q=<i>${term}</i>&t=<i>${EPUB-title}</i>;
+</pre>
 
-Offering search suggestions 
+##### Suggestions for Autocomplete 
 
-```
-$  http://localhost:8085/matcher?beginsWith=...
-```
+<pre>
+$  http://localhost:8085/matcher?beginsWith=<i>beginning-of-the-text-to-match</i>
+</pre>
 
-#### Expample:
+### Examples:
 
+#### Indexing On-the-fly
+
+TODO
+
+#### Pre-indexing
 At first, please install epub-search globally: 
 
 ```
@@ -114,29 +154,31 @@ Add sample epubs to index:
 epub-search writeToIndex -p {prefix}/node_modules/epub-full-text-search/node_modules/epub3-samples
 ```
 
-Now we can get some hits for the term ``epub``:
+Now we should get some hits for the term ``epub``:
 
 <sub>For requests you can use *$ curl -XGET "http://localhost:8085/search?q=math"* or the *browser*...</sub>
 
-* Search in the whole indexed ebook-collection:
+Search within the whole ebook-collection:
 
 ```
 http://localhost:8085/search?q=math
 ```
 
-* Set query filter book title ```t="..."``` to search only within a specific ebook:
+Set the filter for the book-title ```t="..."``` to search only within a specific ebook:
 
 ```
 http://localhost:8085/search?q=epub&t=Accessible+EPUB+3
 ```
 
-* Or we can get some suggestions for instant searching:
+Or we can get some suggestions for an autocomplete:
 
 ```
 http://localhost:8085/matcher?beginsWith=epu
 ```
 
-## For library use
+### For library use
+TODO
+
 <!--
 ```javascript
 import epubSearch from 'epub-full-text-search';
@@ -200,16 +242,22 @@ epubSearch(options || {})
 ``` 
    
 -->
-## Example
-
 
 ### Local testing 
 
 Install all dependent modules: ``` npm install ```.
 
-Start up the example ```npm run express-service```. It should run an express server on your local machine.
+Start up the demo ```npm run start```. It should run an express server on your local machine.
 
-When navigating to [http://localhost:8080/](http://localhost:8080/) then you can see a test page where you can enter a search query.
+When you are navigating to [http://localhost:8085/](http://localhost:8085/) you can see the demo?.
 
-Note: The indexing process starts automatically and it takes a few seconds until the search service is really available.    
+Note: The pre-indexing process starts automatically and it takes a few seconds until the pre-indexing search is available.    
 
+### Technical Details
+
+EPUB-Search uses [search-index](https://github.com/fergiemcdowall/search-index) 
+to indexing book content.
+
+### Contributing
+
+Very welcome ... :-)  

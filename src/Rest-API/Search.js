@@ -6,7 +6,7 @@ module.exports = function (req, res) {
     winston.log('info', 'client request search');
 
     if (!req.query['q']) {
-        res.status(500).send('Can`t found query parameter q -> /search?q=word');
+        res.status(500).send('Can`t find query parameter q -> /search?q=word');
         return;
     }
 

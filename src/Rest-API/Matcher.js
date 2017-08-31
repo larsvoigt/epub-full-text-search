@@ -5,7 +5,7 @@ module.exports = function (req, res) {
 
     const beginsWith = req.query['beginsWith'];
     if (!beginsWith) {
-        res.status(500).send('Can`t found query parameter beginsWith -> /matcher?beginsWith=word');
+        res.status(500).send('Can`t find query parameter beginsWith -> /matcher?beginsWith=word');
         return;
     }
 
