@@ -26,9 +26,16 @@ $('iframe').on('load', () => {
         console.log('req: ' + req);
 
         $('#search1').button('loading');
+
+        $("#duration").empty();
+        const t0 = performance.now();
+
         // index on the fly
         $.ajax({url: req, method: "GET"})
             .done(response => {
+
+                const t1 = performance.now();
+                $("#duration").append('Duration of indexing: ' + Math.round(((t1 - t0)/1000)*100/100) + " sec");
 
                 $("#searchControl").find('*').attr('disabled', false);
                 $('#search1').button('reset');
