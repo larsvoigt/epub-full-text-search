@@ -84,11 +84,10 @@ ebooks.
 
 #### Indexing On-the-fly
 
-#####Indexing
+##### Indexing
 
 ``` 
 http://localhost:8085/addToIndex?url=${epub}/&uuid=${uuid}
-
 ```
 
 ##### Search
