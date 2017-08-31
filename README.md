@@ -3,10 +3,7 @@
 [travis-image]: https://travis-ci.org/larsvoigt/epub-full-text-search.svg?branch=master
 [npm-url]: https://npmjs.org/package/epub-full-text-search
 [npm-version-image]: http://img.shields.io/npm/v/epub-full-text-search.svg?style=flat
-
-[![Build Status][travis-image]][travis-url] [![NPM version][npm-version-image]][npm-url] 
-
-# EPUB-Search
+# EPUB-Search [![Build Status][travis-image]][travis-url] [![NPM version][npm-version-image]][npm-url] 
 ## Search engine for digital publication based on EPUB 3
 
 Welcome! EPUB-Search makes your digital publications searchable.
