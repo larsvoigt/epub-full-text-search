@@ -238,6 +238,8 @@ epubSearch(options || {})
 ``` 
    
 -->
+### Hit data format 
+TODO
 
 ### Local testing 
 
