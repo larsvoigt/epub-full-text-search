@@ -1,17 +1,18 @@
 import winston from './Logger';
+import url from 'url';
+import HttpsProxyAgent from 'https-proxy-agent';
+const proxy = process.env.http_proxy || 'http://192.168.1.135:8080';
 
 const Helper = {};
 
 Helper.getContent = function (endpoint) {
     // from here https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/
     return new Promise((resolve, reject) => {
+
+        winston.log('info','attempting to GET %j', endpoint);
+
         // select http or https module, depending on reqested url
         const lib = endpoint.startsWith('https') ? require('https') : require('http');
-        const url = require('url');
-        const HttpsProxyAgent = require('https-proxy-agent');
-        const proxy = process.env.http_proxy || 'http://192.168.1.135:8080';
-        // console.log('using proxy server %j', proxy);
-        winston.log('info','attempting to GET %j', endpoint);
         const options = url.parse(endpoint);
         const agent = new HttpsProxyAgent(proxy);
         // options.agent = agent; // uncomment to set proxy settings
