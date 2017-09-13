@@ -1,7 +1,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>EPUB search demo</title>
+    <title>EPUB-SEARCH DEMO</title>
     <link rel="stylesheet prefetch"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
@@ -27,13 +27,18 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.css">
+
     <link href="main.css" type="text/css" rel="stylesheet">
 
 </head>
 <body>
 <div class="theme-showcase" role="main">
     <div class="">
-        <h1 align="center">EPUB Search</h1>
+        <h3 id="headline" align="center">EPUB Search</h3>
         <div id="exTab3" class="mainContainer">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#real" data-toggle="tab">Use-case cloudreader</a></li>
@@ -54,8 +59,10 @@
                         <div class="panel-body">
                             <form class="form-search form-inline">
                                 <div class="input-group">
-                                    <input type="text" id="searchbox" name="searchbox" class="form-control search-query"
-                                           placeholder="Search" data-provide="typeahead"/>
+                                    <input id="searchbox"
+                                           name="searchbox"
+                                           class="form-control"
+                                           placeholder="Search"/>
                                     <span class="input-group-btn">
                                <button id="search"
                                        type="button"
@@ -85,7 +92,7 @@
                         <div class="panel-body">
                             <form class="form-search form-inline">
                                 <div class="input-group">
-                                    <input type="text" id="url" name="indexUrl" class="form-control search-query"
+                                    <input id="url" name="indexUrl" class="form-control"
                                            placeholder="URL"/>
                                     <span class="input-group-btn">
                                <button id="indexUrl"
@@ -100,8 +107,9 @@
                     </div>
                 </div>
                 <div class="tab-pane active" id="real">
-                    <h4>EPUB search modus: "on-the-fly"</h4>
-                    <p>Demo is using readium cloud reader <a href="https://readium.firebaseapp.com">https://readium.firebaseapp.com</a>
+                    <h4>EPUB-search with modus: "on-the-fly"</h4>
+                    <p>To demonstration the search within EPUBs this demo used readium cloud reader <a
+                            href="https://readium.firebaseapp.com">https://readium.firebaseapp.com</a>
                     </p>
                     <div id="readiumWrapper">
                         <iframe id="readium1"></iframe>
@@ -109,16 +117,17 @@
                     <div id="searchControl" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">
                         <div class="panel panel-default ">
                             <div class="panel-heading panel-heading-custom">
-                                <h3 class="panel-title">Open an ebook to indexing it "on-the-fly". If the index-process
-                                    is ready then you can search within the ebook.</h3>
+                                <h3 class="panel-title">Open an ebook to start index-process. If the process
+                                    is ready you can search within the ebook. The threshold for autocomplete is 3.</h3>
                             </div>
                             <div class="panel-body">
                                 <div id="duration"></div>
                                 <form class="form-search form-inline">
                                     <div class="input-group">
-                                        <input type="text" id="searchbox1" name="searchbox"
-                                               class="form-control search-query"
-                                               placeholder="Search" data-provide="typeahead"/>
+                                        <input id="searchBoxOnTheFly"
+                                               name="searchbox"
+                                               class="form-control"
+                                               placeholder="Search"/>
                                         <span class="input-group-btn">
                                <button id="search1"
                                        type="button"

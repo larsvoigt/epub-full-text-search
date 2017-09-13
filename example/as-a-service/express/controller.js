@@ -147,7 +147,7 @@ function searchReadium() {
     $("#results").empty();
     $('#search1').button('loading');
 
-    const term = $("#searchbox1").val();
+    const term = $("#searchBoxOnTheFly").val();
 
     if (term === "") {
         bootstrapAlert.error("Add search term ;-)");
@@ -203,9 +203,9 @@ function searchReadium() {
 
 
 // todo: refactoring overload instantSearch()
-function instantSearchReadium() {
+function runAutocomplete() {
 
-    const q = $("#searchbox1").val();
+    const q = $("#searchBoxOnTheFly").val();
     if (q === '')
         return;
 
@@ -217,7 +217,7 @@ function instantSearchReadium() {
     $.getJSON(request, '', {})
         .done(data => {
 
-            $("#searchbox1").autocomplete({
+            $("#searchBoxOnTheFly").autocomplete({
                 source: data,
                 select: (event) => {
                     event.stopPropagation();
@@ -255,12 +255,12 @@ function addEventHandler() {
     });
 
     $("#search1").click(searchReadium);
-    $("#searchbox1").keyup((event) => {
+    $("#searchBoxOnTheFly").keyup((event) => {
 
         if (event.which === 13)
             return;
 
-        instantSearchReadium();
+        runAutocomplete();
         event.stopPropagation();
     });
 }

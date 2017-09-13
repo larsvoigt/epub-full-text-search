@@ -1,14 +1,10 @@
-h1 {
-    font: 400 100px/1.3 'Oleo Script', Helvetica, sans-serif;
+#headline {
+    font: 400 60px/1.3 'Oleo Script', Helvetica, sans-serif;
     color: #2b2b2b;
     text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
-/*{*/
-/*font: 400 20px/1.3 'Oleo Script', Helvetica, sans-serif;*/
-/*color: #2b2b2b;*/
-/*text-shadow: 4px 4px 0px rgba(0,0,0,0.1);*/
-/*}*/
+
 .mainContainer {
     height: 90vh; /*vh == viewport height*/
     margin-left: 5%;
@@ -47,51 +43,12 @@ button {
     padding: 10px 20px 10px 34px;
 }
 
-ul.ui-autocomplete {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 160px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    font-size: 14px;
-    text-align: left;
-    list-style: none;
-    background-color: #fff;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, .15);
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+#searchbox {
+    display: inline;
+    padding: 6px;
+    width: auto;
 }
 
-li.ui-menu-item {
-    display: block;
-    padding: 3px 12px;
-    clear: both;
-    font-weight: 400;
-    line-height: 1.42857143;
-    color: #333;
-    white-space: nowrap;
-
-}
-
-li.ui-menu-item.ui-state-focus {
-    color: #fff;
-    text-decoration: none;
-    background-color: #337ab7;
-    outline: 0;
-}
-
-/* move the jquery accessible helper to offscreen area */
-.ui-helper-hidden-accessible {
-    position: absolute;
-    left: -9999px;
-}
 
 body {
     background-color: #eee;
@@ -105,14 +62,15 @@ body {
 }
 
 iframe {
-    height: 70%;
-    width: 50%;
-    float: left;
-
+    width: 100%;
+    height: 100%;
 }
 
 #readiumWrapper {
     border-radius: 5px;
+    height: 70%;
+    width: 50%;
+    float: left;
 }
 
 #duration {
@@ -170,3 +128,45 @@ iframe {
     border-color: #000000;
     background-color: #111111;
 }
+
+ul.ui-autocomplete
+{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+li.ui-menu-item {
+    display: block;
+    padding: 3px 12px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+
+}
+.ui-state-active {
+    color: #fff;
+    text-decoration: none;
+    background-color: #337ab7;
+    outline: 0;
+}
+

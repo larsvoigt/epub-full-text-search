@@ -9,3 +9,4 @@ node_modules
 .idea
 
 /dist/
+/EPUB-search.log

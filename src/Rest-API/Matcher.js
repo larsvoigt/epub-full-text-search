@@ -15,7 +15,7 @@ module.exports = function (req, res) {
 
     uuid = uuid || '-1';
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
-    winston.log('info', 'request suggestion'.yellow + ' -> beginsWith: ' + beginsWith + ' -> bookTitle: ' + bookTitle +
+    winston.log('info', 'request autocomplete'.yellow + ' -> beginsWith: ' + beginsWith + ' -> bookTitle: ' + bookTitle +
     ' -> uuid: ' + uuid);
 
     searchEngine({})
