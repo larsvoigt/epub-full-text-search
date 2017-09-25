@@ -1,4 +1,3 @@
-import searchEngine from './../SearchEngine';
 import winston from './../Logger';
 
 module.exports = function (req, res) {
@@ -16,29 +15,14 @@ module.exports = function (req, res) {
     uuid = uuid || '-1';
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
     winston.log('info', 'request autocomplete'.yellow + ' -> beginsWith: ' + beginsWith + ' -> bookTitle: ' + bookTitle +
-    ' -> uuid: ' + uuid);
+        ' -> uuid: ' + uuid);
 
-    searchEngine({})
-        .then(se => {
-            se.match(beginsWith, bookTitle, uuid)
-                .then(matches => {
-
-                    res.send(matches);
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                })
-                .fail(err => {
-
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                    winston.log('error', err);
-                });
+    req.app.se.match(beginsWith, bookTitle, uuid)
+        .then(matches => {
+            res.send(matches);
         })
         .fail(err => {
             winston.log('error', err);
         });
+
 };

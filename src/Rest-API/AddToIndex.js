@@ -1,4 +1,3 @@
-import searchEngine from './../SearchEngine';
 import winston from './../Logger';
 
 module.exports = function (req, res) {
@@ -10,22 +9,15 @@ module.exports = function (req, res) {
 
     const url = req.query['url'];
     const uuid = req.query['uuid'];
-    searchEngine({})
-        .then(se => {
-            se.indexing(url, uuid)
-                .then(() => {
 
-                    res.status(200).send('DONE! EPUB is indexed.');
-                    winston.log('info', 'DONE! EPUB is indexed.')
-                    se.close(() => {
-                    });
+    req.app.se.indexing(url, uuid)
+        .then(() => {
 
-                }).catch(err => {
-                res.status(500).send(err);
-                winston.log('error', err);
-            });
+            res.status(200).send('DONE! EPUB is indexed.');
+            winston.log('info', 'DONE! EPUB is indexed.');
+
         })
-        .fail(err => {
+        .catch(err => {
             res.status(500).send(err);
             winston.log('error', err);
         });

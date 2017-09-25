@@ -22,20 +22,17 @@ Sample.startIndexing = function () {
         epubs = '../../../node_modules/epub3-samples';
     }
 
-    var se;
-    searchEngine({})
-        .then((_se) => {
-            se = _se;
-            return se.indexing(epubs);
-        })
-        .then(info => {
-            console.log(info);
+    setTimeout(() => { //TODO: waiting a little bit until the server and search engine is up
+        // not really nice a promise or callback would be better
+        webservice.se.indexing(epubs)
+            .then(info => {
+                console.log(info);
+            })
+            .fail(function (err) {
+                console.log(err);
+            });
 
-            return se.close();
-        })
-        .fail(function (err) {
-            console.log(err);
-        });
+    }, 5000);
 };
 
 Sample.startIndexing();

@@ -1,4 +1,3 @@
-import searchEngine from './../SearchEngine';
 import winston from './../Logger';
 
 module.exports = function (req, res) {
@@ -17,26 +16,12 @@ module.exports = function (req, res) {
         return;
     }
 
-    searchEngine({})
-        .then(se => {
-            se.del(uuid)
-                .then(() => {
-                    res.send('Document with ID ' + uuid + ' deleted.');
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                })
-                .fail(err => {
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                    winston.log('error', err);
-                    res.send('Somthing goes wrong:  ID ' + uuid);
-                });
+    req.app.se.del(uuid)
+        .then(() => {
+            res.send('Document with ID ' + uuid + ' deleted.');
         })
         .fail(err => {
             winston.log('error', err);
+            res.send('Somthing goes wrong:  ID ' + uuid);
         });
 };

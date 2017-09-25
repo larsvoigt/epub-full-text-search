@@ -1,4 +1,3 @@
-import searchEngine from './../SearchEngine';
 import winston from './../Logger';
 
 module.exports = function (req, res) {
@@ -18,28 +17,12 @@ module.exports = function (req, res) {
     bookTitle = bookTitle || '*'; // if bookTitle undefined return all hits
     winston.log('info', 'request search'.blue + ' -> query: ' + q + ' -> bookTitle: ' + bookTitle + ' -> uuid: ' + uuid);
 
-    searchEngine({})
-        .then(se => {
-
-            se.search(q[0], bookTitle, uuid)
-                .then(result => {
-
-                    res.send(result);
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                })
-                .fail(err => {
-                    res.send(err);
-
-                    se.close(err => {
-                        if (err)
-                            winston.log('error', err);
-                    });
-                });
+    req.app.se.search(q[0], bookTitle, uuid)
+        .then(result => {
+            res.send(result);
         })
         .fail(err => {
-            winston.log('error', err);
+            res.send(err);
         });
+
 };
