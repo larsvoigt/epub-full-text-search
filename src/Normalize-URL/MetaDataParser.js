@@ -1,5 +1,6 @@
 import xml2js from 'xml2js';
 import Q from 'q';
+
 import helper from './../Helper';
 import winston from './../Logger';
 
@@ -12,22 +13,24 @@ const container = 'container.xml';
 
 MetaDataParser.getMetaDataFromUrl = function (urlToEpub) {
 
-    const containerLink = urlToEpub + 'META-INF/' + container;
+    const containerFilePath = urlToEpub + 'META-INF/' + container;
 
     return new Promise(function (resolve, reject) {
 
-        helper.getContent(containerLink)
-            .then(xmlString => {
-                return getManifest(xmlString);
+        var opfAbsPath = '';
+
+        helper.getContent(containerFilePath)
+            .then(containerFileContent => {
+                return getManifest(containerFileContent);
             })
-            .then(result => {
-                const opfFile = urlToEpub + result;
-                return helper.getContent(opfFile);
+            .then(opfRel => {
+                opfAbsPath = urlToEpub + opfRel;
+                return helper.getContent(opfAbsPath);
             })
             .then(opfContent => {
                 return Q.all([
                     getBookTitle(opfContent),
-                    getSpineItems(opfContent)
+                    getSpineItems(opfContent, opfAbsPath)
                 ]);
             })
             .then(results => {
@@ -71,34 +74,31 @@ function getBookTitle(data) {
         });
 }
 
-function getSpineItems(data) {
+function getSpineItems(data, opfAbsPath) {
 
-    return parseString(data).then(r => {
+    return parseString(data)
+        .then(r => {
 
-        const manifest = r.package.manifest[0];
-        const spine = r.package.spine[0];
+            const manifest = r.package.manifest[0];
+            const spine = r.package.spine[0];
 
-        const result = [];
+            const result = [];
 
-        for (var i = 0; i < spine.itemref.length; i++) {
+            for (var i = 0; i < spine.itemref.length; i++) {
 
-            const spineItem = manifest.item.filter(value => {
+                const spineItem = manifest.item.filter(value => {
+                    if (value.$.id === spine.itemref[i].$.idref)
+                        return value;
+                });
+                const spineitem = {};
+                spineitem.id = spineItem[0].$.id;
+                spineitem.href = opfAbsPath.replace(/[^/]*$/, '') + spineItem[0].$.href;
+                spineitem.baseCfi = "/" + '6' + "/" + (i + 1) * 2 + '[' + spineitem.id + ']!';
 
-                if (value.$.id === spine.itemref[i].$.idref)
-                    return value;
-            });
-
-
-            const spineitem = {};
-            spineitem.id = spineItem[0].$.id;
-            spineitem.href = spineItem[0].$.href;
-            spineitem.baseCfi = "/" + '6' + "/" + (i + 1) * 2 + '[' + spineitem.id + ']!';
-
-            result.push(spineitem);
-        }
-
-        return result;
-    })
+                result.push(spineitem);
+            }
+            return result;
+        })
         .fail(err => {
             winston.log('error', err);
         })

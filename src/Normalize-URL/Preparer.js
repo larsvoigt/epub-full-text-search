@@ -28,12 +28,10 @@ Preparer.normalizeUUID = function (str) {
     return str.replace(/-/g, '');
 };
 
-
 /**************
  * private
  *************/
 function prepareEPUBDataForIndexing(metaData) {
-
 
     if (!metaData.spineItems.length)
         return;
@@ -41,29 +39,20 @@ function prepareEPUBDataForIndexing(metaData) {
     var data = [];
 
     const arrayOfPromises = metaData.spineItems.map(spineItem => {
-
-        const spineUri = metaData.url + 'EPUB/' + spineItem.href;
-        return helper.getContent(spineUri)
-            .then(body => {
-
-                return cheerio.load(body);
-            })
-
+        return helper.getContent(spineItem.href)
+            .then(body => { return cheerio.load(body); })
     });
 
     return Promise.all(arrayOfPromises)
         .then((arrayOf$) => {
 
-            //doc.spineItemPath = spineUri;
             arrayOf$.forEach(($, i) => {
                 const doc = {};
                 $("title").each((i, e) => {
-                    const title = $(e);
-                    doc.title = trim(title.text());
+                    doc.title = trim($(e).text());
                 });
                 $("body").each((i, e) => {
-                    const body = $(e);
-                    doc.body = trim(body.text());
+                    doc.body = trim($(e).text());
                 });
                 setMetaData(doc, metaData, metaData.spineItems[i]);
                 data.push(doc);
@@ -75,20 +64,17 @@ function prepareEPUBDataForIndexing(metaData) {
         });
 }
 
-
 function setMetaData(jsonDoc, meta, spineItemMeta) {
 
-    jsonDoc.spineItemPath = meta.url + 'EPUB/' + spineItemMeta.href;
+    jsonDoc.spineItemPath = spineItemMeta.href;
 
     jsonDoc.href = spineItemMeta.href;
     jsonDoc.baseCfi = spineItemMeta.baseCfi;
     jsonDoc.id = spineItemMeta.id + ':' + meta.title;
 }
 
-
 function trim(str) {
     return str.replace(/\W/g, ' ').replace(/\s+/g, ' ');
 }
-
 
 module.exports = Preparer;

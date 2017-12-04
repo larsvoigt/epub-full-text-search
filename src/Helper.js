@@ -17,7 +17,6 @@ Helper.getContent = function (endpoint) {
         const agent = new HttpsProxyAgent(proxy);
         // options.agent = agent; // uncomment to set proxy settings
 
-
         const request = lib.get(options, (response) => {
             // handle http errors
             if (response.statusCode < 200 || response.statusCode > 299) {
@@ -28,6 +27,7 @@ Helper.getContent = function (endpoint) {
             // on every content chunk, push it to the data array
             response.on('data', (chunk) => body.push(chunk));
             // we are done, resolve promise with those joined chunks
+
             response.on('end', () => resolve(body.join('')));
         });
         // handle connection errors of the request
